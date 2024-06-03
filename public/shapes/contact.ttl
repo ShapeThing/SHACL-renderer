@@ -1,0 +1,103 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+
+<>
+  a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+
+  sh:property [
+    sh:name "Given name"@en ;
+    sh:group <#name> ;
+    sh:path schema:givenName ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:datatype xsd:string ;
+  ];
+  
+  sh:property [
+    sh:name "Family name"@en ;
+    sh:group <#name> ;
+    sh:path schema:familyName ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:datatype xsd:string ;
+  ];
+
+  sh:property [
+    sh:name "Date of birth"@en ;
+    sh:path schema:birthDate ;
+    sh:editor dash:DatePickerEditor ;
+    sh:maxCount 1;
+    sh:datatype xsd:date ;
+  ];
+
+  sh:property [
+    sh:name "Address"@en ;
+    sh:path schema:address ;
+    sh:maxCount 1 ;
+    sh:node <#addressShape> ;
+    sh:nodeKind sh:BlankNode ;
+  ];
+.
+
+<#name>
+	a sh:PropertyGroup ;
+	sh:order 0 .
+
+<#address>
+	a sh:PropertyGroup ;
+	sh:order 1 .
+
+
+<#addressShape>
+    a sh:NodeShape ;
+    sh:targetClass schema:PostalAddress ;
+
+    sh:property [
+        sh:name "Street"@en ;
+        sh:group <#address> ;
+        sh:path schema:streetAddress ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:name "Postal code"@en ;
+        sh:path schema:postalCode ;
+        sh:group <#address> ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:name "Locality"@en ;
+        sh:group <#address> ;
+        sh:path schema:addressLocality ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:name "Region"@en ;
+        sh:group <#address> ;
+        sh:path schema:addressRegion ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:name "Country"@en ;
+        sh:path schema:addressCountry ;
+        sh:group <#address> ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
