@@ -1,14 +1,41 @@
-import { use } from 'react'
-import { widgetsContext } from '../widgets/widgets-context'
+import { ReactComponentLike } from 'prop-types'
+import { Suspense, use } from 'react'
+import parsePath from 'shacl-engine/lib/parsePath'
+import { Settings, mainContext } from '../core/main-context'
+import { sh } from '../core/namespaces'
+import PropertyShapeEditMode from './PropertyShapeEditMode'
+import PropertyShapeFacetMode from './PropertyShapeFacetMode'
+import PropertyShapeInlineEditMode from './PropertyShapeInlineEditMode'
+import PropertyShapeViewMode from './PropertyShapeViewMode'
 
 type PropertyShapeProps = {
   property: GrapoiPointer
+  nodeDataPointer: GrapoiPointer
 }
 
-export default function PropertyShape({ property }: PropertyShapeProps) {
-  const { editors, viewers, facets } = use(widgetsContext)
+export type PropertyShapeInnerProps = {
+  property: GrapoiPointer
+  data: GrapoiPointer
+}
 
-  console.log({ editors, viewers, facets })
+const modes: Record<Settings['mode'], ReactComponentLike> = {
+  edit: PropertyShapeEditMode,
+  view: PropertyShapeViewMode,
+  facet: PropertyShapeFacetMode,
+  'inline-edit': PropertyShapeInlineEditMode
+}
 
-  return <div className="property" data-term={property.term.value}></div>
+export default function PropertyShape({ property, nodeDataPointer }: PropertyShapeProps) {
+  const { mode } = use(mainContext)
+  const path = parsePath(property.out(sh('path')))
+  const dataPointer = nodeDataPointer.executeAll(path)
+  const PropertyShapeInner = modes[mode]
+
+  return (
+    <div className="property" data-term={property.term.value}>
+      <Suspense>
+        <PropertyShapeInner data={dataPointer} property={property} />
+      </Suspense>
+    </div>
+  )
 }

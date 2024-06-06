@@ -4,6 +4,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
 
 <>
   a sh:NodeShape ;
@@ -25,6 +26,13 @@
     sh:minCount 1;
     sh:maxCount 1;
     sh:datatype xsd:string ;
+  ];
+  
+  sh:property [
+    sh:name "Children"@en ;
+    sh:path schema:child ;
+    sh:datatype xsd:string ;
+    stsr:listType stsr:NaturalLanguageList ;
   ];
 
   sh:property [

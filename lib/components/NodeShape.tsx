@@ -10,11 +10,16 @@ import PropertyShape from './PropertyShape'
 
 export type NodeShapeProps = {
   shapePointer?: GrapoiPointer
+  dataPointer?: GrapoiPointer
 }
 
-export default function NodeShape({ shapePointer: specificShapePointer }: NodeShapeProps) {
-  const { shapes, shapePointer: mainShapePointer } = use(mainContext)
+export default function NodeShape({
+  shapePointer: specificShapePointer,
+  dataPointer: specificDataPointer
+}: NodeShapeProps) {
+  const { shapes, shapePointer: mainShapePointer, dataPointer: mainDataPointer } = use(mainContext)
   const shapePointer = specificShapePointer ?? mainShapePointer
+  const nodeDataPointer = specificDataPointer ?? mainDataPointer
 
   const [{ properties }] = useState(() => {
     const pointer = grapoi({ dataset: shapes, factory })
@@ -42,11 +47,11 @@ export default function NodeShape({ shapePointer: specificShapePointer }: NodeSh
   return (
     <div className="node" data-term={shapePointer.term.value}>
       {properties.withoutGroups.map(property => (
-        <PropertyShape key={property.term.value} property={property} />
+        <PropertyShape nodeDataPointer={nodeDataPointer} key={property.term.value} property={property} />
       ))}
 
       {properties.withGroups.map(({ group, properties }) => (
-        <PropertyGroup group={group} key={group.term.value} properties={properties} />
+        <PropertyGroup nodeDataPointer={nodeDataPointer} group={group} key={group.term.value} properties={properties} />
       ))}
     </div>
   )

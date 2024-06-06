@@ -4,7 +4,7 @@ import { ReactNode, createContext } from 'react'
 import { coreWidgets } from './coreWidgets'
 
 export type WidgetItem = {
-  Component: Promise<ReactComponentLike> | ReactComponentLike
+  Component: () => Promise<{ default: ReactComponentLike }>
   meta: WidgetMeta
 }
 
@@ -12,12 +12,14 @@ export type WidgetMeta = {
   score: (data: GrapoiPointer, property: GrapoiPointer) => number
   createTerm: () => Term
   iri: NamedNode
+  listWrapper?: (items: ReactNode[]) => ReactNode
 }
 
 type WidgetsContext = {
   editors: WidgetItem[]
   viewers: WidgetItem[]
   facets: WidgetItem[]
+  lists: WidgetItem[]
 }
 
 export type WidgetProps = {
@@ -33,14 +35,16 @@ export default function WidgetsContextProvider({
   children,
   editors = [],
   viewers = [],
-  facets = []
+  facets = [],
+  lists = []
 }: WidgetsContextProviderProps) {
   return (
     <widgetsContext.Provider
       value={{
         editors,
         viewers,
-        facets
+        facets,
+        lists
       }}
     >
       {children}

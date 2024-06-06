@@ -1,3 +1,4 @@
+import { ReactComponentLike } from 'prop-types'
 import { WidgetItem, WidgetMeta } from './widgets-context'
 
 const coreWidgetMetaItems = import.meta.glob('./*/*/meta.ts', { eager: true })
@@ -7,10 +8,12 @@ export const coreWidgets: {
   editors: WidgetItem[]
   viewers: WidgetItem[]
   facets: WidgetItem[]
+  lists: WidgetItem[]
 } = {
   editors: [],
   viewers: [],
-  facets: []
+  facets: [],
+  lists: []
 }
 
 for (const [path, coreWidgetMeta] of Object.entries(coreWidgetMetaItems)) {
@@ -24,6 +27,6 @@ for (const [path, coreWidgetMeta] of Object.entries(coreWidgetMetaItems)) {
 
   coreWidgets[type as keyof typeof coreWidgets].push({
     meta: coreWidgetMeta as WidgetMeta,
-    Component: componentItem[1]
+    Component: componentItem[1] as () => Promise<{ default: ReactComponentLike }>
   })
 }
