@@ -18,5 +18,21 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       shapes={new URL('/shapes/contact.ttl', location.origin)}
       targetClass={schema('Person')}
     />
+
+    <h3>SHACL inline edit</h3>
+    <ShaclRenderer
+      mode="inline-edit"
+      data={new URL('/john.ttl', location.origin)}
+      shapes={new URL('/shapes/contact.ttl', location.origin)}
+      targetClass={schema('Person')}
+    />
+
+    <h3>SHACL facets</h3>
+    <ShaclRenderer
+      mode="facet"
+      facetSearchData={new URL('/people.ttl', location.origin)}
+      shapes={new URL('/shapes/contact.ttl', location.origin)}
+      targetClass={schema('Person')}
+    />
   </>
 )

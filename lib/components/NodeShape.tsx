@@ -11,15 +11,23 @@ import PropertyShape from './PropertyShape'
 export type NodeShapeProps = {
   shapePointer?: GrapoiPointer
   dataPointer?: GrapoiPointer
+  facetSearchDataPointer?: GrapoiPointer
 }
 
 export default function NodeShape({
   shapePointer: specificShapePointer,
-  dataPointer: specificDataPointer
+  dataPointer: specificDataPointer,
+  facetSearchDataPointer: specificFacetSearchDataPointer
 }: NodeShapeProps) {
-  const { shapes, shapePointer: mainShapePointer, dataPointer: mainDataPointer } = use(mainContext)
+  const {
+    shapes,
+    shapePointer: mainShapePointer,
+    dataPointer: mainDataPointer,
+    facetSearchDataPointer: mainFacetSearchDataPointer
+  } = use(mainContext)
   const shapePointer = specificShapePointer ?? mainShapePointer
   const nodeDataPointer = specificDataPointer ?? mainDataPointer
+  const facetSearchDataPointer = specificFacetSearchDataPointer ?? mainFacetSearchDataPointer
 
   const [{ properties }] = useState(() => {
     const pointer = grapoi({ dataset: shapes, factory })
@@ -47,11 +55,22 @@ export default function NodeShape({
   return (
     <div className="node" data-term={shapePointer.term.value}>
       {properties.withoutGroups.map(property => (
-        <PropertyShape nodeDataPointer={nodeDataPointer} key={property.term.value} property={property} />
+        <PropertyShape
+          facetSearchDataPointer={facetSearchDataPointer}
+          nodeDataPointer={nodeDataPointer}
+          key={property.term.value}
+          property={property}
+        />
       ))}
 
       {properties.withGroups.map(({ group, properties }) => (
-        <PropertyGroup nodeDataPointer={nodeDataPointer} group={group} key={group.term.value} properties={properties} />
+        <PropertyGroup
+          facetSearchDataPointer={facetSearchDataPointer}
+          nodeDataPointer={nodeDataPointer}
+          group={group}
+          key={group.term.value}
+          properties={properties}
+        />
       ))}
     </div>
   )

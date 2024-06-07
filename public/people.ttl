@@ -1,0 +1,34 @@
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<john>
+  a schema:Person ;
+  schema:givenName "John", "Peter", "Frank" ;
+  schema:familyName "Doe" ;
+  schema:name "John Doe" ;
+  schema:child "Anna", "Lisa", "John jr" ;
+  schema:birthDate "1947-01-14"^^xsd:date ;
+
+  schema:householdMembers 6 ;
+
+  schema:address [
+    schema:streetAddress "Wagramer Strasse 5" ;
+    schema:postalCode "1220" ;
+    schema:addressRegion "Wien" ;
+    schema:addressLocality "Wien" ;
+    schema:addressCountry "Austria" ;
+  ] .
+
+
+<edward>
+  a schema:Person ;
+  schema:givenName "Edward" ;
+  schema:familyName "Doe" ;
+  schema:name "Edward Doe" .
+
+
+<lisa>
+  a schema:Person ;
+  schema:givenName "Lisa" ;
+  schema:familyName "Baker" ;
+  schema:name "lisa Baker" .

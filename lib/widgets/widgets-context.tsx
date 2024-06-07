@@ -9,10 +9,9 @@ export type WidgetItem = {
 }
 
 export type WidgetMeta = {
-  score: (data: GrapoiPointer, property: GrapoiPointer) => number
-  createTerm: () => Term
+  score?: (data: GrapoiPointer, property: GrapoiPointer) => number
+  createTerm?: () => Term
   iri: NamedNode
-  listWrapper?: (items: ReactNode[]) => ReactNode
 }
 
 type WidgetsContext = {
@@ -23,6 +22,7 @@ type WidgetsContext = {
 }
 
 export type WidgetProps = {
+  searchData: GrapoiPointer
   term: Term
   setTerm: (term: Term) => void
 }

@@ -3,19 +3,21 @@ import { Suspense, use } from 'react'
 import parsePath from 'shacl-engine/lib/parsePath'
 import { Settings, mainContext } from '../core/main-context'
 import { sh } from '../core/namespaces'
-import PropertyShapeEditMode from './PropertyShapeEditMode'
-import PropertyShapeFacetMode from './PropertyShapeFacetMode'
-import PropertyShapeInlineEditMode from './PropertyShapeInlineEditMode'
-import PropertyShapeViewMode from './PropertyShapeViewMode'
+import PropertyShapeEditMode from './EditMode/PropertyShapeEditMode'
+import PropertyShapeFacetMode from './FacetMode/PropertyShapeFacetMode'
+import PropertyShapeInlineEditMode from './InlineEditMode/PropertyShapeInlineEditMode'
+import PropertyShapeViewMode from './ViewMode/PropertyShapeViewMode'
 
 type PropertyShapeProps = {
   property: GrapoiPointer
   nodeDataPointer: GrapoiPointer
+  facetSearchDataPointer: GrapoiPointer
 }
 
 export type PropertyShapeInnerProps = {
   property: GrapoiPointer
   data: GrapoiPointer
+  facetSearchData: GrapoiPointer
 }
 
 const modes: Record<Settings['mode'], ReactComponentLike> = {
@@ -25,16 +27,21 @@ const modes: Record<Settings['mode'], ReactComponentLike> = {
   'inline-edit': PropertyShapeInlineEditMode
 }
 
-export default function PropertyShape({ property, nodeDataPointer }: PropertyShapeProps) {
+export default function PropertyShape({ property, nodeDataPointer, facetSearchDataPointer }: PropertyShapeProps) {
   const { mode } = use(mainContext)
   const path = parsePath(property.out(sh('path')))
   const dataPointer = nodeDataPointer.executeAll(path)
+  const facetSearchData = facetSearchDataPointer.executeAll(path)
   const PropertyShapeInner = modes[mode]
+
+  if (!dataPointer.term) {
+    // console.log(dataPointer)
+  }
 
   return (
     <div className="property" data-term={property.term.value}>
       <Suspense>
-        <PropertyShapeInner data={dataPointer} property={property} />
+        <PropertyShapeInner facetSearchData={facetSearchData} data={dataPointer} property={property} />
       </Suspense>
     </div>
   )

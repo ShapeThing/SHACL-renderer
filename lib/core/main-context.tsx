@@ -1,44 +1,45 @@
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
-import DatasetCoreConstructor from '@rdfjs/dataset/DatasetCore'
-import rdfFetch from '@rdfjs/fetch'
-import { DatasetResponse } from '@rdfjs/fetch-lite'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
-import { Parser } from 'n3'
 import { ReactNode, createContext, use } from 'react'
+import { resolveRdfInput } from '../helpers/resolveRdfInput'
 import { rdf, sh } from './namespaces'
 
 export type MainContextInput = {
   shapes: URL | DatasetCore | string
   data?: URL | DatasetCore | string
+  facetSearchData?: URL | DatasetCore | string
   subject?: NamedNode | BlankNode
   targetClass?: NamedNode
 } & Settings
 
 export type Settings = {
-  showAdditionalPropertiesInOpenNodes?: boolean
   mode: 'edit' | 'facet' | 'view' | 'inline-edit'
 }
 
 type MainContext = {
   shapes: DatasetCore
   data: DatasetCore
+  facetSearchData: DatasetCore
   subject: NamedNode | BlankNode
   targetClass?: NamedNode
   shapePointer: GrapoiPointer
   shapePointers: GrapoiPointer
   dataPointer: GrapoiPointer
+  facetSearchDataPointer: GrapoiPointer
 } & Settings
 
 export const mainContext = createContext<MainContext>({
   shapes: datasetFactory.dataset(),
   data: datasetFactory.dataset(),
+  facetSearchData: datasetFactory.dataset(),
   subject: factory.blankNode(),
   targetClass: undefined,
   shapePointer: undefined as unknown as GrapoiPointer,
   shapePointers: undefined as unknown as GrapoiPointer,
   dataPointer: undefined as unknown as GrapoiPointer,
+  facetSearchDataPointer: undefined as unknown as GrapoiPointer,
   mode: 'edit'
 })
 
@@ -47,34 +48,18 @@ type MainContextProviderProps = {
   contextPromise: Promise<MainContext>
 }
 
-export const resolveRdfInput = async (input: URL | DatasetCore | string): Promise<DatasetCore> => {
-  if (input instanceof URL) {
-    const response = (await rdfFetch(input)) as DatasetResponse<DatasetCore>
-    return response.dataset()
-  }
-
-  if (input instanceof DatasetCoreConstructor) return input
-
-  if (typeof input === 'string') {
-    const parser = new Parser()
-    const quads = await parser.parse(input)
-    return datasetFactory.dataset(quads)
-  }
-
-  throw new Error('Unexpected type of data')
-}
-
 export const initContext = async ({
   shapes,
   data,
+  facetSearchData,
   subject,
-  targetClass,
+  targetClass: givenTargetClass,
   ...settings
 }: MainContextInput): Promise<MainContext> => {
   const resolvedShapes = await resolveRdfInput(shapes)
   const rootShapePointer = grapoi({ dataset: resolvedShapes, factory })
   let shapePointers = rootShapePointer.hasOut(rdf('type'), sh('NodeShape'))
-  if (targetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), targetClass)
+  if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
   const dataset = data ? await resolveRdfInput(data) : datasetFactory.dataset()
   if (!subject) {
     const firstQuad = [...dataset]?.[0]
@@ -86,14 +71,22 @@ export const initContext = async ({
   }
   const dataPointer = grapoi({ dataset, factory, term: subject })
 
+  const shapePointer = [...shapePointers].at(0)!
+  const targetClass = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
+
+  const facetSearchDataset = facetSearchData ? await resolveRdfInput(facetSearchData) : datasetFactory.dataset()
+  const facetSearchDataPointer = grapoi({ dataset: facetSearchDataset, factory }).hasOut(rdf('type'), targetClass)
+
   return {
     shapes: resolvedShapes,
     data: dataset,
     dataPointer,
     subject,
     targetClass,
-    shapePointer: [...shapePointers].at(0)!,
+    facetSearchData: facetSearchDataset,
+    shapePointer,
     shapePointers,
+    facetSearchDataPointer,
     ...settings
   }
 }

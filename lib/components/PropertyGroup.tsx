@@ -4,13 +4,24 @@ type PropertyGroupProps = {
   group: GrapoiPointer
   properties: GrapoiPointer[]
   nodeDataPointer: GrapoiPointer
+  facetSearchDataPointer: GrapoiPointer
 }
 
-export default function PropertyGroup({ group, nodeDataPointer, properties }: PropertyGroupProps) {
+export default function PropertyGroup({
+  group,
+  nodeDataPointer,
+  properties,
+  facetSearchDataPointer
+}: PropertyGroupProps) {
   return (
     <div className="group" data-term={group.term.value}>
       {properties.map(property => (
-        <PropertyShape nodeDataPointer={nodeDataPointer} key={property.term.value} property={property} />
+        <PropertyShape
+          facetSearchDataPointer={facetSearchDataPointer}
+          nodeDataPointer={nodeDataPointer}
+          key={property.term.value}
+          property={property}
+        />
       ))}
     </div>
   )

@@ -7,7 +7,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "inspect": "npx vite-bundle-visualizer -o stats.html"
   },
   "dependencies": {
     "@rdfjs/data-model": "^2.0.2",

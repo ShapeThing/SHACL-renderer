@@ -1,10 +1,10 @@
 import { use, useState } from 'react'
-import { scoreWidgets } from '../core/scoreWidgets'
-import { resolveWidgetComponent } from '../helpers/resolveWidgetComponent'
-import { wrapWithList } from '../helpers/wrapWithList'
-import { widgetsContext } from '../widgets/widgets-context'
-import PropertyElement from './PropertyElement'
-import { PropertyShapeInnerProps } from './PropertyShape'
+import { scoreWidgets } from '../../core/scoreWidgets'
+import { resolveWidgetComponent } from '../../helpers/resolveWidgetComponent'
+import { wrapWithList } from '../../helpers/wrapWithList'
+import { widgetsContext } from '../../widgets/widgets-context'
+import PropertyElement from '../PropertyElement'
+import { PropertyShapeInnerProps } from '../PropertyShape'
 
 export default function PropertyShapeViewMode({ data, property }: PropertyShapeInnerProps) {
   const { viewers } = use(widgetsContext)
