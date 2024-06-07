@@ -30,12 +30,17 @@ const modes: Record<Settings['mode'], ReactComponentLike> = {
 export default function PropertyShape({ property, nodeDataPointer, facetSearchDataPointer }: PropertyShapeProps) {
   const { mode } = use(mainContext)
   const path = parsePath(property.out(sh('path')))
-  const dataPointer = nodeDataPointer.executeAll(path)
+  let dataPointer = nodeDataPointer.executeAll(path)
   const facetSearchData = facetSearchDataPointer.executeAll(path)
   const PropertyShapeInner = modes[mode]
 
   if (!dataPointer.term) {
     // console.log(dataPointer)
+  }
+
+  if (mode === 'facet') {
+    const predicate = property.out(sh('path')).term
+    dataPointer = nodeDataPointer.out(sh('property')).distinct().hasOut(sh('path'), predicate)
   }
 
   return (

@@ -3,6 +3,7 @@ import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { ReactNode, createContext, use } from 'react'
+import { getShapeSkeleton } from '../helpers/getShapeSkeleton'
 import { resolveRdfInput } from '../helpers/resolveRdfInput'
 import { rdf, sh } from './namespaces'
 
@@ -54,13 +55,15 @@ export const initContext = async ({
   facetSearchData,
   subject,
   targetClass: givenTargetClass,
+  mode,
   ...settings
 }: MainContextInput): Promise<MainContext> => {
   const resolvedShapes = await resolveRdfInput(shapes)
   const rootShapePointer = grapoi({ dataset: resolvedShapes, factory })
   let shapePointers = rootShapePointer.hasOut(rdf('type'), sh('NodeShape'))
   if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
-  const dataset = data ? await resolveRdfInput(data) : datasetFactory.dataset()
+  let dataset = data ? await resolveRdfInput(data) : datasetFactory.dataset()
+
   if (!subject) {
     const firstQuad = [...dataset]?.[0]
     if (firstQuad) {
@@ -69,13 +72,21 @@ export const initContext = async ({
       subject = factory.blankNode()
     }
   }
-  const dataPointer = grapoi({ dataset, factory, term: subject })
 
   const shapePointer = [...shapePointers].at(0)!
   const targetClass = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
 
+  let dataPointer = grapoi({ dataset, factory, term: subject })
+
+  // This is only for facets, it contains a dataset that we will filter through.
   const facetSearchDataset = facetSearchData ? await resolveRdfInput(facetSearchData) : datasetFactory.dataset()
   const facetSearchDataPointer = grapoi({ dataset: facetSearchDataset, factory }).hasOut(rdf('type'), targetClass)
+
+  if (mode === 'facet') {
+    // Extract the bare essentials for a shape so that facets can run and add their filters to it.
+    dataset = getShapeSkeleton(shapePointer)
+    dataPointer = grapoi({ dataset, factory, term: shapePointer.term })
+  }
 
   return {
     shapes: resolvedShapes,
@@ -87,6 +98,7 @@ export const initContext = async ({
     shapePointer,
     shapePointers,
     facetSearchDataPointer,
+    mode,
     ...settings
   }
 }

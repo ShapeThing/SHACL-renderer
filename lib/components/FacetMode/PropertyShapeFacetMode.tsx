@@ -13,7 +13,7 @@ export default function PropertyShapeFacetMode({ data, property, facetSearchData
 
   return (
     <PropertyElement showColon property={property}>
-      <Facet key={property.term.value} searchData={facetSearchData} term={data.term} />
+      <Facet key={property.term.value} searchData={facetSearchData} data={data} term={data.term} />
     </PropertyElement>
   )
 }
