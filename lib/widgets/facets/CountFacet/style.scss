@@ -1,0 +1,181 @@
+.multi-range-slider {
+  display: flex;
+  position: relative;
+  padding: 20px 10px;
+  flex-direction: column;
+  user-select: none;
+
+  * {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .bar {
+    display: flex;
+    background-color: ButtonFace;
+    border-radius: 10px;
+    border: 1px solid ButtonText;
+  }
+
+  .bar-left {
+    width: 25%;
+    padding: 3px 0px;
+  }
+
+  .bar-right {
+    width: 25%;
+  }
+
+  .bar-inner {
+    background-color: green;
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 1;
+    justify-content: space-between;
+    position: relative;
+    justify-content: space-between;
+  }
+
+  .bar-inner-left,
+  .bar-inner-right {
+    width: 50%;
+  }
+
+  .thumb {
+    background-color: black;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      background-color: inherit;
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border: solid 2px white;
+      box-shadow: 0 0 5px rgba(black, 0.4);
+      border-radius: 50%;
+      z-index: 1;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+    }
+  }
+
+  .input-type-range:focus + .thumb::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -7px;
+    width: 11px;
+    height: 11px;
+    z-index: 2;
+    border-radius: 50%;
+    border: dotted 1px black;
+  }
+
+  .caption {
+    position: absolute;
+    bottom: 35px;
+    width: 2px;
+    height: 2px;
+    left: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+    display: none;
+
+    * {
+      position: absolute;
+      min-width: 30px;
+      height: 30px;
+      font-size: 75%;
+      text-align: center;
+      line-height: 30px;
+      background-color: AccentColor;
+      border-radius: 15px;
+      color: white;
+      padding: 0px 5px;
+      white-space: nowrap;
+    }
+  }
+
+  .thumb:active .caption {
+    display: flex;
+  }
+
+  .input-type-range:focus + .thumb .caption {
+    display: flex;
+  }
+
+  .input-type-range {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .ruler {
+    display: flex;
+    overflow: hidden;
+    position: absolute;
+    width: calc(100% - 20px);
+    top: 20px;
+
+    .ruler-rule {
+      border-left: solid 1px gray;
+      display: flex;
+      flex-grow: 1;
+      flex-shrink: 1;
+      padding: 3px 0px;
+
+      &:first-child {
+        border-left: none;
+      }
+    }
+
+    .ruler-sub-rule {
+      border-left: solid 1px ButtonText;
+      /* border-bottom: solid 1px; */
+      display: flex;
+      flex-grow: 1;
+      flex-shrink: 1;
+      padding: 3px 0px;
+      bottom: 0px;
+      margin-bottom: -5px;
+    }
+
+    .ruler-sub-rule:first-child {
+      border-left: none;
+    }
+  }
+
+  .labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px;
+    margin-top: 10px;
+    margin-bottom: -20px;
+    /* display: none; */
+  }
+
+  .label {
+    font-size: 80%;
+    display: flex;
+    width: 1px;
+    justify-content: center;
+
+    &:first-child {
+      justify-content: start;
+    }
+
+    &:last-child {
+      justify-content: end;
+    }
+  }
+}

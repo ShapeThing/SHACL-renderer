@@ -46,7 +46,12 @@ export default function PropertyShape({ property, nodeDataPointer, facetSearchDa
   return (
     <div className="property" data-term={property.term.value}>
       <Suspense>
-        <PropertyShapeInner facetSearchData={facetSearchData} data={dataPointer} property={property} />
+        <PropertyShapeInner
+          key={property.term?.value + dataPointer.term?.value}
+          facetSearchData={facetSearchData}
+          data={dataPointer}
+          property={property}
+        />
       </Suspense>
     </div>
   )

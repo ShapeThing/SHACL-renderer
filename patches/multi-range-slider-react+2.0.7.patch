@@ -1,0 +1,15 @@
+diff --git a/node_modules/multi-range-slider-react/lib/multirangeslider.js b/node_modules/multi-range-slider-react/lib/multirangeslider.js
+index 708a25a..d583f7a 100644
+--- a/node_modules/multi-range-slider-react/lib/multirangeslider.js
++++ b/node_modules/multi-range-slider-react/lib/multirangeslider.js
+@@ -20,8 +20,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ const react_1 = __importStar(require("react"));
+-require("./multirangeslider.css");
+-require("./multirangesliderblack.css");
++// require("./multirangeslider.css");
++// require("./multirangesliderblack.css");
+ let _wheelTimeout = null;
+ let _triggerTimeout = null;
+ const MultiRangeSlider = (props, ref) => {

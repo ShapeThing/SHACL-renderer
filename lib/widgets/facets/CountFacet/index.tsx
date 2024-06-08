@@ -1,8 +1,23 @@
-import factory from '@rdfjs/data-model'
+import MultiRangeSlider from 'multi-range-slider-react'
+import { quadsToCounts } from '../../../helpers/quadsToCounts'
 import { WidgetProps } from '../../widgets-context'
+import './style.scss'
 
-export default function CountFacet({ term, setTerm, searchData, data }: WidgetProps) {
-  console.log(searchData)
+export default function CountFacet({ searchData }: WidgetProps) {
+  const counts = quadsToCounts(searchData.quads(), 'subject')
+  const max = Math.max(...counts.values())
 
-  return <input className="" value={term?.value} onChange={event => setTerm(factory.literal(event.target.value))} />
+  return (
+    <MultiRangeSlider
+      min={0}
+      max={max}
+      canMinMaxValueSame={true}
+      minValue={0}
+      maxValue={max}
+      step={1}
+      // disabled={true}
+      onInput={e => {}}
+      onChange={e => {}}
+    ></MultiRangeSlider>
+  )
 }

@@ -1,6 +1,20 @@
+import { NamedNode } from '@rdfjs/types'
 import { WidgetItem } from '../widgets/widgets-context'
 
-export const scoreWidgets = (widgets: Array<WidgetItem>, data: GrapoiPointer, property: GrapoiPointer) => {
+export const scoreWidgets = (
+  widgets: Array<WidgetItem>,
+  data: GrapoiPointer,
+  property: GrapoiPointer,
+  predicate?: NamedNode
+) => {
+  if (predicate) {
+    const selectedWidgetIri = property.out(predicate).term
+    if (selectedWidgetIri) {
+      const selectedWidget = widgets.find(widget => widget.meta.iri.equals(selectedWidgetIri))
+      if (selectedWidget) return selectedWidget
+    }
+  }
+
   const widgetMatches = widgets
     .map(widgetItem => {
       const score = widgetItem.meta.score ? widgetItem.meta.score(data, property) : -1
