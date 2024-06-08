@@ -15,9 +15,6 @@ export default function CountFacet({ searchData }: WidgetProps) {
       minValue={0}
       maxValue={max}
       step={1}
-      // disabled={true}
-      onInput={e => {}}
-      onChange={e => {}}
     ></MultiRangeSlider>
   )
 }

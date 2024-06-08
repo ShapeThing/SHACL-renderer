@@ -1,7 +1,7 @@
 import factory from '@rdfjs/data-model'
 import { WidgetProps } from '../../widgets-context'
 
-export default function TextFieldFacet({ term, setTerm }: WidgetProps) {
+export default function DateFacet({ term, setTerm }: WidgetProps) {
   return (
     <>
       <input

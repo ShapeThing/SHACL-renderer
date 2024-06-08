@@ -1,6 +1,6 @@
 import factory from '@rdfjs/data-model'
 import grapoi from 'grapoi'
-import { use, useState } from 'react'
+import { ReactNode, use, useState } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import { nonNullable } from '../helpers/nonNullable'
@@ -34,44 +34,53 @@ export default function NodeShape({
     const properties = shapePointer.out(sh('property'))
     const propertiesWithGroups = properties.filter(pointer => pointer.out(sh('group')).term)
     const groups = [...pointer.hasOut(rdf('type'), sh('PropertyGroup'))].sort(sortShaclItems)
-    const propertiesWithoutGroups = [...properties.filter(pointer => !pointer.out(sh('group')).term)].sort(
-      sortShaclItems
-    )
 
-    return {
-      pointer,
-      properties: {
-        withoutGroups: propertiesWithoutGroups,
-        withGroups: groups
-          .map(group => {
-            const groupProperties = [...propertiesWithGroups.hasOut(sh('group'), group.term)].sort(sortShaclItems)
-            return groupProperties.length ? { group, properties: groupProperties } : null
-          })
-          .filter(nonNullable)
-      }
-    }
-  })
+    const sortablePropertyWithGroups: [number, ReactNode][] = groups
+      .map(group => {
+        const groupProperties = [...propertiesWithGroups.hasOut(sh('group'), group.term)]
+        return groupProperties.length ? { group, properties: groupProperties } : null
+      })
+      .filter(nonNullable)
+      .map(({ group, properties }) => {
+        return [
+          parseInt(group.out(sh('order')).value as string) ?? 0,
+          <PropertyGroup
+            facetSearchDataPointer={facetSearchDataPointer}
+            nodeDataPointer={nodeDataPointer}
+            group={group}
+            key={group.term.value}
+            properties={properties}
+          />
+        ]
+      })
 
-  return (
-    <div className="node" data-term={shapePointer.term.value}>
-      {properties.withoutGroups.map(property => (
+    const sortablePropertyWithoutGroups: [number, ReactNode][] = [
+      ...properties.filter(pointer => !pointer.out(sh('group')).term)
+    ].map(property => {
+      return [
+        parseInt(property.out(sh('order')).value as string) ?? 0,
         <PropertyShape
           facetSearchDataPointer={facetSearchDataPointer}
           nodeDataPointer={nodeDataPointer}
           key={property.term.value}
           property={property}
         />
-      ))}
+      ]
+    })
 
-      {properties.withGroups.map(({ group, properties }) => (
-        <PropertyGroup
-          facetSearchDataPointer={facetSearchDataPointer}
-          nodeDataPointer={nodeDataPointer}
-          group={group}
-          key={group.term.value}
-          properties={properties}
-        />
-      ))}
+    const sorted: [number, ReactNode][] = [...sortablePropertyWithGroups, ...sortablePropertyWithoutGroups].sort(
+      (a, b) => a[0] - b[0]
+    )
+
+    return {
+      pointer,
+      properties: sorted
+    }
+  })
+
+  return (
+    <div className="node" data-term={shapePointer.term.value}>
+      {properties.map(([_order, element]) => element)}
     </div>
   )
 }

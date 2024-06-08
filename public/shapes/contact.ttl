@@ -32,6 +32,7 @@
   sh:property [
     sh:name "Children"@en ;
     sh:path schema:child ;
+    sh:order 3 ;
     sh:datatype xsd:string ;
     stf:facet stf:CountFacet ;
     stsr:listType stsr:NaturalLanguageList ;
@@ -40,6 +41,7 @@
   sh:property [
     sh:name "Date of birth"@en ;
     sh:path schema:birthDate ;
+    sh:order 2 ;
     sh:editor dash:DatePickerEditor ;
     sh:maxCount 1;
     sh:datatype xsd:date ;
@@ -47,6 +49,7 @@
 
   sh:property [
     sh:name "Address"@en ;
+    sh:order 4 ;
     sh:path schema:address ;
     sh:maxCount 1 ;
     sh:node <#addressShape> ;
@@ -56,11 +59,11 @@
 
 <#name>
 	a sh:PropertyGroup ;
-	sh:order 0 .
+	sh:order 1 .
 
 <#address>
 	a sh:PropertyGroup ;
-	sh:order 1 .
+	sh:order 2 .
 
 
 <#addressShape>
