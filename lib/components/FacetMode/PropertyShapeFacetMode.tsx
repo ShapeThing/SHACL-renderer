@@ -1,8 +1,12 @@
 import { getWidget } from '../../core/getWidget'
+import { stf, stsr } from '../../core/namespaces'
 import PropertyElement from '../PropertyElement'
 import { PropertyShapeInnerProps } from '../PropertyShape'
 
 export default function PropertyShapeFacetMode({ data, property, facetSearchData }: PropertyShapeInnerProps) {
+  const selectedWidgetIri = property.out(stf('facet')).term
+  if (selectedWidgetIri?.equals(stsr('HideWidget'))) return null
+
   const Facet = getWidget('facets', property, facetSearchData)
 
   return Facet ? (

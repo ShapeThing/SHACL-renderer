@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react'
+import { dash, stsr } from '../../core/namespaces'
 import PropertyElement from '../PropertyElement'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
 
@@ -9,6 +10,9 @@ type PropertyShapeEditModeProps = {
 
 export default function PropertyShapeEditMode({ data, property }: PropertyShapeEditModeProps) {
   const items = data
+
+  const selectedWidgetIri = property.out(dash('editor')).term
+  if (selectedWidgetIri?.equals(stsr('HideWidget'))) return null
 
   return (
     <PropertyElement property={property}>

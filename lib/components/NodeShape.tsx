@@ -22,7 +22,8 @@ export default function NodeShape({
     shapes,
     shapePointer: mainShapePointer,
     dataPointer: mainDataPointer,
-    facetSearchDataPointer: mainFacetSearchDataPointer
+    facetSearchDataPointer: mainFacetSearchDataPointer,
+    mode
   } = use(mainContext)
   const shapePointer = specificShapePointer ?? mainShapePointer
   const nodeDataPointer = specificDataPointer ?? mainDataPointer
@@ -73,7 +74,7 @@ export default function NodeShape({
   })
 
   return (
-    <div className="node" data-term={shapePointer.term.value}>
+    <div className="node" data-mode={mode} data-term={shapePointer.term.value}>
       {elements}
     </div>
   )

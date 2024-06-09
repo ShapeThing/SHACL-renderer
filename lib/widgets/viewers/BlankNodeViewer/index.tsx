@@ -1,6 +1,7 @@
 import NodeShape from '../../../components/NodeShape'
 import { sh } from '../../../core/namespaces'
 import { WidgetProps } from '../../widgets-context'
+import './style.scss'
 
 export default function BlankNodeViewer({ data, property }: WidgetProps) {
   const node = property.out(sh('node')).term

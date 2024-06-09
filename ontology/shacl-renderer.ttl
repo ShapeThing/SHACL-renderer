@@ -7,5 +7,8 @@
 <CommaList> a rdfs:Class .
 <UnorderedList> a rdfs:Class .
 
+# Use this widget if widget must be skipped for a certain mode (eg. Viewer / Editor)
+<HideWidget> a rdfs:Class .
+
 <listType> a rdf:Property .
 <facet> a rdf:Property .

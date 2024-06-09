@@ -55,6 +55,26 @@
     sh:node <#addressShape> ;
     sh:nodeKind sh:BlankNode ;
   ];
+
+  # This field is hidden for viewing and editing.
+  # In facet mode it renders a search field for the predicates: 
+  #   schema:givenName 
+  #   schema:familyName 
+  #   schema:child
+  sh:property [
+    sh:name "Search"@en ;
+    sh:path [ sh:alternativePath ( 
+      schema:givenName 
+      schema:familyName 
+      schema:child 
+    ) ] ;
+    sh:datatype xsd:string ;
+    sh:order 0 ;
+    dash:viewer stsr:HideWidget ;
+    dash:editor stsr:HideWidget ;
+    stf:facet stf:TextFieldFacet ;
+  ];
+
 .
 
 <#name>

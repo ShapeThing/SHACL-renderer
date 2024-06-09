@@ -1,9 +1,13 @@
 import { getWidget } from '../../core/getWidget'
+import { dash, stsr } from '../../core/namespaces'
 import { wrapWithList } from '../../helpers/wrapWithList'
 import PropertyElement from '../PropertyElement'
 import { PropertyShapeInnerProps } from '../PropertyShape'
 
 export default function PropertyShapeViewMode({ data, property }: PropertyShapeInnerProps) {
+  const selectedWidgetIri = property.out(dash('viewer')).term
+  if (selectedWidgetIri?.equals(stsr('HideWidget'))) return null
+
   return (
     <PropertyElement showColon property={property}>
       {wrapWithList(
