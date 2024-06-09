@@ -4,7 +4,6 @@ import { ReactNode, use, useState } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import { nonNullable } from '../helpers/nonNullable'
-import { sortShaclItems } from '../helpers/sortShaclItems'
 import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
 
@@ -29,11 +28,11 @@ export default function NodeShape({
   const nodeDataPointer = specificDataPointer ?? mainDataPointer
   const facetSearchDataPointer = specificFacetSearchDataPointer ?? mainFacetSearchDataPointer
 
-  const [{ properties }] = useState(() => {
+  const [elements] = useState(() => {
     const pointer = grapoi({ dataset: shapes, factory })
     const properties = shapePointer.out(sh('property'))
     const propertiesWithGroups = properties.filter(pointer => pointer.out(sh('group')).term)
-    const groups = [...pointer.hasOut(rdf('type'), sh('PropertyGroup'))].sort(sortShaclItems)
+    const groups = [...pointer.hasOut(rdf('type'), sh('PropertyGroup'))]
 
     const sortablePropertyWithGroups: [number, ReactNode][] = groups
       .map(group => {
@@ -68,19 +67,14 @@ export default function NodeShape({
       ]
     })
 
-    const sorted: [number, ReactNode][] = [...sortablePropertyWithGroups, ...sortablePropertyWithoutGroups].sort(
-      (a, b) => a[0] - b[0]
-    )
-
-    return {
-      pointer,
-      properties: sorted
-    }
+    return [...sortablePropertyWithGroups, ...sortablePropertyWithoutGroups]
+      .sort((a, b) => a[0] - b[0])
+      .map(([_order, element]) => element)
   })
 
   return (
     <div className="node" data-term={shapePointer.term.value}>
-      {properties.map(([_order, element]) => element)}
+      {elements}
     </div>
   )
 }
