@@ -23,6 +23,7 @@ type WidgetsContext = {
 
 export type WidgetProps = {
   data: GrapoiPointer
+  property: GrapoiPointer
   searchData: GrapoiPointer
   term: Term
   setTerm: (term: Term) => void

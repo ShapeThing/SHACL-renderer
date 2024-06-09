@@ -12,7 +12,7 @@ export default function PropertyObjectEditMode({ data, property }: PropertyObjec
 
   return Editor ? (
     <Fragment key={data.term.value}>
-      <Editor term={data.term} />
+      <Editor term={data.term} data={data} property={property} />
       <button>
         <Icon icon="iconoir:xmark" />
       </button>

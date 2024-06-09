@@ -27,7 +27,7 @@ export default function PropertyObjectInlineEditMode({ data, property }: Propert
     </Fragment>
   ) : (
     <>
-      <Viewer term={data.term} />
+      <Viewer term={data.term} data={data} property={property} />
       <button onClick={() => setMode(mode === 'view' ? 'edit' : 'view')}>
         <Icon icon="iconoir:edit-pencil" />
       </button>
