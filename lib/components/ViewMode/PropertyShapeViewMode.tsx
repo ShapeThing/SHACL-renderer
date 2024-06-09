@@ -1,4 +1,4 @@
-import { getWidget } from '../../helpers/getWidget'
+import { getWidget } from '../../core/getWidget'
 import { wrapWithList } from '../../helpers/wrapWithList'
 import PropertyElement from '../PropertyElement'
 import { PropertyShapeInnerProps } from '../PropertyShape'

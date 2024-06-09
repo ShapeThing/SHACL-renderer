@@ -1,5 +1,5 @@
 import datasetFactory from '@rdfjs/dataset'
-import { sh } from '../core/namespaces'
+import { sh } from './namespaces'
 
 export const getShapeSkeleton = (shape: GrapoiPointer) => {
   const predicateWhiteList = [sh('path'), sh('property'), sh('targetClass')]

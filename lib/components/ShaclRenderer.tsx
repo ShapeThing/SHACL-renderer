@@ -1,6 +1,8 @@
+import '@fontsource/roboto/latin-400.css'
 import { Suspense, useState } from 'react'
 import { MainContextInput, MainContextProvider, initContext } from '../core/main-context'
 import { validationContext } from '../core/validation-context'
+import '../scss/style.scss'
 import NodeShape from './NodeShape'
 export * from '../core/namespaces'
 

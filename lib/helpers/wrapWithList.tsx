@@ -1,8 +1,8 @@
 import { ReactNode, use } from 'react'
 import { stsr } from '../core/namespaces'
+import { resolveWidgetComponent } from '../core/resolveWidgetComponent'
 import CommaList from '../widgets/lists/CommaList'
 import { widgetsContext } from '../widgets/widgets-context'
-import { resolveWidgetComponent } from './resolveWidgetComponent'
 
 export const wrapWithList = (items: ReactNode[], property: GrapoiPointer) => {
   const { lists } = use(widgetsContext)

@@ -1,15 +1,21 @@
-import { getWidget } from '../../helpers/getWidget'
-import { PropertyShapeInnerProps } from '../PropertyShape'
+import { Icon } from '@iconify/react'
+import { Fragment } from 'react/jsx-runtime'
+import { getWidget } from '../../core/getWidget'
 
-type PropertyObjectEditModeProps = PropertyShapeInnerProps
+type PropertyObjectEditModeProps = {
+  property: GrapoiPointer
+  data: GrapoiPointer
+}
 
 export default function PropertyObjectEditMode({ data, property }: PropertyObjectEditModeProps) {
   const Editor = getWidget('editors', property, data)
 
   return Editor ? (
-    <div key={data.term.value}>
+    <Fragment key={data.term.value}>
       <Editor term={data.term} />
-      <button>x</button>
-    </div>
+      <button>
+        <Icon icon="iconoir:xmark" />
+      </button>
+    </Fragment>
   ) : null
 }

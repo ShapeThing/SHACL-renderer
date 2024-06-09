@@ -3,9 +3,9 @@ import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { ReactNode, createContext, use } from 'react'
-import { getShapeSkeleton } from '../helpers/getShapeSkeleton'
-import { resolveRdfInput } from '../helpers/resolveRdfInput'
+import { getShapeSkeleton } from './getShapeSkeleton'
 import { rdf, sh } from './namespaces'
+import { resolveRdfInput } from './resolveRdfInput'
 
 export type MainContextInput = {
   shapes: URL | DatasetCore | string

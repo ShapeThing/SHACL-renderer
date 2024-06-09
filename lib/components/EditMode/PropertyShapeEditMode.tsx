@@ -1,23 +1,28 @@
+import { Icon } from '@iconify/react'
 import PropertyElement from '../PropertyElement'
-import { PropertyShapeInnerProps } from '../PropertyShape'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
 
-export default function PropertyShapeEditMode({ data, property, facetSearchData }: PropertyShapeInnerProps) {
+type PropertyShapeEditModeProps = {
+  property: GrapoiPointer
+  data: GrapoiPointer
+}
+
+export default function PropertyShapeEditMode({ data, property }: PropertyShapeEditModeProps) {
   const items = data
 
   return (
     <PropertyElement property={property}>
       <div className="editors">
         {items.map(item => (
-          <PropertyObjectEditMode
-            facetSearchData={facetSearchData}
-            key={item.term.value}
-            data={item}
-            property={property}
-          />
+          <div key={item.term.value}>
+            <PropertyObjectEditMode data={item} property={property} />
+          </div>
         ))}
       </div>
-      <button>+</button>
+      <button>
+        {' '}
+        <Icon icon="iconoir:plus" />
+      </button>
     </PropertyElement>
   )
 }

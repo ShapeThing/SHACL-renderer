@@ -1,8 +1,8 @@
 import { use, useState } from 'react'
-import { dash, stf } from '../core/namespaces'
-import { scoreWidgets } from '../core/scoreWidgets'
 import { widgetsContext } from '../widgets/widgets-context'
+import { dash, stf } from './namespaces'
 import { resolveWidgetComponent } from './resolveWidgetComponent'
+import { scoreWidgets } from './scoreWidgets'
 
 const widgetPredicates = {
   editors: dash('editor'),
