@@ -23,6 +23,7 @@ type WidgetsContext = {
 
 export type WidgetProps = {
   data: GrapoiPointer
+  setConstraint: (predicate: NamedNode, value: string | number) => void
   property: GrapoiPointer
   searchData: GrapoiPointer
   term: Term

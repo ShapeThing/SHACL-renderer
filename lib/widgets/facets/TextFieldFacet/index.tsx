@@ -1,7 +1,8 @@
-import factory from '@rdfjs/data-model'
+import { sh } from '../../../core/namespaces'
 import { WidgetProps } from '../../widgets-context'
 
-export default function TextFieldFacet({ term, setTerm, searchData }: WidgetProps) {
-  // console.log(searchData.values)
-  return <input className="" value={''} onChange={event => setTerm(factory.literal(event.target.value))} />
+export default function TextFieldFacet({ data, setConstraint }: WidgetProps) {
+  const pattern = data.out(sh('pattern')).value ?? ''
+
+  return <input className="" value={pattern} onChange={event => setConstraint(sh('pattern'), event.target.value)} />
 }

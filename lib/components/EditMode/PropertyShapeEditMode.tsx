@@ -24,7 +24,6 @@ export default function PropertyShapeEditMode({ data, property }: PropertyShapeE
         ))}
       </div>
       <button>
-        {' '}
         <Icon icon="iconoir:plus" />
       </button>
     </PropertyElement>
