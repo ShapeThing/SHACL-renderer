@@ -2,7 +2,7 @@ import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
-import { ReactNode, createContext, useEffect, useState } from 'react'
+import { ReactNode, createContext } from 'react'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import { rdf, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
@@ -19,7 +19,7 @@ export type Settings = {
   mode: 'edit' | 'facet' | 'view' | 'inline-edit'
 }
 
-type MainContext = {
+export type MainContext = {
   shapes: DatasetCore
   data: DatasetCore
   facetSearchData: DatasetCore
@@ -46,7 +46,7 @@ export const mainContext = createContext<MainContext>({
 
 type MainContextProviderProps = {
   children?: ReactNode
-  contextPromise: Promise<MainContext>
+  context: MainContext
 }
 
 export const initContext = async ({
@@ -103,12 +103,6 @@ export const initContext = async ({
   }
 }
 
-export function MainContextProvider({ children, contextPromise }: MainContextProviderProps) {
-  const [context, setContext] = useState<MainContext | undefined>(undefined)
-
-  useEffect(() => {
-    contextPromise.then(context => setContext(context as MainContext))
-  }, [])
-
+export function MainContextProvider({ children, context }: MainContextProviderProps) {
   return context ? <mainContext.Provider value={context}>{children}</mainContext.Provider> : null
 }
