@@ -1,7 +1,7 @@
-import { Icon } from '@iconify/react'
 import { Term } from '@rdfjs/types'
-import { use } from 'react'
+import { useContext } from 'react'
 import { Fragment } from 'react/jsx-runtime'
+import IconXmark from '~icons/iconoir/xmark'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { widgetsContext } from '../../widgets/widgets-context'
 import { dash } from '../ShaclRenderer'
@@ -12,7 +12,7 @@ type PropertyObjectEditModeProps = {
 }
 
 export default function PropertyObjectEditMode({ data, property }: PropertyObjectEditModeProps) {
-  const { editors } = use(widgetsContext)
+  const { editors } = useContext(widgetsContext)
   const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
   if (!widgetItem) return null
 
@@ -22,7 +22,7 @@ export default function PropertyObjectEditMode({ data, property }: PropertyObjec
     <Fragment key={data.term.value}>
       <widgetItem.Component term={data.term} setTerm={setTerm} data={data} property={property} />
       <button>
-        <Icon icon="iconoir:xmark" />
+        <IconXmark />
       </button>
     </Fragment>
   )

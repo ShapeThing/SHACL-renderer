@@ -1,5 +1,5 @@
 import { ReactComponentLike } from 'prop-types'
-import { use } from 'react'
+import { useContext, useMemo } from 'react'
 import parsePath from 'shacl-engine/lib/parsePath'
 import { Settings, mainContext } from '../core/main-context'
 import { sh } from '../core/namespaces'
@@ -28,23 +28,31 @@ const modes: Record<Settings['mode'], ReactComponentLike> = {
 }
 
 export default function PropertyShape({ property, nodeDataPointer, facetSearchDataPointer }: PropertyShapeProps) {
-  const { mode } = use(mainContext)
+  const { mode } = useContext(mainContext)
 
-  console.log(property.term.value)
+  const { PropertyShapeInner, dataPointer, facetSearchData } = useMemo(() => {
+    console.log(property.term.value)
 
-  const path = parsePath(property.out(sh('path')))
-  let dataPointer = nodeDataPointer.executeAll(path)
-  const facetSearchData = facetSearchDataPointer.executeAll(path)
-  const PropertyShapeInner = modes[mode]
+    const path = parsePath(property.out(sh('path')))
+    let dataPointer = nodeDataPointer.executeAll(path)
+    const facetSearchData = facetSearchDataPointer.executeAll(path)
+    const PropertyShapeInner = modes[mode]
 
-  if (!dataPointer.term) {
-    // console.log(dataPointer)
-  }
+    if (!dataPointer.term) {
+      // console.log(dataPointer)
+    }
 
-  if (mode === 'facet') {
-    const predicate = property.out(sh('path')).term
-    dataPointer = nodeDataPointer.out(sh('property')).distinct().hasOut(sh('path'), predicate)
-  }
+    if (mode === 'facet') {
+      const predicate = property.out(sh('path')).term
+      dataPointer = nodeDataPointer.out(sh('property')).distinct().hasOut(sh('path'), predicate)
+    }
+
+    return {
+      PropertyShapeInner,
+      dataPointer,
+      facetSearchData
+    }
+  }, [])
 
   return (
     <PropertyShapeInner

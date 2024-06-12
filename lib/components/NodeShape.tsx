@@ -1,6 +1,6 @@
 import factory from '@rdfjs/data-model'
 import grapoi from 'grapoi'
-import { ReactNode, use, useState } from 'react'
+import { ReactNode, useContext, useMemo } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import { nonNullable } from '../helpers/nonNullable'
@@ -24,13 +24,14 @@ export default function NodeShape({
     dataPointer: mainDataPointer,
     facetSearchDataPointer: mainFacetSearchDataPointer,
     mode
-  } = use(mainContext)
-  const shapePointer = specificShapePointer ?? mainShapePointer
-  const nodeDataPointer = specificDataPointer ?? mainDataPointer
-  const facetSearchDataPointer = specificFacetSearchDataPointer ?? mainFacetSearchDataPointer
+  } = useContext(mainContext)
 
-  const [elements] = useState(() => {
-    console.log('tes')
+  const { elements, shapePointer } = useMemo(() => {
+    const shapePointer = specificShapePointer ?? mainShapePointer
+    const nodeDataPointer = specificDataPointer ?? mainDataPointer
+    const facetSearchDataPointer = specificFacetSearchDataPointer ?? mainFacetSearchDataPointer
+
+    console.log('tes', shapePointer.term)
     const pointer = grapoi({ dataset: shapes, factory })
     const properties = shapePointer.out(sh('property'))
     const propertiesWithGroups = properties.filter(pointer => pointer.out(sh('group')).term)
@@ -69,10 +70,13 @@ export default function NodeShape({
       ]
     })
 
-    return [...sortablePropertyWithGroups, ...sortablePropertyWithoutGroups]
-      .sort((a, b) => a[0] - b[0])
-      .map(([_order, element]) => element)
-  })
+    return {
+      elements: [...sortablePropertyWithGroups, ...sortablePropertyWithoutGroups]
+        .sort((a, b) => a[0] - b[0])
+        .map(([_order, element]) => element),
+      shapePointer
+    }
+  }, [])
 
   return (
     <div className="node" data-mode={mode} data-term={shapePointer.term.value}>

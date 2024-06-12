@@ -2,7 +2,7 @@ import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
-import { ReactNode, createContext, use } from 'react'
+import { ReactNode, createContext, useEffect, useState } from 'react'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import { rdf, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
@@ -104,6 +104,11 @@ export const initContext = async ({
 }
 
 export function MainContextProvider({ children, contextPromise }: MainContextProviderProps) {
-  const context = use(contextPromise)
-  return <mainContext.Provider value={context}>{children}</mainContext.Provider>
+  const [context, setContext] = useState<MainContext | undefined>(undefined)
+
+  useEffect(() => {
+    contextPromise.then(context => setContext(context as MainContext))
+  }, [])
+
+  return context ? <mainContext.Provider value={context}>{children}</mainContext.Provider> : null
 }

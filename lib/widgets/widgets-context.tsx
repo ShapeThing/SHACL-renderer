@@ -3,7 +3,7 @@ import { ComponentType, LazyExoticComponent, ReactNode, createContext } from 're
 import { coreWidgets } from './coreWidgets'
 
 export type WidgetItem = {
-  Component: LazyExoticComponent<ComponentType<WidgetProps>>
+  Component: LazyExoticComponent<ComponentType<Partial<WidgetProps>>>
   meta: WidgetMeta
 }
 

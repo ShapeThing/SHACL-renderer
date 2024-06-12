@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react'
+import IconPlus from '~icons/iconoir/plus'
 import { dash, stsr } from '../../core/namespaces'
 import PropertyElement from '../PropertyElement'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
@@ -24,7 +24,7 @@ export default function PropertyShapeEditMode({ data, property }: PropertyShapeE
         ))}
       </div>
       <button>
-        <Icon icon="iconoir:plus" />
+        <IconPlus />
       </button>
     </PropertyElement>
   )
