@@ -1,5 +1,5 @@
 import { ReactComponentLike } from 'prop-types'
-import { Suspense, use } from 'react'
+import { use } from 'react'
 import parsePath from 'shacl-engine/lib/parsePath'
 import { Settings, mainContext } from '../core/main-context'
 import { sh } from '../core/namespaces'
@@ -29,6 +29,9 @@ const modes: Record<Settings['mode'], ReactComponentLike> = {
 
 export default function PropertyShape({ property, nodeDataPointer, facetSearchDataPointer }: PropertyShapeProps) {
   const { mode } = use(mainContext)
+
+  console.log(property.term.value)
+
   const path = parsePath(property.out(sh('path')))
   let dataPointer = nodeDataPointer.executeAll(path)
   const facetSearchData = facetSearchDataPointer.executeAll(path)
@@ -44,13 +47,11 @@ export default function PropertyShape({ property, nodeDataPointer, facetSearchDa
   }
 
   return (
-    <Suspense>
-      <PropertyShapeInner
-        key={property.term?.value + dataPointer.term?.value}
-        facetSearchData={facetSearchData}
-        data={dataPointer}
-        property={property}
-      />
-    </Suspense>
+    <PropertyShapeInner
+      key={property.term?.value + dataPointer.term?.value}
+      facetSearchData={facetSearchData}
+      data={dataPointer}
+      property={property}
+    />
   )
 }

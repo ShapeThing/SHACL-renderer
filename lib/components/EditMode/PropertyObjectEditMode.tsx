@@ -1,7 +1,10 @@
 import { Icon } from '@iconify/react'
 import { Term } from '@rdfjs/types'
+import { use } from 'react'
 import { Fragment } from 'react/jsx-runtime'
-import { getWidget } from '../../core/getWidget'
+import { scoreWidgets } from '../../core/scoreWidgets'
+import { widgetsContext } from '../../widgets/widgets-context'
+import { dash } from '../ShaclRenderer'
 
 type PropertyObjectEditModeProps = {
   property: GrapoiPointer
@@ -9,16 +12,18 @@ type PropertyObjectEditModeProps = {
 }
 
 export default function PropertyObjectEditMode({ data, property }: PropertyObjectEditModeProps) {
-  const Editor = getWidget('editors', property, data)
+  const { editors } = use(widgetsContext)
+  const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
+  if (!widgetItem) return null
 
   const setTerm = (term: Term) => data.replace(term)
 
-  return Editor ? (
+  return (
     <Fragment key={data.term.value}>
-      <Editor term={data.term} setTerm={setTerm} data={data} property={property} />
+      <widgetItem.Component term={data.term} setTerm={setTerm} data={data} property={property} />
       <button>
         <Icon icon="iconoir:xmark" />
       </button>
     </Fragment>
-  ) : null
+  )
 }

@@ -1,10 +1,9 @@
 import { NamedNode, Term } from '@rdfjs/types'
-import { ReactComponentLike } from 'prop-types'
-import { ReactNode, createContext } from 'react'
+import { ComponentType, LazyExoticComponent, ReactNode, createContext } from 'react'
 import { coreWidgets } from './coreWidgets'
 
 export type WidgetItem = {
-  Component: () => Promise<{ default: ReactComponentLike }>
+  Component: LazyExoticComponent<ComponentType<WidgetProps>>
   meta: WidgetMeta
 }
 

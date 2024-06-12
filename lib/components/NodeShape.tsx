@@ -30,6 +30,7 @@ export default function NodeShape({
   const facetSearchDataPointer = specificFacetSearchDataPointer ?? mainFacetSearchDataPointer
 
   const [elements] = useState(() => {
+    console.log('tes')
     const pointer = grapoi({ dataset: shapes, factory })
     const properties = shapePointer.out(sh('property'))
     const propertiesWithGroups = properties.filter(pointer => pointer.out(sh('group')).term)

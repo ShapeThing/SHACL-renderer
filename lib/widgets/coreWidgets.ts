@@ -1,5 +1,5 @@
-import { ReactComponentLike } from 'prop-types'
-import { WidgetItem, WidgetMeta } from './widgets-context'
+import { ComponentType, lazy } from 'react'
+import { WidgetItem, WidgetMeta, WidgetProps } from './widgets-context'
 
 const coreWidgetMetaItems = import.meta.glob('./*/*/meta.ts', { eager: true })
 const coreWidgetComponents = import.meta.glob('./*/*/index.tsx')
@@ -23,10 +23,8 @@ for (const [path, coreWidgetMeta] of Object.entries(coreWidgetMetaItems)) {
     return innerType === type && innerName === name
   })
 
-  if (!componentItem) throw new Error(`Could not find component for ${name}`)
-
   coreWidgets[type as keyof typeof coreWidgets].push({
     meta: coreWidgetMeta as WidgetMeta,
-    Component: componentItem[1] as () => Promise<{ default: ReactComponentLike }>
+    Component: lazy(componentItem![1] as () => Promise<{ default: ComponentType<WidgetProps> }>)
   })
 }

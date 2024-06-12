@@ -1,7 +1,9 @@
 import { Icon } from '@iconify/react'
-import { Suspense, useState } from 'react'
+import { Suspense, use, useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'
-import { getWidget } from '../../core/getWidget'
+import { dash } from '../../core/namespaces'
+import { scoreWidgets } from '../../core/scoreWidgets'
+import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyObjectEditMode from '../EditMode/PropertyObjectEditMode'
 
 type PropertyObjectInlineEditModeProps = {
@@ -11,10 +13,12 @@ type PropertyObjectInlineEditModeProps = {
 
 export default function PropertyObjectInlineEditMode({ data, property }: PropertyObjectInlineEditModeProps) {
   const [mode, setMode] = useState<'view' | 'edit'>('view')
-  const Editor = getWidget('editors', property, data)
-  const Viewer = getWidget('viewers', property, data)
+  const { viewers, editors } = use(widgetsContext)
 
-  if (!Editor || !Viewer) return null
+  const viewerWidgetItem = scoreWidgets(viewers, data, property, dash('viewer'))
+  const editorWidgetItem = scoreWidgets(editors, data, property, dash('editor'))
+
+  if (!viewerWidgetItem || !editorWidgetItem) return null
 
   return mode === 'edit' ? (
     <Fragment key={data.term.value}>
@@ -27,7 +31,7 @@ export default function PropertyObjectInlineEditMode({ data, property }: Propert
     </Fragment>
   ) : (
     <>
-      <Viewer term={data.term} data={data} property={property} />
+      <viewerWidgetItem.Component term={data.term} data={data} property={property} />
       <button onClick={() => setMode(mode === 'view' ? 'edit' : 'view')}>
         <Icon icon="iconoir:edit-pencil" />
       </button>
