@@ -10,9 +10,14 @@ import PropertyObjectEditMode from '../EditMode/PropertyObjectEditMode'
 type PropertyObjectInlineEditModeProps = {
   property: GrapoiPointer
   data: GrapoiPointer
+  facetSearchData: GrapoiPointer
 }
 
-export default function PropertyObjectInlineEditMode({ data, property }: PropertyObjectInlineEditModeProps) {
+export default function PropertyObjectInlineEditMode({
+  data,
+  property,
+  facetSearchData
+}: PropertyObjectInlineEditModeProps) {
   const [mode, setMode] = useState<'view' | 'edit'>('view')
   const { viewers, editors } = useContext(widgetsContext)
 
@@ -22,18 +27,18 @@ export default function PropertyObjectInlineEditMode({ data, property }: Propert
   if (!viewerWidgetItem || !editorWidgetItem) return null
 
   return mode === 'edit' ? (
-    <Fragment key={data.term.value}>
-      <PropertyObjectEditMode data={data} property={property} />
+    <Fragment key={data.term.value + '-edit'}>
+      <PropertyObjectEditMode data={data} property={property} facetSearchData={facetSearchData} />
       <button onClick={() => setMode('view')}>
         <IconCheck />
       </button>
     </Fragment>
   ) : (
-    <>
-      <viewerWidgetItem.Component term={data.term} data={data} property={property} />
+    <Fragment key={data.term.value + '-view'}>
+      <viewerWidgetItem.Component term={data.term} data={data} property={property} searchData={facetSearchData} />
       <button onClick={() => setMode(mode === 'view' ? 'edit' : 'view')}>
         <IconEditPencil />
       </button>
-    </>
+    </Fragment>
   )
 }

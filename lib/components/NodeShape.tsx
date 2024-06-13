@@ -8,30 +8,15 @@ import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
 
 export type NodeShapeProps = {
-  shapePointer?: GrapoiPointer
-  dataPointer?: GrapoiPointer
-  facetSearchDataPointer?: GrapoiPointer
+  shapePointer: GrapoiPointer
+  dataPointer: GrapoiPointer
+  facetSearchDataPointer: GrapoiPointer
 }
 
-export default function NodeShape({
-  shapePointer: specificShapePointer,
-  dataPointer: specificDataPointer,
-  facetSearchDataPointer: specificFacetSearchDataPointer
-}: NodeShapeProps) {
-  const {
-    shapes,
-    shapePointer: mainShapePointer,
-    dataPointer: mainDataPointer,
-    facetSearchDataPointer: mainFacetSearchDataPointer,
-    mode
-  } = useContext(mainContext)
+export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPointer }: NodeShapeProps) {
+  const { shapes, mode } = useContext(mainContext)
 
-  const { elements, shapePointer } = useMemo(() => {
-    const shapePointer = specificShapePointer ?? mainShapePointer
-    const nodeDataPointer = specificDataPointer ?? mainDataPointer
-    const facetSearchDataPointer = specificFacetSearchDataPointer ?? mainFacetSearchDataPointer
-
-    console.log('tes', shapePointer.term)
+  const { elements } = useMemo(() => {
     const pointer = grapoi({ dataset: shapes, factory })
     const properties = shapePointer.out(sh('property'))
     const propertiesWithGroups = properties.filter(pointer => pointer.out(sh('group')).term)
@@ -48,7 +33,7 @@ export default function NodeShape({
           parseInt(group.out(sh('order')).value as string) ?? 0,
           <PropertyGroup
             facetSearchDataPointer={facetSearchDataPointer}
-            nodeDataPointer={nodeDataPointer}
+            nodeDataPointer={dataPointer}
             group={group}
             key={group.term.value}
             properties={properties}
@@ -63,7 +48,7 @@ export default function NodeShape({
         parseInt(property.out(sh('order')).value as string) ?? 0,
         <PropertyShape
           facetSearchDataPointer={facetSearchDataPointer}
-          nodeDataPointer={nodeDataPointer}
+          nodeDataPointer={dataPointer}
           key={property.term.value}
           property={property}
         />

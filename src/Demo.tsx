@@ -1,4 +1,4 @@
-import useLocalStorage from 'react-use/esm/useLocalStorage'
+import { Fragment } from 'react/jsx-runtime'
 import ShaclRenderer, { schema } from '../lib'
 
 const options = {
@@ -53,21 +53,14 @@ const options = {
 }
 
 export default function Demo() {
-  let [selectedDemo, setSelectedDemo] = useLocalStorage<keyof typeof options>('selectedDemo', 'viewer')
-
-  if (!selectedDemo) selectedDemo = 'viewer'
-
   return (
     <>
-      <select value={selectedDemo} onChange={event => setSelectedDemo(event.target.value as keyof typeof options)}>
-        {Object.entries(options).map(([name, { label }]) => (
-          <option key={name} value={name}>
-            {label}
-          </option>
-        ))}
-      </select>
-
-      {options[selectedDemo].component}
+      {Object.values(options).map(({ label, component }) => (
+        <Fragment key={label}>
+          <h3>{label}</h3>
+          {component}
+        </Fragment>
+      ))}
     </>
   )
 }

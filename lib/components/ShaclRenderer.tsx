@@ -1,7 +1,6 @@
 import '@fontsource/roboto/latin-400.css'
 import { useEffect, useState } from 'react'
 import { MainContext, MainContextInput, MainContextProvider, initContext } from '../core/main-context'
-import { validationContext } from '../core/validation-context'
 import '../scss/style.scss'
 import NodeShape from './NodeShape'
 export * from '../core/namespaces'
@@ -17,9 +16,12 @@ export default function ShaclRenderer(props: ShaclRendererProps) {
 
   return mainContext ? (
     <MainContextProvider context={mainContext}>
-      <validationContext.Provider value={undefined}>
-        <NodeShape key="root" />
-      </validationContext.Provider>
+      <NodeShape
+        shapePointer={mainContext.shapePointer}
+        dataPointer={mainContext.dataPointer}
+        facetSearchDataPointer={mainContext.facetSearchDataPointer}
+        key="root"
+      />
     </MainContextProvider>
   ) : null
 }

@@ -6,7 +6,7 @@ import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
 import { PropertyShapeInnerProps } from '../PropertyShape'
 
-export default function PropertyShapeViewMode({ data, property }: PropertyShapeInnerProps) {
+export default function PropertyShapeViewMode({ data, property, facetSearchData }: PropertyShapeInnerProps) {
   const selectedWidgetIri = property.out(dash('viewer')).term
   if (selectedWidgetIri?.equals(stsr('HideWidget'))) return null
   const { viewers } = useContext(widgetsContext)
@@ -18,7 +18,13 @@ export default function PropertyShapeViewMode({ data, property }: PropertyShapeI
           const widgetItem = scoreWidgets(viewers, data, property, dash('viewer'))
 
           return widgetItem ? (
-            <widgetItem.Component key={item.term.value} term={item.term} property={property} data={item} />
+            <widgetItem.Component
+              key={item.term.value}
+              searchData={facetSearchData}
+              term={item.term}
+              property={property}
+              data={item}
+            />
           ) : null
         }),
         property

@@ -3,8 +3,8 @@ import { sh } from '../../../core/namespaces'
 import { WidgetProps } from '../../widgets-context'
 import './style.scss'
 
-export default function BlankNodeViewer({ data, property }: WidgetProps) {
+export default function BlankNodeViewer({ data, property, searchData }: WidgetProps) {
   const node = property.out(sh('node')).term
   const nodeShapePointer = property.node(node)
-  return <NodeShape shapePointer={nodeShapePointer} dataPointer={data} />
+  return <NodeShape shapePointer={nodeShapePointer} dataPointer={data} facetSearchDataPointer={searchData} />
 }

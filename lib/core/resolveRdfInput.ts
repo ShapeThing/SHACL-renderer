@@ -2,12 +2,13 @@ import datasetFactory from '@rdfjs/dataset'
 import DatasetCoreConstructor from '@rdfjs/dataset/DatasetCore'
 import { DatasetCore } from '@rdfjs/types'
 import { Parser } from 'n3'
+import { cachedFetch } from '../helpers/cachedFetch'
 
 export const resolveRdfInput = async (input: URL | DatasetCore | string): Promise<DatasetCore> => {
   if (input instanceof DatasetCoreConstructor) return input
 
   if (input instanceof URL && ['.ttl', '.trig'].some(extension => input.toString().includes(extension))) {
-    const response = await fetch(input)
+    const response = await cachedFetch(input)
     input = await response.text()
   }
 

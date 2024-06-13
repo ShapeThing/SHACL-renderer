@@ -9,9 +9,10 @@ import { dash } from '../ShaclRenderer'
 type PropertyObjectEditModeProps = {
   property: GrapoiPointer
   data: GrapoiPointer
+  facetSearchData: GrapoiPointer
 }
 
-export default function PropertyObjectEditMode({ data, property }: PropertyObjectEditModeProps) {
+export default function PropertyObjectEditMode({ data, property, facetSearchData }: PropertyObjectEditModeProps) {
   const { editors } = useContext(widgetsContext)
   const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
   if (!widgetItem) return null
@@ -20,7 +21,13 @@ export default function PropertyObjectEditMode({ data, property }: PropertyObjec
 
   return (
     <Fragment key={data.term.value}>
-      <widgetItem.Component term={data.term} setTerm={setTerm} data={data} property={property} />
+      <widgetItem.Component
+        term={data.term}
+        setTerm={setTerm}
+        data={data}
+        property={property}
+        searchData={facetSearchData}
+      />
       <button>
         <IconXmark />
       </button>
