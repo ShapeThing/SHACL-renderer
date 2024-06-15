@@ -1,5 +1,4 @@
 import IconPlus from '~icons/iconoir/plus'
-import { dash, stsr } from '../../core/namespaces'
 import PropertyElement from '../PropertyElement'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
 
@@ -12,9 +11,6 @@ type PropertyShapeEditModeProps = {
 export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps) {
   const { data, property } = props
   const items = data
-
-  const selectedWidgetIri = property.out(dash('editor')).term
-  if (selectedWidgetIri?.equals(stsr('HideWidget'))) return null
 
   return (
     <PropertyElement property={property}>

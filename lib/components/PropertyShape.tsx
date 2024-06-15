@@ -61,7 +61,12 @@ export default function PropertyShape(props: PropertyShapeProps) {
 
   return PropertyShapeInner ? (
     <Suspense>
-      <PropertyShapeInner {...props} key={property.term?.value} facetSearchData={facetSearchData} data={data} />
+      <PropertyShapeInner
+        {...props}
+        key={property.terms?.map(term => term.value).join(',')}
+        facetSearchData={facetSearchData}
+        data={data}
+      />
     </Suspense>
   ) : null
 }
