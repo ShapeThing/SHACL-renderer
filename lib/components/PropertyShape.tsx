@@ -27,39 +27,35 @@ const modes: Record<Settings['mode'], ReactComponentLike> = {
   'inline-edit': PropertyShapeInlineEditMode
 }
 
-export default function PropertyShape({ property, nodeDataPointer, facetSearchDataPointer }: PropertyShapeProps) {
+export default function PropertyShape(props: PropertyShapeProps) {
+  const { property, nodeDataPointer, facetSearchDataPointer } = props
   const { mode } = useContext(mainContext)
 
-  const { PropertyShapeInner, dataPointer, facetSearchData } = useMemo(() => {
+  const { PropertyShapeInner, data, facetSearchData } = useMemo(() => {
     const path = parsePath(property.out(sh('path')))
-    let dataPointer = nodeDataPointer.executeAll(path)
+    let data = nodeDataPointer.executeAll(path)
     const facetSearchData = facetSearchDataPointer.executeAll(path)
     const PropertyShapeInner = modes[mode]
 
-    if (!dataPointer.term) {
+    if (!data.term) {
       // console.log(dataPointer)
     }
 
     if (mode === 'facet') {
       const predicate = property.out(sh('path')).term
-      dataPointer = nodeDataPointer.out(sh('property')).distinct().hasOut(sh('path'), predicate)
+      data = nodeDataPointer.out(sh('property')).distinct().hasOut(sh('path'), predicate)
     }
 
     return {
       PropertyShapeInner,
-      dataPointer,
+      data,
       facetSearchData
     }
   }, [])
 
   return (
     <Suspense>
-      <PropertyShapeInner
-        key={property.term?.value}
-        facetSearchData={facetSearchData}
-        data={dataPointer}
-        property={property}
-      />
+      <PropertyShapeInner {...props} key={property.term?.value} facetSearchData={facetSearchData} data={data} />
     </Suspense>
   )
 }

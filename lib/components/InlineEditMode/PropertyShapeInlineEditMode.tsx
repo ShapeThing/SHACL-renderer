@@ -4,7 +4,8 @@ import PropertyElement from '../PropertyElement'
 import { PropertyShapeInnerProps } from '../PropertyShape'
 import PropertyObjectInlineEditMode from './PropertyObjectInlineEditMode'
 
-export default function PropertyShapeInlineEditMode({ data, property, facetSearchData }: PropertyShapeInnerProps) {
+export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerProps) {
+  const { data, property } = props
   const selectedEditorIri = property.out(dash('editor')).term
   const selectedViewerIri = property.out(dash('viewer')).term
   if (selectedEditorIri?.equals(stsr('HideWidget')) || selectedViewerIri?.equals(stsr('HideWidget'))) return null
@@ -13,12 +14,7 @@ export default function PropertyShapeInlineEditMode({ data, property, facetSearc
     <PropertyElement showColon property={property}>
       {wrapWithList(
         data.map(item => (
-          <PropertyObjectInlineEditMode
-            facetSearchData={facetSearchData}
-            key={property.term?.value + item.term?.value}
-            data={item}
-            property={property}
-          />
+          <PropertyObjectInlineEditMode {...props} key={property.term?.value + item.term?.value} data={item} />
         )),
         property
       )}

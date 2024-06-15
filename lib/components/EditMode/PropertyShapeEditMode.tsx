@@ -9,7 +9,8 @@ type PropertyShapeEditModeProps = {
   facetSearchData: GrapoiPointer
 }
 
-export default function PropertyShapeEditMode({ data, property, facetSearchData }: PropertyShapeEditModeProps) {
+export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps) {
+  const { data, property } = props
   const items = data
 
   const selectedWidgetIri = property.out(dash('editor')).term
@@ -20,7 +21,7 @@ export default function PropertyShapeEditMode({ data, property, facetSearchData 
       <div className="editors">
         {items.map(item => (
           <div key={item.term.value}>
-            <PropertyObjectEditMode facetSearchData={facetSearchData} data={item} property={property} />
+            <PropertyObjectEditMode {...props} data={item} />
           </div>
         ))}
       </div>

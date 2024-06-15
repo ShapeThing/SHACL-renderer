@@ -3,8 +3,8 @@ import { quadsToCounts } from '../../../helpers/quadsToCounts'
 import { WidgetProps } from '../../widgets-context'
 import './style.scss'
 
-export default function CountFacet({ searchData }: WidgetProps) {
-  const counts = quadsToCounts(searchData.quads(), 'subject')
+export default function CountFacet({ facetSearchData }: WidgetProps) {
+  const counts = quadsToCounts(facetSearchData.quads(), 'subject')
   const max = Math.max(...counts.values())
 
   return (

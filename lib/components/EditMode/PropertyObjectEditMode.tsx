@@ -12,7 +12,8 @@ type PropertyObjectEditModeProps = {
   facetSearchData: GrapoiPointer
 }
 
-export default function PropertyObjectEditMode({ data, property, facetSearchData }: PropertyObjectEditModeProps) {
+export default function PropertyObjectEditMode(props: PropertyObjectEditModeProps) {
+  const { data, property } = props
   const { editors } = useContext(widgetsContext)
   const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
   if (!widgetItem) return null
@@ -21,13 +22,7 @@ export default function PropertyObjectEditMode({ data, property, facetSearchData
 
   return (
     <Fragment key={data.term.value}>
-      <widgetItem.Component
-        term={data.term}
-        setTerm={setTerm}
-        data={data}
-        property={property}
-        searchData={facetSearchData}
-      />
+      <widgetItem.Component {...props} term={data.term} setTerm={setTerm} />
       <button>
         <IconXmark />
       </button>

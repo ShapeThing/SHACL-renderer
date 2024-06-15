@@ -24,7 +24,7 @@ export type WidgetProps = {
   data: GrapoiPointer
   setConstraint: (predicate: NamedNode, value: string | number) => void
   property: GrapoiPointer
-  searchData: GrapoiPointer
+  facetSearchData: GrapoiPointer
   term: Term
   setTerm: (term: Term) => void
 }
