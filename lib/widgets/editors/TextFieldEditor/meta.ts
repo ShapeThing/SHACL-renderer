@@ -3,8 +3,9 @@ import { dash, rdf, sh, xsd } from '../../../core/namespaces'
 
 export const iri = dash('TextFieldEditor')
 
-export const score = (data: GrapoiPointer, propertyShape: GrapoiPointer) => {
+export const score = (data?: GrapoiPointer, propertyShape?: GrapoiPointer) => {
   if (
+    data &&
     data.term &&
     data.term.value &&
     data.term.termType === 'Literal' &&
@@ -14,7 +15,7 @@ export const score = (data: GrapoiPointer, propertyShape: GrapoiPointer) => {
     return 10
   }
 
-  if (xsd('string').equals(propertyShape.out(sh('datatype')).term)) {
+  if (propertyShape && xsd('string').equals(propertyShape.out(sh('datatype')).term)) {
     return 5
   }
 }
