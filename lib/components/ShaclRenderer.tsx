@@ -1,6 +1,6 @@
 import '@fontsource/roboto/latin-400.css'
 import { Suspense } from 'react'
-import useSWR from 'swr/immutable'
+import useSwrImmutable from 'swr/immutable'
 import { MainContextInput, MainContextProvider, initContext } from '../core/main-context'
 import { createCidFromProps } from '../helpers/createCidFromProps'
 import '../scss/style.scss'
@@ -11,7 +11,7 @@ export type ShaclRendererProps = MainContextInput
 
 function ShaclRendererInner(props: ShaclRendererProps) {
   const cid = createCidFromProps(props)
-  const { data: context } = useSWR('context-' + cid, () => initContext(props), { suspense: true })
+  const { data: context } = useSwrImmutable('context-' + cid, () => initContext(props), { suspense: true })
 
   return (
     <MainContextProvider context={context}>
