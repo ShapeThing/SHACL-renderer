@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { stf, stsr } from '../../core/namespaces'
+import { stf } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { setConstraint } from '../../helpers/setConstraint'
 import { widgetsContext } from '../../widgets/widgets-context'
@@ -8,11 +8,7 @@ import { PropertyShapeInnerProps } from '../PropertyShape'
 
 export default function PropertyShapeFacetMode(props: PropertyShapeInnerProps) {
   const { data, property, facetSearchData } = props
-
-  const selectedWidgetIri = property.out(stf('facet')).term
-  if (selectedWidgetIri?.equals(stsr('HideWidget'))) return null
   const { facets } = useContext(widgetsContext)
-
   const widgetItem = scoreWidgets(facets, facetSearchData, property, stf('facet'))
 
   return widgetItem ? (

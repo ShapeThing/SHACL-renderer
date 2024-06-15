@@ -1,5 +1,6 @@
 import { NamedNode } from '@rdfjs/types'
 import { WidgetItem } from '../widgets/widgets-context'
+import { stsr } from './namespaces'
 
 export const scoreWidgets = (
   widgets: Array<WidgetItem>,
@@ -10,6 +11,7 @@ export const scoreWidgets = (
   if (predicate) {
     const selectedWidgetIri = property.out(predicate).term
     if (selectedWidgetIri) {
+      if (selectedWidgetIri?.equals(stsr('HideWidget'))) return null
       const selectedWidget = widgets.find(widget => widget.meta.iri.equals(selectedWidgetIri))
       if (selectedWidget) return selectedWidget
     }
