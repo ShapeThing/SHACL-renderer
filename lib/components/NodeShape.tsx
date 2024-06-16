@@ -1,6 +1,6 @@
 import factory from '@rdfjs/data-model'
 import grapoi from 'grapoi'
-import { ReactNode, useContext, useMemo, useReducer } from 'react'
+import { ReactNode, useContext, useReducer } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import { grapoiProxy } from '../helpers/grapoiProxy'
@@ -16,56 +16,49 @@ export type NodeShapeProps = {
 
 export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPointer }: NodeShapeProps) {
   const { shapes, mode } = useContext(mainContext)
-  const [renderCount, forceUpdate] = useReducer(x => x + 1, 0)
+  const [, forceUpdate] = useReducer(x => x + 1, 0)
 
-  console.log(renderCount)
+  const pointer = grapoi({ dataset: shapes, factory })
+  const properties = shapePointer.out(sh('property'))
+  const propertiesWithGroups = properties.filter(pointer => pointer.out(sh('group')).term)
+  const groups = [...pointer.hasOut(rdf('type'), sh('PropertyGroup'))]
 
-  const { elements } = useMemo(() => {
-    const pointer = grapoi({ dataset: shapes, factory })
-    const properties = shapePointer.out(sh('property'))
-    const propertiesWithGroups = properties.filter(pointer => pointer.out(sh('group')).term)
-    const groups = [...pointer.hasOut(rdf('type'), sh('PropertyGroup'))]
-
-    const sortablePropertyWithGroups: [number, ReactNode][] = groups
-      .map(group => {
-        const groupProperties = [...propertiesWithGroups.hasOut(sh('group'), group.term)]
-        return groupProperties.length ? { group, properties: groupProperties } : null
-      })
-      .filter(nonNullable)
-      .map(({ group, properties }) => {
-        return [
-          parseInt(group.out(sh('order')).value as string) ?? 0,
-          <PropertyGroup
-            facetSearchDataPointer={facetSearchDataPointer}
-            nodeDataPointer={grapoiProxy(dataPointer, forceUpdate)}
-            group={group}
-            key={group.term.value}
-            properties={properties}
-          />
-        ]
-      })
-
-    const sortablePropertyWithoutGroups: [number, ReactNode][] = [
-      ...properties.filter(pointer => !pointer.out(sh('group')).term)
-    ].map(property => {
+  const sortablePropertyWithGroups: [number, ReactNode][] = groups
+    .map(group => {
+      const groupProperties = [...propertiesWithGroups.hasOut(sh('group'), group.term)]
+      return groupProperties.length ? { group, properties: groupProperties } : null
+    })
+    .filter(nonNullable)
+    .map(({ group, properties }) => {
       return [
-        parseInt(property.out(sh('order')).value as string) ?? 0,
-        <PropertyShape
+        parseInt(group.out(sh('order')).value as string) ?? 0,
+        <PropertyGroup
           facetSearchDataPointer={facetSearchDataPointer}
           nodeDataPointer={grapoiProxy(dataPointer, forceUpdate)}
-          key={property.term.value}
-          property={property}
+          group={group}
+          key={group.term.value}
+          properties={properties}
         />
       ]
     })
 
-    return {
-      elements: [...sortablePropertyWithGroups, ...sortablePropertyWithoutGroups]
-        .sort((a, b) => a[0] - b[0])
-        .map(([_order, element]) => element),
-      shapePointer
-    }
-  }, [renderCount])
+  const sortablePropertyWithoutGroups: [number, ReactNode][] = [
+    ...properties.filter(pointer => !pointer.out(sh('group')).term)
+  ].map(property => {
+    return [
+      parseInt(property.out(sh('order')).value as string) ?? 0,
+      <PropertyShape
+        facetSearchDataPointer={facetSearchDataPointer}
+        nodeDataPointer={grapoiProxy(dataPointer, forceUpdate)}
+        key={property.term.value}
+        property={property}
+      />
+    ]
+  })
+
+  const elements = [...sortablePropertyWithGroups, ...sortablePropertyWithoutGroups]
+    .sort((a, b) => a[0] - b[0])
+    .map(([_order, element]) => element)
 
   return (
     <div className="node" data-mode={mode} data-term={shapePointer.term.value}>

@@ -11,11 +11,13 @@ type PropertyObjectInlineEditModeProps = {
   property: GrapoiPointer
   data: GrapoiPointer
   facetSearchData: GrapoiPointer
+  rerenderProperty: () => void
+  initialMode?: 'view' | 'edit'
 }
 
 export default function PropertyObjectInlineEditMode(props: PropertyObjectInlineEditModeProps) {
   const { data, property } = props
-  const [mode, setMode] = useState<'view' | 'edit'>('view')
+  const [mode, setMode] = useState<'view' | 'edit'>(props.initialMode ?? 'view')
   const { viewers, editors } = useContext(widgetsContext)
 
   const viewerWidgetItem = scoreWidgets(viewers, data, property, dash('viewer'))

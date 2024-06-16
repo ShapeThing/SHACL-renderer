@@ -1,5 +1,5 @@
 import { ReactComponentLike } from 'prop-types'
-import { Suspense, useContext, useMemo } from 'react'
+import { Suspense, useContext, useReducer } from 'react'
 import parsePath from 'shacl-engine/lib/parsePath'
 import { Settings, mainContext } from '../core/main-context'
 import { dash, sh, stf, stsr } from '../core/namespaces'
@@ -15,9 +15,11 @@ type PropertyShapeProps = {
 }
 
 export type PropertyShapeInnerProps = {
+  nodeDataPointer: GrapoiPointer
   property: GrapoiPointer
   data: GrapoiPointer
   facetSearchData: GrapoiPointer
+  rerenderProperty: () => void
 }
 
 const modes: Record<Settings['mode'], ReactComponentLike> = {
@@ -37,33 +39,27 @@ const modePredicates = {
 export default function PropertyShape(props: PropertyShapeProps) {
   const { property, nodeDataPointer, facetSearchDataPointer } = props
   const { mode } = useContext(mainContext)
+  const [, forceUpdate] = useReducer(x => x + 1, 0)
 
-  const { PropertyShapeInner, data, facetSearchData } = useMemo(() => {
-    const selectedWidgetIri = property.out(modePredicates[mode]).term
-    if (selectedWidgetIri?.equals(stsr('HideWidget'))) return {}
+  const selectedWidgetIri = property.out(modePredicates[mode]).term
+  if (selectedWidgetIri?.equals(stsr('HideWidget'))) return null
 
-    const path = parsePath(property.out(sh('path')))
-    let data = nodeDataPointer.executeAll(path)
-    const facetSearchData = facetSearchDataPointer.executeAll(path)
-    const PropertyShapeInner = modes[mode]
+  const path = parsePath(property.out(sh('path')))
+  let data = nodeDataPointer.executeAll(path)
+  const facetSearchData = facetSearchDataPointer.executeAll(path)
+  const PropertyShapeInner = modes[mode]
 
-    if (mode === 'facet') {
-      const predicate = property.out(sh('path')).term
-      data = nodeDataPointer.out(sh('property')).distinct().hasOut(sh('path'), predicate)
-    }
-
-    return {
-      PropertyShapeInner,
-      data,
-      facetSearchData
-    }
-  }, [])
+  if (mode === 'facet') {
+    const predicate = property.out(sh('path')).term
+    data = nodeDataPointer.out(sh('property')).distinct().hasOut(sh('path'), predicate)
+  }
 
   return PropertyShapeInner ? (
     <Suspense>
       <PropertyShapeInner
         {...props}
-        key={property.terms?.map(term => term.value).join(',')}
+        rerenderProperty={forceUpdate}
+        key={data.terms?.map(term => term.value).join(',')}
         facetSearchData={facetSearchData}
         data={data}
       />
