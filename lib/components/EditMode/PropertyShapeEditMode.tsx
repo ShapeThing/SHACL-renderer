@@ -29,7 +29,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
       <div className="editors">
         {items.map(item => (
           <div className="editor" key={item.term.value}>
-            <PropertyObjectEditMode {...props} data={item} />
+            <PropertyObjectEditMode {...props} data={item} items={items} />
           </div>
         ))}
         {items.ptrs.length < maxCount ? (
