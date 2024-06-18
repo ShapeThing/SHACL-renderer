@@ -1,10 +1,10 @@
 import factory from '@rdfjs/data-model'
+import TextFieldEditor from '.'
 import { WidgetProps } from '../../widgets-context'
-import LiteralViewer from './'
 
 export default {
-  title: 'Widgets/Viewers/LiteralViewer',
-  component: LiteralViewer,
+  title: 'Widgets/Editors/TextFieldEditor',
+  component: TextFieldEditor,
   argTypes: {}
 }
 
