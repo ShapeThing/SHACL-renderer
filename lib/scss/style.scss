@@ -1,4 +1,24 @@
-body {
-  font-size: 18px;
-  font-family: 'Roboto', sans-serif;
+@import './base/typography';
+@import './base/input';
+@import './base/button';
+@import './base/label';
+
+@import './widgets/editors/editors';
+@import './widgets/group';
+@import './widgets/property';
+@import './widgets/node';
+
+:root {
+  --input-radius: 4px;
+  --easing: ease-in-out;
+  --speed: 0.2s;
+
+  --primary-rgb: 58, 117, 117;
+  --primary: rgb(var(--primary-rgb));
+  --secondary-rgb: 140, 151, 151;
+  --secondary: rgb(var(--secondary-rgb));
+}
+
+* {
+  box-sizing: border-box;
 }

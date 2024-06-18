@@ -16,7 +16,7 @@
     sh:group <#name> ;
     sh:path schema:givenName ;
     sh:minCount 1;
-    sh:maxCount 1;
+    sh:maxCount 5;
     sh:datatype xsd:string ;
   ];
   
@@ -81,9 +81,13 @@
 	a sh:PropertyGroup ;
 	sh:order 1 .
 
-<#address>
+<#street-and-housenumber>
 	a sh:PropertyGroup ;
 	sh:order 2 .
+
+<#world>
+	a sh:PropertyGroup ;
+	sh:order 3 .
 
 
 <#addressShape>
@@ -92,7 +96,7 @@
 
     sh:property [
         sh:name "Street"@en ;
-        sh:group <#address> ;
+        sh:group <#street-and-housenumber> ;
         sh:path schema:streetAddress ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
@@ -102,7 +106,7 @@
     sh:property [
         sh:name "Postal code"@en ;
         sh:path schema:postalCode ;
-        sh:group <#address> ;
+        sh:group <#street-and-housenumber> ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
@@ -110,7 +114,7 @@
 
     sh:property [
         sh:name "Locality"@en ;
-        sh:group <#address> ;
+        sh:group <#world> ;
         sh:path schema:addressLocality ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
@@ -119,7 +123,7 @@
 
     sh:property [
         sh:name "Region"@en ;
-        sh:group <#address> ;
+        sh:group <#world> ;
         sh:path schema:addressRegion ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
@@ -129,7 +133,7 @@
     sh:property [
         sh:name "Country"@en ;
         sh:path schema:addressCountry ;
-        sh:group <#address> ;
+        sh:group <#world> ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
         sh:maxCount 1 ;

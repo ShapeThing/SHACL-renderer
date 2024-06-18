@@ -1,7 +1,7 @@
 import { Term } from '@rdfjs/types'
 import { useContext } from 'react'
 import { Fragment } from 'react/jsx-runtime'
-import IconXmark from '~icons/iconoir/xmark'
+import IconTrash from '~icons/mynaui/trash'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { widgetsContext } from '../../widgets/widgets-context'
 import { dash } from '../ShaclRenderer'
@@ -35,8 +35,8 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
   return (
     <Fragment key={data.term.value}>
       <widgetItem.Component {...props} term={data.term} setTerm={setTerm} />
-      <button onClick={deleteTerm}>
-        <IconXmark />
+      <button className="button icon remove-object" onClick={deleteTerm}>
+        <IconTrash />
       </button>
     </Fragment>
   )

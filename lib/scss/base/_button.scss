@@ -1,0 +1,56 @@
+.button {
+  appearance: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--input-radius);
+  transition: background-color var(--easing) var(--speed), color var(--easing) var(--speed);
+
+  svg {
+    font-size: 1.5em;
+  }
+
+  path[stroke='currentColor'] {
+    stroke: var(--secondary);
+    stroke-width: 1px;
+    transition: stroke-width var(--easing) var(--speed), stroke var(--easing) var(--speed);
+  }
+
+  &.primary {
+    color: white;
+    background-color: var(--primary);
+
+    path[stroke='currentColor'] {
+      stroke: white;
+    }
+  }
+
+  &.secondary {
+    color: white;
+    background-color: var(--secondary);
+
+    path[stroke='currentColor'] {
+      stroke: white;
+    }
+  }
+
+  &:hover {
+    path[stroke='currentColor'] {
+      stroke-width: 1.2px;
+      stroke: var(--primary);
+    }
+
+    &.primary,
+    &.secondary {
+      background-color: white;
+    }
+  }
+
+  &.icon {
+    padding: 0;
+    aspect-ratio: 1;
+  }
+}

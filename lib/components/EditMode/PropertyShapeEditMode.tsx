@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import IconPlus from '~icons/iconoir/plus'
+import { sh } from '../../core/namespaces'
 import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
@@ -19,18 +20,24 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
   const addObject = createAddObject(editors, property, items, nodeDataPointer)
 
+  const maxCount = property.out(sh('maxCount')).value
+    ? parseInt(property.out(sh('maxCount')).value.toString())
+    : Infinity
+
   return (
     <PropertyElement property={property}>
       <div className="editors">
         {items.map(item => (
-          <div key={item.term.value}>
+          <div className="editor" key={item.term.value}>
             <PropertyObjectEditMode {...props} data={item} />
           </div>
         ))}
+        {items.ptrs.length < maxCount ? (
+          <button className="button icon secondary add-object" onClick={addObject}>
+            <IconPlus />
+          </button>
+        ) : null}
       </div>
-      <button onClick={addObject}>
-        <IconPlus />
-      </button>
     </PropertyElement>
   )
 }
