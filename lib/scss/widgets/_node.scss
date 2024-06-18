@@ -1,3 +1,7 @@
 .node {
+  flex: 1 1 auto;
   max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
