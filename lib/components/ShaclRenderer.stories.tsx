@@ -1,9 +1,8 @@
 import ShaclRenderer, { ShaclRendererProps, schema } from './ShaclRenderer'
 
 export default {
-  title: 'SHACL Renderer/Form',
+  title: 'SHACL Renderer',
   component: ShaclRenderer,
-  tags: ['autodocs'],
   argTypes: {}
 }
 
