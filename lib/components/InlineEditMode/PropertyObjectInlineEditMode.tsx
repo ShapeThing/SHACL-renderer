@@ -10,6 +10,7 @@ import PropertyObjectEditMode from '../EditMode/PropertyObjectEditMode'
 type PropertyObjectInlineEditModeProps = {
   property: GrapoiPointer
   data: GrapoiPointer
+  items: GrapoiPointer
   facetSearchData: GrapoiPointer
   rerenderProperty: () => void
   initialMode?: 'view' | 'edit'

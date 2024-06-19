@@ -22,6 +22,7 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
             initialMode={item.term?.value === '' ? 'edit' : 'view'}
             key={property.term?.value + item.term?.value}
             data={item}
+            items={data}
           />
         )),
         property

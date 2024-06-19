@@ -12,7 +12,6 @@ type PropertyObjectEditModeProps = {
   facetSearchData: GrapoiPointer
   rerenderProperty: () => void
   items: GrapoiPointer
-  nodeDataPointer: GrapoiPointer
 }
 
 export default function PropertyObjectEditMode(props: PropertyObjectEditModeProps) {
