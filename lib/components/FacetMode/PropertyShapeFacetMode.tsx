@@ -13,7 +13,7 @@ export default function PropertyShapeFacetMode(props: PropertyShapeInnerProps) {
 
   return widgetItem ? (
     <PropertyElement key={property.term.value} showColon property={property}>
-      <div>
+      <div className="facet">
         <widgetItem.Component
           key={property.term.value}
           {...props}
