@@ -5,6 +5,5 @@ import { WidgetProps } from '../../widgets-context'
 export default function BlankNodeEditor({ data, property, facetSearchData }: WidgetProps) {
   const node = property.out(sh('node')).term
   const nodeShapePointer = property.node(node)
-  if (!facetSearchData) debugger
   return <NodeShape shapePointer={nodeShapePointer} dataPointer={data} facetSearchDataPointer={facetSearchData} />
 }

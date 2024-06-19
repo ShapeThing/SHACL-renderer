@@ -1,5 +1,3 @@
-import factory from '@rdfjs/data-model'
-import grapoi from 'grapoi'
 import { ReactNode, useContext, useReducer } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
@@ -15,13 +13,12 @@ export type NodeShapeProps = {
 }
 
 export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPointer }: NodeShapeProps) {
-  const { shapes, mode } = useContext(mainContext)
+  const { mode } = useContext(mainContext)
   const [, forceUpdate] = useReducer(x => x + 1, 0)
 
-  const pointer = grapoi({ dataset: shapes, factory })
   const properties = shapePointer.out(sh('property'))
   const propertiesWithGroups = properties.filter(pointer => pointer.out(sh('group')).term)
-  const groups = [...pointer.hasOut(rdf('type'), sh('PropertyGroup'))]
+  const groups = [...shapePointer.node().hasOut(rdf('type'), sh('PropertyGroup'))]
 
   const sortablePropertyWithGroups: [number, ReactNode][] = groups
     .map(group => {

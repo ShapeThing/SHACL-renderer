@@ -20,6 +20,10 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
   const addObject = createAddObject(editors, property, items, nodeDataPointer)
 
+  if (!items.ptrs.length) {
+    addObject()
+  }
+
   const maxCount = property.out(sh('maxCount')).value
     ? parseInt(property.out(sh('maxCount')).value.toString())
     : Infinity

@@ -13,4 +13,5 @@ export const createAddObject =
     const widgetItem = scoreWidgets(editors, items, property, dash('editor'))
     const emptyTerm = widgetItem?.meta.createTerm ? widgetItem?.meta.createTerm() : factory.literal('')
     parentData.addOut(predicate, emptyTerm)
+    ;(emptyTerm as any).touched = false
   }

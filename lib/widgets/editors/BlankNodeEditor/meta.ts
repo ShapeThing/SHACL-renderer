@@ -1,3 +1,4 @@
+import factory from '@rdfjs/data-model'
 import { dash, sh } from '../../../core/namespaces'
 
 export const iri = dash('BlankNodeEditor')
@@ -13,3 +14,5 @@ export const score = (data?: GrapoiPointer, property?: GrapoiPointer) => {
     return 1
   }
 }
+
+export const createTerm = () => factory.blankNode()
