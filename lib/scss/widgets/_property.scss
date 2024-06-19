@@ -1,3 +1,11 @@
 .property {
   flex: 1 1 auto;
 }
+
+[data-mode='facet'],
+[data-mode='edit'] {
+  .property {
+    display: flex;
+    flex-direction: column;
+  }
+}

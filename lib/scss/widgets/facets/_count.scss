@@ -14,9 +14,9 @@
 
   .bar {
     display: flex;
-    background-color: ButtonFace;
+    background-color: var(--gray);
     border-radius: 10px;
-    border: 1px solid ButtonText;
+    // border: 1px solid white;
   }
 
   .bar-left {
@@ -29,7 +29,7 @@
   }
 
   .bar-inner {
-    background-color: green;
+    background-color: var(--primary);
     display: flex;
     flex-grow: 1;
     flex-shrink: 1;
@@ -44,7 +44,7 @@
   }
 
   .thumb {
-    background-color: black;
+    background-color: var(--primary);
     position: relative;
     z-index: 1;
     cursor: pointer;
@@ -96,7 +96,7 @@
       font-size: 75%;
       text-align: center;
       line-height: 30px;
-      background-color: AccentColor;
+      background-color: var(--primary);
       border-radius: 15px;
       color: white;
       padding: 0px 5px;

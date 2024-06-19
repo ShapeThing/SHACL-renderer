@@ -80,7 +80,9 @@ export const initContext = async ({
 
   // This is only for facets, it contains a dataset that we will filter through.
   const facetSearchDataset = facetSearchData ? await resolveRdfInput(facetSearchData) : datasetFactory.dataset()
-  const facetSearchDataPointer = grapoi({ dataset: facetSearchDataset, factory }).hasOut(rdf('type'), targetClass)
+  const facetSearchDataPointer = grapoi({ dataset: facetSearchDataset, factory })
+    .hasOut(rdf('type'), targetClass)
+    .distinct()
 
   if (mode === 'facet') {
     // Extract the bare essentials for a shape so that facets can run and add their filters to it.

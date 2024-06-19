@@ -16,6 +16,7 @@ type GrapoiPointer = {
   value: string | number
   isList: () => boolean
   deleteList: () => GrapoiPointer
+  best: (args: any[]) => GrapoiPointer
   list: () => Array<GrapoiPointer>
   ptrs: Array<{ dataset: DatasetCore } & GrapoiPointer>
   clone: (data?: unknown) => GrapoiPointer
@@ -48,3 +49,4 @@ declare module 'd2l-fetch-dedupe'
 declare module 'd2l-fetch-simple-cache'
 declare module 'd2l-fetch-simple-cache/src/d2lfetch-simple-cache.js'
 declare module 'nodeify-fetch'
+declare module '@rdfjs/score'
