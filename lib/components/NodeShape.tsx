@@ -1,7 +1,6 @@
 import { ReactNode, useContext, useReducer } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
-import { grapoiProxy } from '../helpers/grapoiProxy'
 import { nonNullable } from '../helpers/nonNullable'
 import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
@@ -13,8 +12,10 @@ export type NodeShapeProps = {
 }
 
 export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPointer }: NodeShapeProps) {
-  const { mode } = useContext(mainContext)
+  const { mode, registerChangeListener } = useContext(mainContext)
   const [, forceUpdate] = useReducer(x => x + 1, 0)
+
+  registerChangeListener(forceUpdate)
 
   const properties = shapePointer.out(sh('property'))
   const propertiesWithGroups = properties.filter(pointer => pointer.out(sh('group')).term)
@@ -31,7 +32,7 @@ export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPo
         parseInt(group.out(sh('order')).value as string) ?? 0,
         <PropertyGroup
           facetSearchDataPointer={facetSearchDataPointer}
-          nodeDataPointer={grapoiProxy(dataPointer, forceUpdate)}
+          nodeDataPointer={dataPointer}
           group={group}
           key={group.term.value}
           properties={properties}
@@ -46,7 +47,7 @@ export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPo
       parseInt(property.out(sh('order')).value as string) ?? 0,
       <PropertyShape
         facetSearchDataPointer={facetSearchDataPointer}
-        nodeDataPointer={grapoiProxy(dataPointer, forceUpdate)}
+        nodeDataPointer={dataPointer}
         key={property.term.value}
         property={property}
       />

@@ -3,9 +3,9 @@
 
 <>
   a schema:Person ;
-  schema:givenName "John", "Peter", "Frank" ;
+  schema:givenName "Hendrik", "Jan" ;
   schema:familyName "Doe" ;
-  schema:name "John Doe" ;
+  schema:name "Hendrik Jan Doe" ;
   schema:child "Anna", "Lisa", "John jr" ;
   schema:birthDate "1947-01-14"^^xsd:date ;
 

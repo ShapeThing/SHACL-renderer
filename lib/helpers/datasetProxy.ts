@@ -1,13 +1,15 @@
-const reRenderMethods = ['addOut', 'addIn']
+import { DatasetCore } from '@rdfjs/types'
 
-export const grapoiProxy = (pointer: GrapoiPointer, callback: () => void) => {
-  return new Proxy(pointer, {
+const reRenderMethods = ['add', 'delete']
+
+export const datasetProxy = (dataset: DatasetCore, callback: (property: 'add' | 'delete') => void) => {
+  return new Proxy(dataset, {
     get(target, p, receiver) {
       if (reRenderMethods.includes(p.toString())) {
         return (...args: any[]) => {
           const originalMethod = Reflect.get(target, p, receiver)
           const response = originalMethod.apply(target, args)
-          callback()
+          callback(p.toString() as 'add' | 'delete')
           return response
         }
       }

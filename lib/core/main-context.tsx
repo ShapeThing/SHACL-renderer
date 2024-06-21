@@ -1,10 +1,12 @@
+import { write } from '@jeswr/pretty-turtle'
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { ReactNode, createContext } from 'react'
+import { datasetProxy } from '../helpers/datasetProxy'
 import { getShapeSkeleton } from './getShapeSkeleton'
-import { rdf, sh } from './namespaces'
+import { prefixes, rdf, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
 
 export type MainContextInput = {
@@ -29,6 +31,7 @@ export type MainContext = {
   shapePointers: GrapoiPointer
   dataPointer: GrapoiPointer
   facetSearchDataPointer: GrapoiPointer
+  registerChangeListener: (callback: (operation: 'add' | 'delete') => void) => void
 } & Settings
 
 export const mainContext = createContext<MainContext>({
@@ -41,7 +44,8 @@ export const mainContext = createContext<MainContext>({
   shapePointers: undefined as unknown as GrapoiPointer,
   dataPointer: undefined as unknown as GrapoiPointer,
   facetSearchDataPointer: undefined as unknown as GrapoiPointer,
-  mode: 'edit'
+  mode: 'edit',
+  registerChangeListener: _callback => null
 })
 
 type MainContextProviderProps = {
@@ -62,7 +66,24 @@ export const initContext = async ({
   const rootShapePointer = grapoi({ dataset: resolvedShapes, factory })
   let shapePointers = rootShapePointer.hasOut(rdf('type'), sh('NodeShape'))
   if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
-  let dataset = data ? await resolveRdfInput(data) : datasetFactory.dataset()
+  const changeListeners: Set<(operation: 'add' | 'delete') => void> = new Set()
+
+  const registerChangeListener = (callback: (operation: 'add' | 'delete') => void) => {
+    changeListeners.add(callback)
+  }
+
+  const changeListener = (operation: 'add' | 'delete') => {
+    for (const changeListener of changeListeners) changeListener(operation)
+  }
+
+  registerChangeListener(async operation => {
+    if (operation === 'add') {
+      const turtle = await write([...dataset], { prefixes })
+      console.log(turtle)
+    }
+  })
+
+  let dataset = datasetProxy(data ? await resolveRdfInput(data) : datasetFactory.dataset(), changeListener)
 
   if (!subject) {
     const firstQuad = [...dataset]?.[0]
@@ -86,7 +107,7 @@ export const initContext = async ({
 
   if (mode === 'facet') {
     // Extract the bare essentials for a shape so that facets can run and add their filters to it.
-    dataset = getShapeSkeleton(shapePointer)
+    dataset = datasetProxy(getShapeSkeleton(shapePointer), changeListener)
     dataPointer = grapoi({ dataset, factory, term: shapePointer.term })
   }
 
@@ -100,6 +121,7 @@ export const initContext = async ({
     shapePointer,
     shapePointers,
     facetSearchDataPointer,
+    registerChangeListener,
     mode,
     ...settings
   }
