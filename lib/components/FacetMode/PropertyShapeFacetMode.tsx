@@ -12,14 +12,9 @@ export default function PropertyShapeFacetMode(props: PropertyShapeInnerProps) {
   const widgetItem = scoreWidgets(facets, facetSearchData, property, stf('facet'))
 
   return widgetItem ? (
-    <PropertyElement key={property.term.value} showColon property={property}>
+    <PropertyElement showColon property={property}>
       <div className="facet">
-        <widgetItem.Component
-          key={property.term.value}
-          {...props}
-          setConstraint={setConstraint(data)}
-          term={property.term}
-        />
+        <widgetItem.Component {...props} setConstraint={setConstraint(data)} term={property.term} />
       </div>
     </PropertyElement>
   ) : null

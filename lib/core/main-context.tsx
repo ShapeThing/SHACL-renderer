@@ -79,7 +79,7 @@ export const initContext = async ({
   registerChangeListener(async operation => {
     if (operation === 'add') {
       const turtle = await write([...dataset], { prefixes })
-      console.log(turtle)
+      // console.log(turtle)
     }
   })
 

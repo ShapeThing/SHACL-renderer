@@ -32,7 +32,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
     <PropertyElement property={property}>
       <div className="editors">
         {items.map(item => (
-          <div className="editor" key={item.term.value}>
+          <div className="editor">
             <PropertyObjectEditMode {...props} data={item} items={items} />
           </div>
         ))}

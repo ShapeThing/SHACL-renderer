@@ -34,7 +34,6 @@ export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPo
           facetSearchDataPointer={facetSearchDataPointer}
           nodeDataPointer={dataPointer}
           group={group}
-          key={group.term.value}
           properties={properties}
         />
       ]
@@ -48,7 +47,6 @@ export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPo
       <PropertyShape
         facetSearchDataPointer={facetSearchDataPointer}
         nodeDataPointer={dataPointer}
-        key={property.term.value}
         property={property}
       />
     ]

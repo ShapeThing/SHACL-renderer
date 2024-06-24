@@ -1,4 +1,5 @@
-import { Term } from '@rdfjs/types'
+import factory from '@rdfjs/data-model'
+import { DatasetCore, Quad_Object, Term } from '@rdfjs/types'
 import { useContext } from 'react'
 import { Fragment } from 'react/jsx-runtime'
 import IconTrash from '~icons/mynaui/trash'
@@ -25,7 +26,12 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
   const itemIsRequired = items.ptrs.length <= minCount
 
   const setTerm = (term: Term) => {
-    data.replace(term)
+    const dataset: DatasetCore = data.ptrs[0].dataset
+    const quad = [...data.quads()].at(-1) // TODO there are multiple edges in the Grapoi pointer. Why is this?
+    // Grapoi remove seems to delete duplicates too.
+    dataset.delete(quad)
+    dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
+
     rerenderProperty()
   }
 
@@ -37,7 +43,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
   }
 
   return (
-    <Fragment key={data.term.value}>
+    <Fragment>
       <widgetItem.Component {...props} term={data.term} setTerm={setTerm} />
       {!itemIsRequired ? (
         <button className="button icon remove-object" onClick={deleteTerm}>

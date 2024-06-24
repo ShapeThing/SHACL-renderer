@@ -26,6 +26,7 @@ export type WidgetProps = {
   property: GrapoiPointer
   facetSearchData: GrapoiPointer
   term: Term
+  nodeDataPointer: GrapoiPointer
   setTerm: (term: Term) => void
 }
 

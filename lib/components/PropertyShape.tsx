@@ -56,13 +56,7 @@ export default function PropertyShape(props: PropertyShapeProps) {
 
   return PropertyShapeInner ? (
     <Suspense>
-      <PropertyShapeInner
-        {...props}
-        rerenderProperty={forceUpdate}
-        key={data.terms?.map(term => term.value).join(',')}
-        facetSearchData={facetSearchData}
-        data={data}
-      />
+      <PropertyShapeInner {...props} rerenderProperty={forceUpdate} facetSearchData={facetSearchData} data={data} />
     </Suspense>
   ) : null
 }

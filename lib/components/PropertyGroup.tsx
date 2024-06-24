@@ -19,7 +19,6 @@ export default function PropertyGroup({
         <PropertyShape
           facetSearchDataPointer={facetSearchDataPointer}
           nodeDataPointer={nodeDataPointer}
-          key={property.term.value}
           property={property}
         />
       ))}
