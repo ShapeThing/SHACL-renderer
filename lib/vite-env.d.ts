@@ -5,6 +5,7 @@ type GrapoiPointer = {
   out: (predicates?: Array<NamedNode | null> | NamedNode, subjects?: Array<NamedNode> | NamedNode) => GrapoiPointer
   hasOut: (predicates?: Array<NamedNode | null> | NamedNode, subjects?: Array<NamedNode> | NamedNode) => GrapoiPointer
   deleteOut: (predicates?: Array<unknown> | unknown, objects?: Array<unknown> | unknown) => GrapoiPointer
+  deleteIn: (predicates?: Array<unknown> | unknown, subjects?: Array<unknown> | unknown) => GrapoiPointer
   addOut: (predicates?: Array<unknown> | unknown, objects?: Array<unknown> | unknown) => GrapoiPointer
   quads: () => Array<Quad>
   trim(): GrapoiPointer

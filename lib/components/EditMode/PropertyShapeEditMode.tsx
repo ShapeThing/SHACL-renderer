@@ -11,7 +11,6 @@ type PropertyShapeEditModeProps = {
   data: GrapoiPointer
   facetSearchData: GrapoiPointer
   nodeDataPointer: GrapoiPointer
-  rerenderProperty: () => void
 }
 
 export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps) {
