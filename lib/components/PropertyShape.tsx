@@ -1,9 +1,11 @@
 import { Grapoi } from 'grapoi'
+import isEqual from 'lodash-es/isEqual'
 import { ReactComponentLike } from 'prop-types'
 import { Suspense, useContext } from 'react'
 import parsePath from 'shacl-engine/lib/parsePath'
 import { Settings, mainContext } from '../core/main-context'
 import { dash, sh, stf, stsr } from '../core/namespaces'
+import { validationContext } from '../core/validation-context'
 import PropertyShapeEditMode from './EditMode/PropertyShapeEditMode'
 import PropertyShapeFacetMode from './FacetMode/PropertyShapeFacetMode'
 import PropertyShapeInlineEditMode from './InlineEditMode/PropertyShapeInlineEditMode'
@@ -53,9 +55,12 @@ export default function PropertyShape(props: PropertyShapeProps) {
     data = nodeDataPointer.out(sh('property')).distinct().hasOut(sh('path'), predicate)
   }
 
+  const report = useContext(validationContext)
+  const errors = report?.results?.filter((result: { path: unknown }) => isEqual(result.path, path)) ?? []
+
   return PropertyShapeInner ? (
     <Suspense>
-      <PropertyShapeInner {...props} facetSearchData={facetSearchData} data={data} />
+      <PropertyShapeInner {...props} errors={errors} facetSearchData={facetSearchData} data={data} />
     </Suspense>
   ) : null
 }

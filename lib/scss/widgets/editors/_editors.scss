@@ -12,6 +12,7 @@
 .editor {
   flex: 1 1 auto;
   display: flex;
+  flex-wrap: wrap;
   border-radius: var(--input-radius);
   background-color: rgba(var(--primary-rgb), 0.07);
   padding: 0.5em;

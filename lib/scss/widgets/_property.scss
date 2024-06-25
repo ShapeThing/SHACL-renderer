@@ -9,3 +9,9 @@
     flex-direction: column;
   }
 }
+
+.property.has-error {
+  > label {
+    color: red;
+  }
+}

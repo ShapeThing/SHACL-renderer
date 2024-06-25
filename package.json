@@ -31,7 +31,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-use": "^17.5.0",
-    "shacl-engine": "^0.1.5",
+    "shacl-engine": "^1.0.0",
     "swr": "^2.2.5"
   },
   "devDependencies": {

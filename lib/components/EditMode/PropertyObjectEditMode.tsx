@@ -13,10 +13,11 @@ type PropertyObjectEditModeProps = {
   data: Grapoi
   facetSearchData: Grapoi
   items: Grapoi
+  errors?: string[]
 }
 
 export default function PropertyObjectEditMode(props: PropertyObjectEditModeProps) {
-  const { data, property, items } = props
+  const { data, property, items, errors } = props
   const { editors } = useContext(widgetsContext)
   const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
 
@@ -26,21 +27,29 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
   const itemIsRequired = items.ptrs.length <= minCount
 
   const setTerm = (term: Term) => {
-    //grapoi.replace() does something else...
+    const dataset = data.ptrs[0].dataset
+    const [quad] = [...data.quads()]
+
+    if (quad.object.equals(term)) return
+    dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
+  }
+
+  const deleteTerm = () => {
     const dataset = data.ptrs[0].dataset
     const [quad] = [...data.quads()]
     dataset.delete(quad)
-    dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
   }
 
   return (
     <Fragment>
       <widgetItem.Component {...props} term={data.term} setTerm={setTerm} />
       {!itemIsRequired ? (
-        <button className="button icon remove-object" onClick={() => data.deleteIn()}>
+        <button className="button icon remove-object" onClick={deleteTerm}>
           <IconTrash />
         </button>
       ) : null}
+
+      {errors?.length ? <em className="errors">{errors.join('\n')}</em> : null}
     </Fragment>
   )
 }

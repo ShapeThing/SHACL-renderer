@@ -16,3 +16,9 @@
     color: white;
   }
 }
+
+.editor.has-error {
+  .input {
+    border-color: red;
+  }
+}

@@ -7,13 +7,20 @@ type PropertyElementProps = {
   label?: string
   children: ReactNode
   showColon?: true
+  cssClass?: string
 }
 
-export default function PropertyElement({ children, property, showColon, label: givenLabel }: PropertyElementProps) {
+export default function PropertyElement({
+  children,
+  cssClass,
+  property,
+  showColon,
+  label: givenLabel
+}: PropertyElementProps) {
   const label = givenLabel ?? property?.out([sh('name'), rdfs('label')]).values?.[0] ?? ''
 
   return (
-    <div className="property" data-term={property?.term.value}>
+    <div className={`property ${cssClass ?? ''}`.trim()} data-term={property?.term.value}>
       <label>
         {label}
         {showColon ? ': ' : ''}

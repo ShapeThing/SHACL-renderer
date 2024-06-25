@@ -1,0 +1,20 @@
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<>
+  a schema:Person ;
+  schema:givenName "Hendrik", "1947-01-14"^^xsd:date ;
+  schema:familyName "Doe" ;
+  schema:name "Hendrik Jan Doe" ;
+  schema:child "Anna", "Lisa", "John jr" ;
+  schema:birthDate "1947-01-14"^^xsd:date ;
+
+  schema:householdMembers 6 ;
+
+  schema:address [
+    schema:streetAddress "Wagramer Strasse 5" ;
+    schema:postalCode "1220" ;
+    schema:addressRegion "Wien" ;
+    schema:addressLocality "Wien" ;
+    schema:addressCountry "Austria" ;
+  ] .

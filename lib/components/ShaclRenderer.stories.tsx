@@ -24,6 +24,15 @@ export const Form = {
   } as ShaclRendererProps
 }
 
+export const FormInvalid = {
+  args: {
+    mode: 'edit',
+    data: new URL('/john-invalid.ttl', location.origin),
+    shapes: new URL('/shapes/contact.ttl', location.origin),
+    targetClass: schema('Person')
+  } as ShaclRendererProps
+}
+
 export const InlineEdit = {
   args: {
     mode: 'inline-edit',
