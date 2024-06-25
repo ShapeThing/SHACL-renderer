@@ -4,5 +4,8 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [preact(), Icons({ compiler: 'jsx', jsx: 'react', autoInstall: true })]
+  plugins: [preact(), Icons({ compiler: 'jsx', jsx: 'react', autoInstall: true })],
+  build: {
+    target: 'ES2022'
+  }
 })
