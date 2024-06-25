@@ -1,3 +1,4 @@
+import { Grapoi } from 'grapoi'
 import { useContext } from 'react'
 import IconPlus from '~icons/iconoir/plus'
 import { sh } from '../../core/namespaces'
@@ -7,10 +8,10 @@ import PropertyObjectEditMode from './PropertyObjectEditMode'
 import { createAddObject } from './createAddObject'
 
 type PropertyShapeEditModeProps = {
-  property: GrapoiPointer
-  data: GrapoiPointer
-  facetSearchData: GrapoiPointer
-  nodeDataPointer: GrapoiPointer
+  property: Grapoi
+  data: Grapoi
+  facetSearchData: Grapoi
+  nodeDataPointer: Grapoi
 }
 
 export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps) {

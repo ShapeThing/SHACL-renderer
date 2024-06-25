@@ -1,10 +1,11 @@
+import { Grapoi } from 'grapoi'
 import PropertyShape from './PropertyShape'
 
 type PropertyGroupProps = {
-  group: GrapoiPointer
-  properties: GrapoiPointer[]
-  nodeDataPointer: GrapoiPointer
-  facetSearchDataPointer: GrapoiPointer
+  group: Grapoi
+  properties: Grapoi[]
+  nodeDataPointer: Grapoi
+  facetSearchDataPointer: Grapoi
 }
 
 export default function PropertyGroup({

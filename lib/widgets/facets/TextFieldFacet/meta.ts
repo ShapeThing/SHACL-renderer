@@ -1,8 +1,9 @@
+import { Grapoi } from 'grapoi'
 import { rdf, sh, stf, xsd } from '../../../core/namespaces'
 
 export const iri = stf('TextFieldFacet')
 
-export const score = (data?: GrapoiPointer, property?: GrapoiPointer) => {
+export const score = (data?: Grapoi, property?: Grapoi) => {
   if (1 === 1) return -1
 
   if (

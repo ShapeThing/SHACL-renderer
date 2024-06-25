@@ -1,4 +1,5 @@
 import { NamedNode, Term } from '@rdfjs/types'
+import { Grapoi } from 'grapoi'
 import { ComponentType, LazyExoticComponent, ReactNode, createContext } from 'react'
 import { coreWidgets } from './coreWidgets'
 
@@ -8,7 +9,7 @@ export type WidgetItem = {
 }
 
 export type WidgetMeta = {
-  score?: (data: GrapoiPointer, property: GrapoiPointer) => number
+  score?: (data: Grapoi, property: Grapoi) => number
   createTerm?: () => Term
   iri: NamedNode
 }
@@ -21,12 +22,12 @@ type WidgetsContext = {
 }
 
 export type WidgetProps = {
-  data: GrapoiPointer
+  data: Grapoi
   setConstraint: (predicate: NamedNode, value: string | number) => void
-  property: GrapoiPointer
-  facetSearchData: GrapoiPointer
+  property: Grapoi
+  facetSearchData: Grapoi
   term: Term
-  nodeDataPointer: GrapoiPointer
+  nodeDataPointer: Grapoi
   setTerm: (term: Term) => void
 }
 

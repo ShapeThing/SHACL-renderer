@@ -1,3 +1,4 @@
+import { Grapoi } from 'grapoi'
 import { useContext, useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'
 import IconCheck from '~icons/iconoir/check'
@@ -8,10 +9,10 @@ import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyObjectEditMode from '../EditMode/PropertyObjectEditMode'
 
 type PropertyObjectInlineEditModeProps = {
-  property: GrapoiPointer
-  data: GrapoiPointer
-  items: GrapoiPointer
-  facetSearchData: GrapoiPointer
+  property: Grapoi
+  data: Grapoi
+  items: Grapoi
+  facetSearchData: Grapoi
   rerenderProperty: () => void
   initialMode?: 'view' | 'edit'
 }

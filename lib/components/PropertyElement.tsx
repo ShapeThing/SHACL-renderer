@@ -1,8 +1,9 @@
+import { Grapoi } from 'grapoi'
 import { ReactNode } from 'react'
 import { rdfs, sh } from '../core/namespaces'
 
 type PropertyElementProps = {
-  property?: GrapoiPointer
+  property?: Grapoi
   label?: string
   children: ReactNode
   showColon?: true

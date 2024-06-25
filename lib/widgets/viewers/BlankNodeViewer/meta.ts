@@ -1,8 +1,9 @@
+import { Grapoi } from 'grapoi'
 import { dash, sh } from '../../../core/namespaces'
 
 export const iri = dash('BlankNodeViewer')
 
-export const score = (data?: GrapoiPointer, property?: GrapoiPointer) => {
+export const score = (data?: Grapoi, property?: Grapoi) => {
   if (property && !property.out(sh('node')).value) return -1
 
   if (data && data.term && data.term.termType === 'BlankNode') {

@@ -1,9 +1,10 @@
 import factory from '@rdfjs/data-model'
+import { Grapoi } from 'grapoi'
 import { dash, sh, xsd } from '../../../core/namespaces'
 
 export const iri = dash('DatePickerEditor')
 
-export const score = (data?: GrapoiPointer, propertyShape?: GrapoiPointer) => {
+export const score = (data?: Grapoi, propertyShape?: Grapoi) => {
   if (
     data &&
     data.term &&

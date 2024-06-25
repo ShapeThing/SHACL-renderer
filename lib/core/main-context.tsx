@@ -21,16 +21,18 @@ export type Settings = {
   mode: 'edit' | 'facet' | 'view' | 'inline-edit'
 }
 
+type Grapoi = ReturnType<typeof grapoi>
+
 export type MainContext = {
   shapes: DatasetCore
   data: DatasetCore
   facetSearchData: DatasetCore
   subject: NamedNode | BlankNode
   targetClass?: NamedNode
-  shapePointer: GrapoiPointer
-  shapePointers: GrapoiPointer
-  dataPointer: GrapoiPointer
-  facetSearchDataPointer: GrapoiPointer
+  shapePointer: Grapoi
+  shapePointers: Grapoi
+  dataPointer: Grapoi
+  facetSearchDataPointer: Grapoi
   registerChangeListener: (callback: (operation: 'add' | 'delete') => void) => void
 } & Settings
 
@@ -40,10 +42,10 @@ export const mainContext = createContext<MainContext>({
   facetSearchData: datasetFactory.dataset(),
   subject: factory.blankNode(),
   targetClass: undefined,
-  shapePointer: undefined as unknown as GrapoiPointer,
-  shapePointers: undefined as unknown as GrapoiPointer,
-  dataPointer: undefined as unknown as GrapoiPointer,
-  facetSearchDataPointer: undefined as unknown as GrapoiPointer,
+  shapePointer: undefined as unknown as Grapoi,
+  shapePointers: undefined as unknown as Grapoi,
+  dataPointer: undefined as unknown as Grapoi,
+  facetSearchDataPointer: undefined as unknown as Grapoi,
   mode: 'edit',
   registerChangeListener: _callback => null
 })

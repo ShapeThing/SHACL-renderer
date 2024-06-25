@@ -1,3 +1,4 @@
+import { Grapoi } from 'grapoi'
 import { ReactNode, useContext, useReducer } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
@@ -6,9 +7,9 @@ import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
 
 export type NodeShapeProps = {
-  shapePointer: GrapoiPointer
-  dataPointer: GrapoiPointer
-  facetSearchDataPointer: GrapoiPointer
+  shapePointer: Grapoi
+  dataPointer: Grapoi
+  facetSearchDataPointer: Grapoi
 }
 
 export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPointer }: NodeShapeProps) {
@@ -18,7 +19,7 @@ export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPo
   registerChangeListener(forceUpdate)
 
   const properties = shapePointer.out(sh('property'))
-  const propertiesWithGroups = properties.filter(pointer => pointer.out(sh('group')).term)
+  const propertiesWithGroups = properties.filter(pointer => !!pointer.out(sh('group')).term)
   const groups = [...shapePointer.node().hasOut(rdf('type'), sh('PropertyGroup'))]
 
   const sortablePropertyWithGroups: [number, ReactNode][] = groups

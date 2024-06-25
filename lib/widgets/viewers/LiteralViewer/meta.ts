@@ -1,8 +1,9 @@
+import { Grapoi } from 'grapoi'
 import { dash, sh, xsd } from '../../../core/namespaces'
 
 export const iri = dash('LiteralViewer')
 
-export const score = (data?: GrapoiPointer, propertyShape?: GrapoiPointer) => {
+export const score = (data?: Grapoi, propertyShape?: Grapoi) => {
   if (data && data.term && data.term.termType === 'Literal') {
     return 1
   }

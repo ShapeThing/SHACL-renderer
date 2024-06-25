@@ -1,5 +1,6 @@
 import factory from '@rdfjs/data-model'
-import { DatasetCore, Quad_Object, Term } from '@rdfjs/types'
+import { Quad_Object, Term } from '@rdfjs/types'
+import { Grapoi } from 'grapoi'
 import { useContext } from 'react'
 import { Fragment } from 'react/jsx-runtime'
 import IconTrash from '~icons/mynaui/trash'
@@ -8,10 +9,10 @@ import { scoreWidgets } from '../../core/scoreWidgets'
 import { widgetsContext } from '../../widgets/widgets-context'
 
 type PropertyObjectEditModeProps = {
-  property: GrapoiPointer
-  data: GrapoiPointer
-  facetSearchData: GrapoiPointer
-  items: GrapoiPointer
+  property: Grapoi
+  data: Grapoi
+  facetSearchData: Grapoi
+  items: Grapoi
 }
 
 export default function PropertyObjectEditMode(props: PropertyObjectEditModeProps) {
@@ -26,7 +27,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
 
   const setTerm = (term: Term) => {
     //grapoi.replace() does something else...
-    const dataset: DatasetCore = data.ptrs[0].dataset
+    const dataset = data.ptrs[0].dataset
     const [quad] = [...data.quads()]
     dataset.delete(quad)
     dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))

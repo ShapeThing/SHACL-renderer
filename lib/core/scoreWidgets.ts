@@ -1,13 +1,9 @@
 import { NamedNode } from '@rdfjs/types'
+import { Grapoi } from 'grapoi'
 import { WidgetItem } from '../widgets/widgets-context'
 import { stsr } from './namespaces'
 
-export const scoreWidgets = (
-  widgets: Array<WidgetItem>,
-  data: GrapoiPointer,
-  property: GrapoiPointer,
-  predicate?: NamedNode
-) => {
+export const scoreWidgets = (widgets: Array<WidgetItem>, data: Grapoi, property: Grapoi, predicate?: NamedNode) => {
   if (predicate) {
     const selectedWidgetIri = property.out(predicate).term
     if (selectedWidgetIri) {

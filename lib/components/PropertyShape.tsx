@@ -1,3 +1,4 @@
+import { Grapoi } from 'grapoi'
 import { ReactComponentLike } from 'prop-types'
 import { Suspense, useContext } from 'react'
 import parsePath from 'shacl-engine/lib/parsePath'
@@ -9,16 +10,16 @@ import PropertyShapeInlineEditMode from './InlineEditMode/PropertyShapeInlineEdi
 import PropertyShapeViewMode from './ViewMode/PropertyShapeViewMode'
 
 type PropertyShapeProps = {
-  property: GrapoiPointer
-  nodeDataPointer: GrapoiPointer
-  facetSearchDataPointer: GrapoiPointer
+  property: Grapoi
+  nodeDataPointer: Grapoi
+  facetSearchDataPointer: Grapoi
 }
 
 export type PropertyShapeInnerProps = {
-  nodeDataPointer: GrapoiPointer
-  property: GrapoiPointer
-  data: GrapoiPointer
-  facetSearchData: GrapoiPointer
+  nodeDataPointer: Grapoi
+  property: Grapoi
+  data: Grapoi
+  facetSearchData: Grapoi
 }
 
 const modes: Record<Settings['mode'], ReactComponentLike> = {
