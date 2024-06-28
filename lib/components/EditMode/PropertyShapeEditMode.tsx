@@ -2,6 +2,7 @@ import { Grapoi } from 'grapoi'
 import ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { useContext } from 'react'
 import IconPlus from '~icons/iconoir/plus'
+import { mainContext } from '../../core/main-context'
 import { sh } from '../../core/namespaces'
 import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
@@ -19,6 +20,7 @@ type PropertyShapeEditModeProps = {
 export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps) {
   const { data: items, property, nodeDataPointer, errors } = props
   const { editors } = useContext(widgetsContext)
+  const { jsonLdContext } = useContext(mainContext)
 
   const addObject = createAddObject(editors, property, items, nodeDataPointer)
   if (!items.ptrs.length) addObject()
@@ -32,13 +34,23 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
       <div className="editors">
         {items.map((item: Grapoi) => {
           const itemErrors = errors?.filter((error: any) => error.value?.term.equals(item.term)) ?? []
-          const errorMessages = itemErrors.flatMap(error => error.message.map((message: any) => message.value))
-
-          return (
-            <div className={`editor ${itemErrors?.length ? 'has-error' : ''}`}>
-              <PropertyObjectEditMode {...props} data={item} items={items} errors={errorMessages} />
-            </div>
+          const errorMessages = itemErrors.flatMap(error =>
+            error.message
+              .map((message: any) => message.value)
+              .map((message: string) => {
+                const IRIs = [...message.matchAll(/\<(.*)\>/g)].map(iriMatch => iriMatch[1])
+                const compactedIRIs = IRIs.map(IRI => [IRI, jsonLdContext.compactIri(IRI, true)])
+                for (const [expanded, compacted] of compactedIRIs) {
+                  message = message.replaceAll(
+                    `<${expanded}>`,
+                    `<span class="iri" title="${expanded}">${compacted}</span>`
+                  )
+                }
+                return message
+              })
           )
+
+          return <PropertyObjectEditMode {...props} data={item} items={items} errors={errorMessages} />
         })}
         {items.ptrs.length < maxCount ? (
           <button className="button icon secondary add-object" onClick={addObject}>

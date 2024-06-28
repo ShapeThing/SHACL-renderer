@@ -1,8 +1,7 @@
 import factory from '@rdfjs/data-model'
 import { Quad_Object, Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
-import { useContext } from 'react'
-import { Fragment } from 'react/jsx-runtime'
+import { useContext, useState } from 'react'
 import IconTrash from '~icons/mynaui/trash'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
@@ -20,6 +19,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
   const { data, property, items, errors } = props
   const { editors } = useContext(widgetsContext)
   const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
+  const [isDeleting, setIsDeleting] = useState(false)
 
   if (!widgetItem) return null
 
@@ -34,22 +34,28 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
     dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
   }
 
-  const deleteTerm = () => {
-    const dataset = data.ptrs[0].dataset
-    const [quad] = [...data.quads()]
-    dataset.delete(quad)
-  }
+  const onAnimationEnd = isDeleting
+    ? () => {
+        const dataset = data.ptrs[0].dataset
+        const [quad] = [...data.quads()]
+        dataset.delete(quad)
+        setIsDeleting(false)
+      }
+    : undefined
 
   return (
-    <Fragment>
+    <div
+      onAnimationEnd={onAnimationEnd}
+      className={`editor ${isDeleting ? 'delete-animation' : ''} ${errors?.length ? 'has-error' : ''}`.trim()}
+    >
       <widgetItem.Component {...props} term={data.term} setTerm={setTerm} />
-      {!itemIsRequired ? (
-        <button className="button icon remove-object" onClick={deleteTerm}>
+      {!itemIsRequired || errors?.length ? (
+        <button className="button icon remove-object" onClick={() => setIsDeleting(true)}>
           <IconTrash />
         </button>
       ) : null}
 
-      {errors?.length ? <em className="errors">{errors.join('\n')}</em> : null}
-    </Fragment>
+      {errors?.length ? <span className="errors" dangerouslySetInnerHTML={{ __html: errors.join('\n') }}></span> : null}
+    </div>
   )
 }

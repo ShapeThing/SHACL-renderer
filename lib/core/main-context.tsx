@@ -2,6 +2,7 @@ import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
+import { JsonLdContextNormalized } from 'jsonld-context-parser/lib/JsonLdContextNormalized'
 import { ReactNode, createContext } from 'react'
 import { datasetProxy } from '../helpers/datasetProxy'
 import { getShapeSkeleton } from './getShapeSkeleton'
@@ -32,6 +33,7 @@ export type MainContext = {
   shapePointers: Grapoi
   dataPointer: Grapoi
   facetSearchDataPointer: Grapoi
+  jsonLdContext: JsonLdContextNormalized
   registerChangeListener: (callback: (operation: 'add' | 'delete') => void) => void
 } & Settings
 
@@ -46,7 +48,8 @@ export const mainContext = createContext<MainContext>({
   dataPointer: undefined as unknown as Grapoi,
   facetSearchDataPointer: undefined as unknown as Grapoi,
   mode: 'edit',
-  registerChangeListener: _callback => null
+  registerChangeListener: _callback => null,
+  jsonLdContext: new JsonLdContextNormalized({})
 })
 
 type MainContextProviderProps = {
@@ -63,7 +66,7 @@ export const initContext = async ({
   mode,
   ...settings
 }: MainContextInput): Promise<MainContext> => {
-  const resolvedShapes = await resolveRdfInput(shapes)
+  const { dataset: resolvedShapes } = await resolveRdfInput(shapes)
   const rootShapePointer = grapoi({ dataset: resolvedShapes, factory })
   let shapePointers = rootShapePointer.hasOut(rdf('type'), sh('NodeShape'))
   if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
@@ -84,7 +87,9 @@ export const initContext = async ({
   //   }
   // })
 
-  let dataset = datasetProxy(data ? await resolveRdfInput(data) : datasetFactory.dataset(), changeListener)
+  const resolvedData = data ? await resolveRdfInput(data) : null
+
+  let dataset = datasetProxy(resolvedData ? resolvedData.dataset : datasetFactory.dataset(), changeListener)
 
   if (!subject) {
     const firstQuad = [...dataset]?.[0]
@@ -101,7 +106,9 @@ export const initContext = async ({
   let dataPointer = grapoi({ dataset, factory, term: subject })
 
   // This is only for facets, it contains a dataset that we will filter through.
-  const facetSearchDataset = facetSearchData ? await resolveRdfInput(facetSearchData) : datasetFactory.dataset()
+  const facetSearchDataset = facetSearchData
+    ? (await resolveRdfInput(facetSearchData)).dataset
+    : datasetFactory.dataset()
   const facetSearchDataPointer = grapoi({ dataset: facetSearchDataset, factory })
     .hasOut(rdf('type'), targetClass)
     .distinct()
@@ -123,6 +130,7 @@ export const initContext = async ({
     shapePointers,
     facetSearchDataPointer,
     registerChangeListener,
+    jsonLdContext: new JsonLdContextNormalized({ ...(resolvedData?.prefixes ?? {}) }),
     mode,
     ...settings
   }

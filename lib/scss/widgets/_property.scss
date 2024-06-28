@@ -12,6 +12,6 @@
 
 .property.has-error {
   > label {
-    color: red;
+    color: var(--danger);
   }
 }

@@ -19,6 +19,6 @@
 
 .editor.has-error {
   .input {
-    border-color: red;
+    border-color: var(--danger);
   }
 }

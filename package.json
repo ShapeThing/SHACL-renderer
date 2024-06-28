@@ -23,6 +23,7 @@
     "d2l-fetch-dedupe": "^2.1.0",
     "d2l-fetch-simple-cache": "^2.1.1",
     "grapoi": "github:danielbeeke/grapoi",
+    "jsonld-context-parser": "^3.0.0",
     "lodash-es": "^4.17.21",
     "multi-range-slider-react": "^2.0.7",
     "n3": "^1.17.3",
