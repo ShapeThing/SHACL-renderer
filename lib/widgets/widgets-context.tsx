@@ -12,6 +12,7 @@ export type WidgetMeta = {
   score?: (data: Grapoi, property: Grapoi) => number
   createTerm?: () => Term
   iri: NamedNode
+  showIfEmpty?: true
 }
 
 type WidgetsContext = {

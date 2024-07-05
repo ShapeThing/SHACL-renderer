@@ -11,6 +11,7 @@ import { resolveRdfInput } from './resolveRdfInput'
 
 export type MainContextInput = {
   shapes: URL | DatasetCore | string
+  shapeSubject?: URL | string
   data?: URL | DatasetCore | string
   facetSearchData?: URL | DatasetCore | string
   subject?: NamedNode | BlankNode
@@ -64,6 +65,7 @@ export const initContext = async ({
   subject,
   targetClass: givenTargetClass,
   mode,
+  shapeSubject,
   ...settings
 }: MainContextInput): Promise<MainContext> => {
   const { dataset: resolvedShapes } = await resolveRdfInput(shapes)
@@ -100,7 +102,9 @@ export const initContext = async ({
     }
   }
 
-  const shapePointer = [...shapePointers].at(0)!
+  const shapePointer = shapeSubject?.toString()
+    ? shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!
+    : [...shapePointers].at(0)!
   const targetClass = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
 
   let dataPointer = grapoi({ dataset, factory, term: subject })

@@ -1,4 +1,3 @@
-import factory from '@rdfjs/data-model'
 import { Grapoi } from 'grapoi'
 import parsePath from 'shacl-engine/lib/parsePath'
 import { dash, sh } from '../../core/namespaces'
@@ -11,7 +10,9 @@ export const createAddObject = (editors: WidgetItem[], property: Grapoi, items: 
   if (lastPathPart.predicates.length > 1) throw new Error('Alternative property paths are not yet supported')
   const [predicate] = lastPathPart.predicates
   const widgetItem = scoreWidgets(editors, items, property, dash('editor'))
-  const emptyTerm = widgetItem?.meta.createTerm ? widgetItem?.meta.createTerm() : factory.literal('')
+  const emptyTerm = widgetItem?.meta.createTerm ? widgetItem?.meta.createTerm() : null
+  if (!emptyTerm) return
+
   parentData.addOut(predicate, emptyTerm)
   ;(emptyTerm as any).touched = false
 }

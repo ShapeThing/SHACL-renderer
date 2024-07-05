@@ -19,11 +19,12 @@
   gap: 0.5em;
 
   > .node + .button {
-    margin-inline-start: 12px;
+    margin-inline-start: 4px;
   }
 
   > input + .button {
-    margin-inline-start: 8px;
+    margin-inline-start: 4px;
+    margin-inline-end: 4px;
   }
 
   [data-mode='inline-edit'] & {

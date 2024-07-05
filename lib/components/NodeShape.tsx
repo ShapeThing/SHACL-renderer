@@ -16,7 +16,7 @@ export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPo
   const { mode, registerChangeListener } = useContext(mainContext)
   const [, forceUpdate] = useReducer(x => x + 1, 0)
 
-  registerChangeListener(forceUpdate)
+  // registerChangeListener(forceUpdate)
 
   const properties = shapePointer.out(sh('property'))
   const propertiesWithGroups = properties.filter(pointer => !!pointer.out(sh('group')).term)

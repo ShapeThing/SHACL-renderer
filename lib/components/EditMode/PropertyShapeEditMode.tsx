@@ -3,7 +3,8 @@ import ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { useContext } from 'react'
 import IconPlus from '~icons/iconoir/plus'
 import { mainContext } from '../../core/main-context'
-import { sh } from '../../core/namespaces'
+import { dash, sh } from '../../core/namespaces'
+import { scoreWidgets } from '../../core/scoreWidgets'
 import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
@@ -29,6 +30,8 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
     ? parseInt(property.out(sh('maxCount')).value.toString())
     : Infinity
 
+  const emptyFallback = !items.ptrs.length ? scoreWidgets(editors, items, property, dash('editor')) : null
+
   return (
     <PropertyElement cssClass={errors?.length ? 'has-error' : ''} property={property}>
       <div className="editors">
@@ -52,6 +55,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
           return <PropertyObjectEditMode {...props} data={item} items={items} errors={errorMessages} />
         })}
+        {emptyFallback && emptyFallback.meta.showIfEmpty ? <emptyFallback.Component /> : null}
         {items.ptrs.length < maxCount ? (
           <button className="button icon secondary add-object" onClick={addObject}>
             <IconPlus />

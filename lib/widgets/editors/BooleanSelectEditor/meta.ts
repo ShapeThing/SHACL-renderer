@@ -10,14 +10,14 @@ export const score = (data?: Grapoi, propertyShape?: Grapoi) => {
     data.term &&
     data.term.value &&
     data.term.termType === 'Literal' &&
-    xsd('string').equals(data.term.datatype)
+    xsd('boolean').equals(data.term.datatype)
   ) {
     return 10
   }
 
-  if (propertyShape && xsd('string').equals(propertyShape.out(sh('datatype')).term)) {
+  if (propertyShape && xsd('boolean').equals(propertyShape.out(sh('datatype')).term)) {
     return 5
   }
 }
 
-export const createTerm = () => factory.literal('')
+export const createTerm = () => factory.literal('false', xsd('boolean'))

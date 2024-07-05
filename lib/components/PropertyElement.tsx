@@ -17,7 +17,10 @@ export default function PropertyElement({
   showColon,
   label: givenLabel
 }: PropertyElementProps) {
-  const label = givenLabel ?? property?.out([sh('name'), rdfs('label')]).values?.[0] ?? ''
+  const label =
+    givenLabel ??
+    property?.out([sh('name'), rdfs('label')]).values?.[0] ??
+    property?.out(sh('path')).value.split(/\#|\//g).pop()
 
   return (
     <div className={`property ${cssClass ?? ''}`.trim()} data-term={property?.term.value}>

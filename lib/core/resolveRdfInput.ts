@@ -16,8 +16,11 @@ export const resolveRdfInput = async (
       prefixes: {}
     }
 
-  if (input instanceof URL && ['.ttl', '.trig'].some(extension => input.toString().includes(extension))) {
+  if (input instanceof URL) {
     const response = await cachedFetch(input)
+
+    if (!['text/turtle'].includes(response.headers.get('content-type') ?? '')) throw new Error('Unexpected mime typ')
+
     input = await response.text()
   }
 

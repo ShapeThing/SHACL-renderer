@@ -24,6 +24,15 @@ export const Form = {
   } as ShaclRendererProps
 }
 
+export const FormShacl = {
+  args: {
+    mode: 'edit',
+    data: new URL('/shapes/contact.ttl', location.origin),
+    shapes: new URL('https://www.w3.org/ns/shacl-shacl'),
+    shapeSubject: new URL('http://www.w3.org/ns/shacl-shacl#ShapeShape')
+  } as ShaclRendererProps
+}
+
 export const FormInvalid = {
   args: {
     mode: 'edit',
