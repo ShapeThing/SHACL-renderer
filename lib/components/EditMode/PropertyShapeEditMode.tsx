@@ -1,3 +1,4 @@
+import { Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { useContext } from 'react'
@@ -15,11 +16,12 @@ type PropertyShapeEditModeProps = {
   data: Grapoi
   facetSearchData: Grapoi
   nodeDataPointer: Grapoi
+  path: any
   errors?: ValidationReport['results']
 }
 
 export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps) {
-  const { data: items, property, nodeDataPointer, errors } = props
+  const { data: items, property, nodeDataPointer, errors, path } = props
   const { editors } = useContext(widgetsContext)
   const { jsonLdContext } = useContext(mainContext)
 
@@ -55,7 +57,9 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
           return <PropertyObjectEditMode {...props} data={item} items={items} errors={errorMessages} />
         })}
-        {emptyFallback && emptyFallback.meta.showIfEmpty ? <emptyFallback.Component /> : null}
+        {emptyFallback && emptyFallback.meta.showIfEmpty ? (
+          <emptyFallback.Component setTerm={(term: Term) => items.addOut(path[0].predicates[0], term)} />
+        ) : null}
         {items.ptrs.length < maxCount ? (
           <button className="button icon secondary add-object" onClick={addObject}>
             <IconPlus />

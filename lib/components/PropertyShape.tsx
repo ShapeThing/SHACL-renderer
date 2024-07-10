@@ -21,6 +21,7 @@ export type PropertyShapeInnerProps = {
   nodeDataPointer: Grapoi
   property: Grapoi
   data: Grapoi
+  path: any
   facetSearchData: Grapoi
 }
 
@@ -60,7 +61,7 @@ export default function PropertyShape(props: PropertyShapeProps) {
 
   return PropertyShapeInner ? (
     <Suspense>
-      <PropertyShapeInner {...props} errors={errors} facetSearchData={facetSearchData} data={data} />
+      <PropertyShapeInner {...props} errors={errors} facetSearchData={facetSearchData} data={data} path={path} />
     </Suspense>
   ) : null
 }

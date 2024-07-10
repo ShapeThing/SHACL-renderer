@@ -19,7 +19,8 @@ export const resolveRdfInput = async (
   if (input instanceof URL) {
     const response = await cachedFetch(input)
 
-    if (!['text/turtle'].includes(response.headers.get('content-type') ?? '')) throw new Error('Unexpected mime typ')
+    if (!['text/turtle'].includes(response.headers.get('content-type').split(';')[0] ?? ''))
+      throw new Error('Unexpected mime typ')
 
     input = await response.text()
   }
