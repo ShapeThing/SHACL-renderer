@@ -1,3 +1,6 @@
 import { stf } from '../../../core/namespaces'
+import { WidgetMeta } from '../../widgets-context'
 
-export const iri = stf('CountFacet')
+export default {
+  iri: stf('CountFacet')
+} satisfies WidgetMeta

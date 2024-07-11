@@ -1,3 +1,6 @@
 import { stsr } from '../../../core/namespaces'
+import { WidgetMeta } from '../../widgets-context'
 
-export const iri = stsr('UnorderedList')
+export default {
+  iri: stsr('UnorderedList')
+} satisfies WidgetMeta

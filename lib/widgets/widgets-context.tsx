@@ -9,7 +9,7 @@ export type WidgetItem = {
 }
 
 export type WidgetMeta = {
-  score?: (data: Grapoi, property: Grapoi) => number
+  score?: (data: Grapoi, property: Grapoi) => number | undefined
   createTerm?: () => Term
   iri: NamedNode
   showIfEmpty?: true

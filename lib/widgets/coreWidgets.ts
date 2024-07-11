@@ -26,7 +26,7 @@ for (const [path, coreWidgetMeta] of Object.entries(coreWidgetMetaItems)) {
   const widgetFetcher = componentItem![1] as () => Promise<{ default: ComponentType<Partial<WidgetProps>> }>
 
   coreWidgets[type as keyof typeof coreWidgets].push({
-    meta: coreWidgetMeta as WidgetMeta,
+    meta: (coreWidgetMeta as any).default as WidgetMeta,
     Component: lazy(widgetFetcher)
   })
 }
