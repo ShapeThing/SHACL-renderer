@@ -31,6 +31,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
     const [quad] = [...data.quads()]
 
     if (quad.object.equals(term)) return
+    dataset.delete(quad)
     dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
   }
 

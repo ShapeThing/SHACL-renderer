@@ -1,5 +1,5 @@
 import { Grapoi } from 'grapoi'
-import { ReactNode, useContext, useReducer } from 'react'
+import { ReactNode, useContext, useEffect, useReducer } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import { nonNullable } from '../helpers/nonNullable'
@@ -16,7 +16,9 @@ export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPo
   const { mode, registerChangeListener } = useContext(mainContext)
   const [, forceUpdate] = useReducer(x => x + 1, 0)
 
-  // registerChangeListener(forceUpdate)
+  useEffect(() => {
+    registerChangeListener(forceUpdate)
+  }, [])
 
   const properties = shapePointer.out(sh('property'))
   const propertiesWithGroups = properties.filter(pointer => !!pointer.out(sh('group')).term)

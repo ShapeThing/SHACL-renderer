@@ -6,6 +6,7 @@ import IconPlus from '~icons/iconoir/plus'
 import { mainContext } from '../../core/main-context'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import { TouchableTerm } from '../../helpers/touchableRdf'
 import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
@@ -26,7 +27,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const { jsonLdContext } = useContext(mainContext)
 
   const addObject = createAddObject(editors, property, items, nodeDataPointer)
-  if (!items.ptrs.length) addObject()
+  if (!items.ptrs.length) addObject(true)
 
   const maxCount = property.out(sh('maxCount')).value
     ? parseInt(property.out(sh('maxCount')).value.toString())
@@ -58,10 +59,15 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
           return <PropertyObjectEditMode {...props} data={item} items={items} errors={errorMessages} />
         })}
         {emptyFallback && emptyFallback.meta.showIfEmpty ? (
-          <emptyFallback.Component setTerm={(term: Term) => items.addOut(path[0].predicates[0], term)} />
+          <emptyFallback.Component
+            setTerm={(term: Term) => {
+              ;(term as TouchableTerm).touched = false
+              items.addOut(path[0].predicates[0], term)
+            }}
+          />
         ) : null}
         {items.ptrs.length < maxCount ? (
-          <button className="button icon secondary add-object" onClick={addObject}>
+          <button className="button icon secondary add-object" onClick={() => addObject()}>
             <IconPlus />
           </button>
         ) : null}

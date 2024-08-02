@@ -2,17 +2,20 @@ import { Grapoi } from 'grapoi'
 import parsePath from 'shacl-engine/lib/parsePath'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import { TouchableTerm } from '../../helpers/touchableRdf'
 import { WidgetItem } from '../../widgets/widgets-context'
 
-export const createAddObject = (editors: WidgetItem[], property: Grapoi, items: Grapoi, parentData: Grapoi) => () => {
-  const path = parsePath(property.out(sh('path')))
-  const lastPathPart = path.at(-1)
-  if (lastPathPart.predicates.length > 1) throw new Error('Alternative property paths are not yet supported')
-  const [predicate] = lastPathPart.predicates
-  const widgetItem = scoreWidgets(editors, items, property, dash('editor'))
-  const emptyTerm = widgetItem?.meta.createTerm ? widgetItem?.meta.createTerm() : null
-  if (!emptyTerm) return
-
-  parentData.addOut(predicate, emptyTerm)
-  ;(emptyTerm as any).touched = false
-}
+export const createAddObject =
+  (editors: WidgetItem[], property: Grapoi, items: Grapoi, parentData: Grapoi) =>
+  (skipCallback: boolean = false) => {
+    const path = parsePath(property.out(sh('path')))
+    const lastPathPart = path.at(-1)
+    if (lastPathPart.predicates.length > 1) throw new Error('Alternative property paths are not yet supported')
+    const [predicate] = lastPathPart.predicates
+    const widgetItem = scoreWidgets(editors, items, property, dash('editor'))
+    const emptyTerm = widgetItem?.meta.createTerm ? widgetItem?.meta.createTerm() : null
+    if (!emptyTerm) return
+    ;(emptyTerm as TouchableTerm).touched = false
+    if (skipCallback) (emptyTerm as TouchableTerm).skipCallback = true
+    parentData.addOut(predicate, emptyTerm)
+  }

@@ -1,3 +1,4 @@
+import { write } from '@jeswr/pretty-turtle'
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
@@ -6,7 +7,7 @@ import { JsonLdContextNormalized } from 'jsonld-context-parser/lib/JsonLdContext
 import { ReactNode, createContext } from 'react'
 import { datasetProxy } from '../helpers/datasetProxy'
 import { getShapeSkeleton } from './getShapeSkeleton'
-import { rdf, sh } from './namespaces'
+import { prefixes, rdf, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
 
 export type MainContextInput = {
@@ -82,12 +83,12 @@ export const initContext = async ({
     for (const changeListener of changeListeners) changeListener(operation)
   }
 
-  // registerChangeListener(async operation => {
-  //   if (operation === 'add') {
-  //     const turtle = await write([...dataset], { prefixes })
-  //     console.log(turtle)
-  //   }
-  // })
+  registerChangeListener(async operation => {
+    if (operation === 'add') {
+      const turtle = await write([...dataset], { prefixes })
+      console.log(turtle)
+    }
+  })
 
   const resolvedData = data ? await resolveRdfInput(data) : null
 
@@ -103,7 +104,7 @@ export const initContext = async ({
   }
 
   const shapePointer = shapeSubject?.toString()
-    ? shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!
+    ? (shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!)
     : [...shapePointers].at(0)!
   const targetClass = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
 
