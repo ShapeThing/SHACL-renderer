@@ -13,7 +13,7 @@ export default function PropertyShapeViewMode(props: PropertyShapeInnerProps) {
   return (
     <PropertyElement showColon property={property}>
       {wrapWithList(
-        data.map(item => {
+        data.map((item: any) => {
           const widgetItem = scoreWidgets(viewers, data, property, dash('viewer'))
 
           return widgetItem ? (

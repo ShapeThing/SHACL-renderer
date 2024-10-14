@@ -4,6 +4,7 @@ import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser/lib/JsonLdContextNormalized'
+import { debounce } from 'lodash-es'
 import { ReactNode, createContext } from 'react'
 import { datasetProxy } from '../helpers/datasetProxy'
 import { getShapeSkeleton } from './getShapeSkeleton'
@@ -83,16 +84,17 @@ export const initContext = async ({
     for (const changeListener of changeListeners) changeListener(operation)
   }
 
-  registerChangeListener(async operation => {
-    if (operation === 'add') {
-      const turtle = await write([...dataset], { prefixes })
-      console.log(turtle)
-    }
+  registerChangeListener(async _operation => {
+    const turtle = await write([...dataset], { prefixes })
+    console.log(turtle, dataset)
   })
 
   const resolvedData = data ? await resolveRdfInput(data) : null
 
-  let dataset = datasetProxy(resolvedData ? resolvedData.dataset : datasetFactory.dataset(), changeListener)
+  let dataset = datasetProxy(
+    resolvedData ? resolvedData.dataset : datasetFactory.dataset(),
+    debounce(changeListener, 10)
+  )
 
   if (!subject) {
     const firstQuad = [...dataset]?.[0]
@@ -104,7 +106,7 @@ export const initContext = async ({
   }
 
   const shapePointer = shapeSubject?.toString()
-    ? (shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!)
+    ? shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!
     : [...shapePointers].at(0)!
   const targetClass = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
 

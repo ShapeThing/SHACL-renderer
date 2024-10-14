@@ -20,7 +20,7 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
   return (
     <PropertyElement showColon property={property}>
       {wrapWithList(
-        data.map(item => (
+        data.map((item: any) => (
           <PropertyObjectInlineEditMode
             {...props}
             initialMode={item.term?.value === '' ? 'edit' : 'view'}
@@ -33,7 +33,7 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
       )}
 
       {data.ptrs.length < maxCount ? (
-        <button onClick={addObject}>
+        <button onClick={() => addObject()}>
           <IconPlus />
         </button>
       ) : null}

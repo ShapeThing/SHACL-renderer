@@ -13,7 +13,6 @@ type PropertyObjectInlineEditModeProps = {
   data: Grapoi
   items: Grapoi
   facetSearchData: Grapoi
-  rerenderProperty: () => void
   initialMode?: 'view' | 'edit'
 }
 

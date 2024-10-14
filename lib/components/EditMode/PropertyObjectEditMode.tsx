@@ -1,5 +1,5 @@
 import factory from '@rdfjs/data-model'
-import { Quad_Object, Term } from '@rdfjs/types'
+import { Quad, Quad_Object, Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { useContext, useState } from 'react'
 import IconTrash from '~icons/mynaui/trash'
@@ -39,7 +39,17 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
     ? () => {
         const dataset = data.ptrs[0].dataset
         const [quad] = [...data.quads()]
+
+        const findDescendants = (subject: Term): Quad[] => {
+          if (!['BlankNode', 'NamedNode'].includes(subject.termType)) return []
+          const descendants = dataset.match(subject)
+          return [...descendants, ...[...descendants].flatMap((quad: Quad) => findDescendants(quad.object))]
+        }
+
+        const allDescendants = findDescendants(quad.object)
+        for (const descendent of allDescendants) dataset.delete(descendent)
         dataset.delete(quad)
+
         setIsDeleting(false)
       }
     : undefined

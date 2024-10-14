@@ -7,5 +7,12 @@ export default defineConfig({
   plugins: [preact(), Icons({ compiler: 'jsx', jsx: 'react', autoInstall: true })],
   build: {
     target: 'ES2022'
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler'
+      }
+    }
   }
 })

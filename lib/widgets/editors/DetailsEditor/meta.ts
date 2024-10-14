@@ -4,7 +4,7 @@ import { dash, sh } from '../../../core/namespaces'
 import { WidgetMeta } from '../../widgets-context'
 
 export default {
-  iri: dash('BlankNodeEditor'),
+  iri: dash('DetailsEditor'),
   createTerm: () => factory.blankNode(),
   score: (data?: Grapoi, property?: Grapoi) => {
     if (property && !property.out(sh('node')).value) return -1

@@ -3,7 +3,7 @@ import { dash, sh } from '../../../core/namespaces'
 import { WidgetMeta } from '../../widgets-context'
 
 export default {
-  iri: dash('BlankNodeViewer'),
+  iri: dash('DetailsViewer'),
   score: (data?: Grapoi, property?: Grapoi) => {
     if (property && !property.out(sh('node')).value) return -1
 

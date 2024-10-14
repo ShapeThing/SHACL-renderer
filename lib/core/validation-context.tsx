@@ -9,7 +9,7 @@ export const validationContext = createContext<ValidationReport | undefined>(und
 
 export default function ValidationContextProvider({ children }: { children: ReactNode }) {
   const [report, setReport] = useState<ValidationReport | undefined>(undefined)
-  const { registerChangeListener, data, shapes } = useContext(mainContext)
+  const { data, shapes } = useContext(mainContext)
 
   const [validator] = useState(() => {
     const validator = new Validator(shapes, { factory })
@@ -22,7 +22,6 @@ export default function ValidationContextProvider({ children }: { children: Reac
   )
 
   useEffect(() => {
-    // registerChangeListener(validate)
     validate()
   }, [])
 
