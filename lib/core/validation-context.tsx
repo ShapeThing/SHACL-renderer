@@ -1,5 +1,5 @@
 import factory from '@rdfjs/data-model'
-import { debounce } from 'lodash-es'
+import debounce from 'lodash-es/debounce'
 import ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { Validator } from 'shacl-engine'

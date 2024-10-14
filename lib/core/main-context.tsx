@@ -1,14 +1,13 @@
-import { write } from '@jeswr/pretty-turtle'
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser/lib/JsonLdContextNormalized'
-import { debounce } from 'lodash-es'
+import debounce from 'lodash-es/debounce'
 import { ReactNode, createContext } from 'react'
 import { datasetProxy } from '../helpers/datasetProxy'
 import { getShapeSkeleton } from './getShapeSkeleton'
-import { prefixes, rdf, sh } from './namespaces'
+import { rdf, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
 
 export type MainContextInput = {
@@ -85,8 +84,8 @@ export const initContext = async ({
   }
 
   registerChangeListener(async _operation => {
-    const turtle = await write([...dataset], { prefixes })
-    console.log(turtle, dataset)
+    // const turtle = await write([...dataset], { prefixes })
+    console.log(dataset)
   })
 
   const resolvedData = data ? await resolveRdfInput(data) : null

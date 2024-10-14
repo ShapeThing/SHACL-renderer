@@ -1,7 +1,7 @@
 import datasetFactory from '@rdfjs/dataset'
 import DatasetCoreConstructor from '@rdfjs/dataset/DatasetCore'
 import { DatasetCore } from '@rdfjs/types'
-import { Parser } from 'n3'
+import Parser from 'n3/src/N3Parser.js'
 import { cachedFetch } from '../helpers/cachedFetch'
 
 export const resolveRdfInput = async (
