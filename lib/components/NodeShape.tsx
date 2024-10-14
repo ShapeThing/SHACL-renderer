@@ -1,27 +1,16 @@
-import { Grapoi } from 'grapoi'
-import { ReactNode, useContext, useEffect, useReducer } from 'react'
+import { ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import { nonNullable } from '../helpers/nonNullable'
 import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
 
-export type NodeShapeProps = {
-  shapePointer: Grapoi
-  dataPointer: Grapoi
-  facetSearchDataPointer: Grapoi
-}
-
-export default function NodeShape({ shapePointer, dataPointer, facetSearchDataPointer }: NodeShapeProps) {
-  const { mode, registerChangeListener } = useContext(mainContext)
-  const [, forceUpdate] = useReducer(x => x + 1, 0)
-
-  useEffect(() => {
-    registerChangeListener(forceUpdate)
-  }, [])
+export default function NodeShape() {
+  const { mode, shapePointer, dataPointer, facetSearchDataPointer } = useContext(mainContext)
 
   const properties = shapePointer.out(sh('property'))
   const propertiesWithGroups = properties.filter(pointer => !!pointer.out(sh('group')).term)
+  // TODO define simple grapoi pointers for properties that do not have a shacl property
   const groups = [...shapePointer.node().hasOut(rdf('type'), sh('PropertyGroup'))]
 
   const sortablePropertyWithGroups: [number, ReactNode][] = groups

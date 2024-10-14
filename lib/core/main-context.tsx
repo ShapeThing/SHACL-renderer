@@ -3,9 +3,7 @@ import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser/lib/JsonLdContextNormalized'
-import debounce from 'lodash-es/debounce'
 import { ReactNode, createContext } from 'react'
-import { datasetProxy } from '../helpers/datasetProxy'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import { rdf, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
@@ -36,7 +34,6 @@ export type MainContext = {
   dataPointer: Grapoi
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
-  registerChangeListener: (callback: (operation: 'add' | 'delete') => void) => void
 } & Settings
 
 export const mainContext = createContext<MainContext>({
@@ -50,7 +47,6 @@ export const mainContext = createContext<MainContext>({
   dataPointer: undefined as unknown as Grapoi,
   facetSearchDataPointer: undefined as unknown as Grapoi,
   mode: 'edit',
-  registerChangeListener: _callback => null,
   jsonLdContext: new JsonLdContextNormalized({})
 })
 
@@ -73,27 +69,9 @@ export const initContext = async ({
   const rootShapePointer = grapoi({ dataset: resolvedShapes, factory })
   let shapePointers = rootShapePointer.hasOut(rdf('type'), sh('NodeShape'))
   if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
-  const changeListeners: Set<(operation: 'add' | 'delete') => void> = new Set()
-
-  const registerChangeListener = (callback: (operation: 'add' | 'delete') => void) => {
-    changeListeners.add(callback)
-  }
-
-  const changeListener = (operation: 'add' | 'delete') => {
-    for (const changeListener of changeListeners) changeListener(operation)
-  }
-
-  registerChangeListener(async _operation => {
-    // const turtle = await write([...dataset], { prefixes })
-    console.log(dataset)
-  })
 
   const resolvedData = data ? await resolveRdfInput(data) : null
-
-  let dataset = datasetProxy(
-    resolvedData ? resolvedData.dataset : datasetFactory.dataset(),
-    debounce(changeListener, 10)
-  )
+  let dataset = resolvedData ? resolvedData.dataset : datasetFactory.dataset()
 
   if (!subject) {
     const firstQuad = [...dataset]?.[0]
@@ -104,6 +82,7 @@ export const initContext = async ({
     }
   }
 
+  // TODO in the future we could make it possible to select a specific shape.
   const shapePointer = shapeSubject?.toString()
     ? shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!
     : [...shapePointers].at(0)!
@@ -121,7 +100,7 @@ export const initContext = async ({
 
   if (mode === 'facet') {
     // Extract the bare essentials for a shape so that facets can run and add their filters to it.
-    dataset = datasetProxy(getShapeSkeleton(shapePointer), changeListener)
+    dataset = getShapeSkeleton(shapePointer)
     dataPointer = grapoi({ dataset, factory, term: shapePointer.term })
   }
 
@@ -135,7 +114,6 @@ export const initContext = async ({
     shapePointer,
     shapePointers,
     facetSearchDataPointer,
-    registerChangeListener,
     jsonLdContext: new JsonLdContextNormalized({ ...(resolvedData?.prefixes ?? {}) }),
     mode,
     ...settings

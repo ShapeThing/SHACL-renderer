@@ -1,5 +1,4 @@
-import factory from '@rdfjs/data-model'
-import { Quad, Quad_Object, Term } from '@rdfjs/types'
+import { Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { useContext, useState } from 'react'
 import IconTrash from '~icons/mynaui/trash'
@@ -13,10 +12,12 @@ type PropertyObjectEditModeProps = {
   facetSearchData: Grapoi
   items: Grapoi
   errors?: string[]
+  deleteTerm: () => void
+  setTerm: (term: Term) => void
 }
 
 export default function PropertyObjectEditMode(props: PropertyObjectEditModeProps) {
-  const { data, property, items, errors } = props
+  const { data, property, items, errors, setTerm, deleteTerm } = props
   const { editors } = useContext(widgetsContext)
   const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
   const [isDeleting, setIsDeleting] = useState(false)
@@ -26,30 +27,9 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
   const minCount = property.out(sh('minCount')).value ? parseInt(property.out(sh('minCount')).value.toString()) : 0
   const itemIsRequired = items.ptrs.length <= minCount
 
-  const setTerm = (term: Term) => {
-    const dataset = data.ptrs[0].dataset
-    const [quad] = [...data.quads()]
-
-    if (quad.object.equals(term)) return
-    dataset.delete(quad)
-    dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
-  }
-
   const onAnimationEnd = isDeleting
     ? () => {
-        const dataset = data.ptrs[0].dataset
-        const [quad] = [...data.quads()]
-
-        const findDescendants = (subject: Term): Quad[] => {
-          if (!['BlankNode', 'NamedNode'].includes(subject.termType)) return []
-          const descendants = dataset.match(subject)
-          return [...descendants, ...[...descendants].flatMap((quad: Quad) => findDescendants(quad.object))]
-        }
-
-        const allDescendants = findDescendants(quad.object)
-        for (const descendent of allDescendants) dataset.delete(descendent)
-        dataset.delete(quad)
-
+        deleteTerm()
         setIsDeleting(false)
       }
     : undefined

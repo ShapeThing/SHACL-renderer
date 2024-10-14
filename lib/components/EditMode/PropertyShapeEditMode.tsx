@@ -1,7 +1,8 @@
-import { Term } from '@rdfjs/types'
+import factory from '@rdfjs/data-model'
+import { Quad, Quad_Object, Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import ValidationReport from 'rdf-validate-shacl/src/validation-report'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import IconPlus from '~icons/iconoir/plus'
 import { mainContext } from '../../core/main-context'
 import { dash, sh } from '../../core/namespaces'
@@ -22,12 +23,13 @@ type PropertyShapeEditModeProps = {
 }
 
 export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps) {
-  const { data: items, property, nodeDataPointer, errors, path } = props
+  const { property, nodeDataPointer, errors, path } = props
   const { editors } = useContext(widgetsContext)
   const { jsonLdContext } = useContext(mainContext)
 
-  const addObject = createAddObject(editors, property, items, nodeDataPointer)
-  if (!items.ptrs.length) addObject(true)
+  const [items, setItems] = useState(() => nodeDataPointer.executeAll(path))
+
+  const addObject = createAddObject(editors, property, items, nodeDataPointer, setItems)
 
   const maxCount = property.out(sh('maxCount')).value
     ? parseInt(property.out(sh('maxCount')).value.toString())
@@ -56,16 +58,52 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
               })
           )
 
-          return <PropertyObjectEditMode {...props} data={item} items={items} errors={errorMessages} />
+          return (
+            <PropertyObjectEditMode
+              {...props}
+              data={item}
+              items={items}
+              errors={errorMessages}
+              setTerm={(term: Term) => {
+                const dataset = item.ptrs[0].dataset
+                const [quad] = [...item.quads()]
+                if (quad.object.equals(term)) return
+                dataset.delete(quad)
+                dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
+
+                setItems(() => nodeDataPointer.executeAll(path))
+              }}
+              deleteTerm={() => {
+                const dataset = item.ptrs[0].dataset
+                const [quad] = [...item.quads()]
+                dataset.delete(quad)
+
+                const findDescendants = (subject: Term): Quad[] => {
+                  if (!['BlankNode', 'NamedNode'].includes(subject.termType)) return []
+                  const descendants = dataset.match(subject)
+                  return [...descendants, ...[...descendants].flatMap((quad: Quad) => findDescendants(quad.object))]
+                }
+
+                const allDescendants = findDescendants(quad.object)
+                for (const descendent of allDescendants) dataset.delete(descendent)
+                dataset.delete(quad)
+
+                setItems(() => nodeDataPointer.executeAll(path))
+              }}
+            />
+          )
         })}
+
         {emptyFallback && emptyFallback.meta.showIfEmpty ? (
           <emptyFallback.Component
             setTerm={(term: Term) => {
               ;(term as TouchableTerm).touched = false
               items.addOut(path[0].predicates[0], term)
+              setItems(() => nodeDataPointer.executeAll(path))
             }}
           />
         ) : null}
+
         {items.ptrs.length < maxCount ? (
           <button className="button icon secondary add-object" onClick={() => addObject()}>
             <IconPlus />

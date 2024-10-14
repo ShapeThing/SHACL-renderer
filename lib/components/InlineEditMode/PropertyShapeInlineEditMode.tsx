@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import IconPlus from '~icons/iconoir/plus'
 import { sh } from '../../core/namespaces'
 import { wrapWithList } from '../../helpers/wrapWithList'
@@ -9,10 +9,12 @@ import { PropertyShapeInnerProps } from '../PropertyShape'
 import PropertyObjectInlineEditMode from './PropertyObjectInlineEditMode'
 
 export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerProps) {
-  const { data, property, nodeDataPointer } = props
+  const { data, property, nodeDataPointer, path } = props
   const { editors } = useContext(widgetsContext)
+  const [items, setItems] = useState(() => nodeDataPointer.executeAll(path))
 
-  const addObject = createAddObject(editors, property, data, nodeDataPointer)
+  const addObject = createAddObject(editors, property, data, nodeDataPointer, setItems)
+
   const maxCount = property.out(sh('maxCount')).value
     ? parseInt(property.out(sh('maxCount')).value.toString())
     : Infinity
@@ -20,19 +22,19 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
   return (
     <PropertyElement showColon property={property}>
       {wrapWithList(
-        data.map((item: any) => (
+        items.map((item: any) => (
           <PropertyObjectInlineEditMode
             {...props}
             initialMode={item.term?.value === '' ? 'edit' : 'view'}
             key={property.term?.value + item.term?.value}
             data={item}
-            items={data}
+            items={items}
           />
         )),
         property
       )}
 
-      {data.ptrs.length < maxCount ? (
+      {items.ptrs.length < maxCount ? (
         <button onClick={() => addObject()}>
           <IconPlus />
         </button>
