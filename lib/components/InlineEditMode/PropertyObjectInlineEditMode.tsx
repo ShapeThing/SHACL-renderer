@@ -1,3 +1,4 @@
+import { Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { useContext, useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'
@@ -14,6 +15,8 @@ type PropertyObjectInlineEditModeProps = {
   items: Grapoi
   facetSearchData: Grapoi
   initialMode?: 'view' | 'edit'
+  setTerm: (term: Term) => void
+  deleteTerm: () => void
 }
 
 export default function PropertyObjectInlineEditMode(props: PropertyObjectInlineEditModeProps) {
