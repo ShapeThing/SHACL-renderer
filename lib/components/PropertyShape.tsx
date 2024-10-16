@@ -56,7 +56,7 @@ export default function PropertyShape(props: PropertyShapeProps) {
     data = nodeDataPointer.out(sh('property')).distinct().hasOut(sh('path'), predicate)
   }
 
-  const report = useContext(validationContext)
+  const { report } = useContext(validationContext)
   const errors = report?.results?.filter((result: { path: unknown }) => isEqual(result.path, path)) ?? []
 
   return PropertyShapeInner ? (

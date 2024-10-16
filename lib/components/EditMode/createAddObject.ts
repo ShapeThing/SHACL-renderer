@@ -5,7 +5,6 @@ import { scoreWidgets } from '../../core/scoreWidgets'
 import { TouchableTerm } from '../../helpers/touchableRdf'
 import { WidgetItem } from '../../widgets/widgets-context'
 
-// Why are children first rendered and empty items created, before the blank node?
 export const createAddObject =
   (editors: WidgetItem[], property: Grapoi, items: Grapoi, parentData: Grapoi, setItems: () => void) => () => {
     const path = parsePath(property.out(sh('path')))

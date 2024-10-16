@@ -7,6 +7,7 @@ import IconPlus from '~icons/iconoir/plus'
 import { mainContext } from '../../core/main-context'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import { validationContext } from '../../core/validation-context'
 import { deleteTermAndDescendants } from '../../helpers/deleteTermAndDescendants'
 import { sortPointersStable } from '../../helpers/sortPointersStable'
 import { TouchableTerm } from '../../helpers/touchableRdf'
@@ -28,6 +29,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const { property, nodeDataPointer, errors, path } = props
   const { editors } = useContext(widgetsContext)
   const { jsonLdContext } = useContext(mainContext)
+  const { validate } = useContext(validationContext)
 
   const [items, realSetItems] = useState(() => nodeDataPointer.executeAll(path))
 
@@ -36,6 +38,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
     const newItems = nodeDataPointer.executeAll(path)
     sortPointersStable(newItems, oldTerms)
     realSetItems(newItems)
+    validate()
   }
 
   const addObject = createAddObject(editors, property, items, nodeDataPointer, setItems)

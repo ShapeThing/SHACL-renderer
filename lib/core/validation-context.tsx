@@ -5,7 +5,10 @@ import { ReactNode, createContext, useCallback, useContext, useEffect, useState 
 import { Validator } from 'shacl-engine'
 import { mainContext } from './main-context'
 
-export const validationContext = createContext<ValidationReport | undefined>(undefined)
+export const validationContext = createContext<{ report: ValidationReport | undefined; validate: () => void }>({
+  report: undefined,
+  validate: () => null
+})
 
 export default function ValidationContextProvider({ children }: { children: ReactNode }) {
   const [report, setReport] = useState<ValidationReport | undefined>(undefined)
@@ -25,5 +28,5 @@ export default function ValidationContextProvider({ children }: { children: Reac
     validate()
   }, [])
 
-  return <validationContext.Provider value={report}>{children}</validationContext.Provider>
+  return <validationContext.Provider value={{ report, validate }}>{children}</validationContext.Provider>
 }
