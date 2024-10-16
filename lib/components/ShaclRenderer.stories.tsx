@@ -10,11 +10,18 @@ export const View = {
   args: {
     mode: 'view',
     data: new URL('/john.ttl', location.origin),
-    shapes: new URL('/shapes/contact.ttl', location.origin),
+    shapes: new URL('/shapes/contact-closed.ttl', location.origin),
     targetClass: schema('Person')
   } as ShaclRendererProps
 }
 
+export const ViewWithoutShape = {
+  args: {
+    mode: 'view',
+    data: new URL('/john.ttl', location.origin),
+    targetClass: schema('Person')
+  } as ShaclRendererProps
+}
 export const FormEdit = {
   args: {
     mode: 'edit',
@@ -61,7 +68,7 @@ export const InlineEdit = {
   args: {
     mode: 'inline-edit',
     data: new URL('/john.ttl', location.origin),
-    shapes: new URL('/shapes/contact.ttl', location.origin),
+    shapes: new URL('/shapes/contact-closed.ttl', location.origin),
     targetClass: schema('Person')
   } as ShaclRendererProps
 }

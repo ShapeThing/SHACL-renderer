@@ -5,9 +5,9 @@ import { WidgetMeta } from '../../widgets-context'
 export default {
   iri: dash('DetailsViewer'),
   score: (data?: Grapoi, property?: Grapoi) => {
-    if (property && !property.out(sh('node')).value) return -1
+    // if (property && !property.out(sh('node')).value) return -1
 
-    if (data && data.term && data.term.termType === 'BlankNode') {
+    if (data && data.terms && data.terms[0]?.termType === 'BlankNode') {
       return 1
     }
 

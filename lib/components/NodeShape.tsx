@@ -1,5 +1,6 @@
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
+import { NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'
@@ -8,7 +9,9 @@ import { nonNullable } from '../helpers/nonNullable'
 import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
 
-const blacklist = [rdf('type')]
+const blacklist: NamedNode[] = [
+  // rdf('type')
+]
 
 export default function NodeShape() {
   const { mode, shapePointer, dataPointer, facetSearchDataPointer } = useContext(mainContext)
@@ -24,7 +27,7 @@ export default function NodeShape() {
   const sortablePropertyWithGroups: [number, ReactNode][] = groups
     .map(group => {
       const groupProperties = [...propertiesWithGroups.hasOut(sh('group'), group.term)]
-      // TOD this only works for simple sh:path
+      // TODO this only works for simple sh:path
       for (const predicate of groupProperties.map(groupProperty => groupProperty.out(sh('path')).value))
         usedPredicates.add(predicate)
       return groupProperties.length ? { group, properties: groupProperties } : null
