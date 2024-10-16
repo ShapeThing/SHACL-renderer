@@ -1,0 +1,141 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
+@prefix stf: <http://ontology.shapething.com/facet#> .
+
+<>
+  a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+  sh:closed true ;
+
+  sh:property [
+    sh:name "Given name"@en ;
+    sh:group <#name> ;
+    sh:path schema:givenName ;
+    sh:minCount 1;
+    sh:maxCount 5;
+    sh:datatype xsd:string ;
+  ];
+  
+  sh:property [
+    sh:name "Family name"@en ;
+    sh:group <#name> ;
+    sh:path schema:familyName ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:datatype xsd:string ;
+  ];
+  
+  sh:property [
+    sh:name "Children"@en ;
+    sh:path schema:child ;
+    sh:order 3 ;
+    sh:datatype xsd:string ;
+    stf:facet stf:CountFacet ;
+    stsr:listType stsr:NaturalLanguageList ;
+  ];
+
+  sh:property [
+    sh:name "Date of birth"@en ;
+    sh:path schema:birthDate ;
+    sh:order 2 ;
+    sh:editor dash:DatePickerEditor ;
+    sh:maxCount 1;
+    sh:datatype xsd:date ;
+  ];
+
+  sh:property [
+    sh:name "Address"@en ;
+    sh:order 4 ;
+    sh:path schema:address ;
+    sh:maxCount 1 ;
+    sh:node <#addressShape> ;
+    sh:nodeKind sh:BlankNode ;
+  ];
+
+  # This field is hidden for viewing and editing.
+  # In facet mode it renders a search field for the predicates: 
+  #   schema:givenName 
+  #   schema:familyName 
+  #   schema:child
+  sh:property [
+    sh:name "Search"@en ;
+    sh:path [ sh:alternativePath ( 
+      schema:givenName 
+      schema:familyName 
+      schema:child 
+    ) ] ;
+    sh:datatype xsd:string ;
+    sh:order 0 ;
+    dash:viewer stsr:HideWidget ;
+    dash:editor stsr:HideWidget ;
+    stf:facet stf:TextFieldFacet ;
+  ];
+
+.
+
+<#name>
+	a sh:PropertyGroup ;
+	sh:order 1 .
+
+<#street-and-housenumber>
+	a sh:PropertyGroup ;
+	sh:order 2 .
+
+<#world>
+	a sh:PropertyGroup ;
+	sh:order 3 .
+
+
+<#addressShape>
+    a sh:NodeShape ;
+    sh:targetClass schema:PostalAddress ;
+
+    sh:property [
+        sh:name "Street"@en ;
+        sh:group <#street-and-housenumber> ;
+        sh:path schema:streetAddress ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:name "Postal code"@en ;
+        sh:path schema:postalCode ;
+        sh:group <#street-and-housenumber> ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:name "Locality"@en ;
+        sh:group <#world> ;
+        sh:path schema:addressLocality ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:name "Region"@en ;
+        sh:group <#world> ;
+        sh:path schema:addressRegion ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:name "Country"@en ;
+        sh:path schema:addressCountry ;
+        sh:group <#world> ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .

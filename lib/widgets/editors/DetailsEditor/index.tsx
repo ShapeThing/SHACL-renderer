@@ -6,7 +6,9 @@ import { WidgetProps } from '../../widgets-context'
 
 export default function DetailsEditor({ data, property, facetSearchData }: WidgetProps) {
   const node = property.out(sh('node')).term
-  const nodeShapePointer = property.node(node)
+
+  // This is a little trick so we can support data without shapes.
+  const nodeShapePointer = node ? property.node(node) : property
   const mainContextInstance = useContext(mainContext)
 
   return (

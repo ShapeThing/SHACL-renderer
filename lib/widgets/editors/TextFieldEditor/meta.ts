@@ -9,10 +9,10 @@ export default {
   score: (data?: Grapoi, propertyShape?: Grapoi) => {
     if (
       data &&
-      data.term &&
-      data.term.value &&
-      data.term.termType === 'Literal' &&
-      xsd('string').equals(data.term.datatype)
+      data.terms &&
+      data.terms[0]?.value &&
+      data.terms[0]?.termType === 'Literal' &&
+      xsd('string').equals(data.terms[0]?.datatype)
     ) {
       return 10
     }

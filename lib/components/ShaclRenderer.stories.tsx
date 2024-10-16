@@ -15,23 +15,38 @@ export const View = {
   } as ShaclRendererProps
 }
 
-export const Form = {
+export const FormEdit = {
   args: {
     mode: 'edit',
     data: new URL('/john.ttl', location.origin),
+    shapes: new URL('/shapes/contact-closed.ttl', location.origin),
+    targetClass: schema('Person')
+  } as ShaclRendererProps
+}
+
+export const FormCreate = {
+  args: {
+    mode: 'edit',
     shapes: new URL('/shapes/contact.ttl', location.origin),
     targetClass: schema('Person')
   } as ShaclRendererProps
 }
 
-export const FormShacl = {
+export const FormWithoutShape = {
   args: {
     mode: 'edit',
-    data: new URL('/shapes/contact.ttl', location.origin),
-    shapes: new URL('https://www.w3.org/ns/shacl-shacl'),
-    shapeSubject: new URL('http://www.w3.org/ns/shacl-shacl#ShapeShape')
+    data: new URL('/john.ttl', location.origin),
+    targetClass: schema('Person')
   } as ShaclRendererProps
 }
+// export const FormShacl = {
+//   args: {
+//     mode: 'edit',
+//     data: new URL('/shapes/contact.ttl', location.origin),
+//     shapes: new URL('https://www.w3.org/ns/shacl-shacl'),
+//     shapeSubject: new URL('http://www.w3.org/ns/shacl-shacl#ShapeShape')
+//   } as ShaclRendererProps
+// }
 
 export const FormInvalid = {
   args: {

@@ -65,9 +65,17 @@ export const initContext = async ({
   shapeSubject,
   ...settings
 }: MainContextInput): Promise<MainContext> => {
-  const { dataset: resolvedShapes } = await resolveRdfInput(shapes)
+  const { dataset: resolvedShapes } = shapes
+    ? await resolveRdfInput(shapes)
+    : {
+        dataset: datasetFactory.dataset([
+          factory.quad(factory.namedNode(''), rdf('type'), sh('NodeShape')),
+          factory.quad(factory.namedNode(''), sh('targetClass'), givenTargetClass!)
+        ])
+      }
   const rootShapePointer = grapoi({ dataset: resolvedShapes, factory })
   let shapePointers = rootShapePointer.hasOut(rdf('type'), sh('NodeShape'))
+
   if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
 
   const resolvedData = data ? await resolveRdfInput(data) : null
@@ -86,7 +94,7 @@ export const initContext = async ({
   const shapePointer = shapeSubject?.toString()
     ? shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!
     : [...shapePointers].at(0)!
-  const targetClass = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
+  const targetClass: NamedNode = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
 
   let dataPointer = grapoi({ dataset, factory, term: subject })
 

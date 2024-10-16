@@ -7,8 +7,7 @@ export default {
   iri: dash('DetailsEditor'),
   createTerm: () => factory.blankNode(),
   score: (data?: Grapoi, property?: Grapoi) => {
-    if (property && !property.out(sh('node')).value) return -1
-
+    // Does not conform to spec.
     if (data && data.term && data.term.termType === 'BlankNode') {
       return 1
     }

@@ -19,7 +19,6 @@ export const scoreWidgets = (widgets: Array<WidgetItem>, data: Grapoi, property:
       return { widgetItem, score: score === undefined ? -1 : score }
     })
     .sort((a, b) => b.score - a.score)
-    .filter(({ score }) => score > -1)
 
-  return widgetMatches[0]?.widgetItem
+  return widgetMatches.filter(({ score }) => score > -1)[0]?.widgetItem
 }
