@@ -1,6 +1,4 @@
 import factory from '@rdfjs/data-model'
-import datasetFactory from '@rdfjs/dataset'
-import { NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'
@@ -8,10 +6,6 @@ import { rdf, sh } from '../core/namespaces'
 import { nonNullable } from '../helpers/nonNullable'
 import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
-
-const blacklist: NamedNode[] = [
-  // rdf('type')
-]
 
 export default function NodeShape() {
   const { mode, shapePointer, dataPointer, facetSearchDataPointer } = useContext(mainContext)
@@ -66,17 +60,21 @@ export default function NodeShape() {
       .map(quad => [quad.predicate.value, quad.predicate])
   )
 
-  // For now we have a blacklist that remove rdf:type. TODO Do we need this?
-  for (const predicate of blacklist) predicatesWithoutNodeShapes.delete(predicate.value)
-
   const propertiesWithoutNodeShapes: ReactNode[] = !isClosed
     ? [...predicatesWithoutNodeShapes.values()].map(predicate => {
-        const dataset = datasetFactory.dataset([
-          factory.quad(factory.namedNode(''), rdf('type'), sh('PropertyShape')),
-          factory.quad(factory.namedNode(''), sh('path'), predicate)
-        ])
+        const dataset = shapePointer.ptrs[0].dataset
 
-        const propertyPointer = grapoi({ dataset, factory, term: factory.namedNode('') })
+        const propertyIri = factory.namedNode(`int:${predicate.value}`)
+
+        const quads = [
+          factory.quad(factory.namedNode(''), sh('property'), propertyIri),
+          factory.quad(propertyIri, rdf('type'), sh('PropertyShape')),
+          factory.quad(propertyIri, sh('path'), predicate)
+        ]
+
+        for (const quad of quads) dataset.add(quad)
+
+        const propertyPointer = grapoi({ dataset, factory, term: propertyIri })
 
         return (
           <PropertyShape

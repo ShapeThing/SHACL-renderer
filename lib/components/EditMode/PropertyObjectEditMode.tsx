@@ -21,7 +21,9 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
   const { editors } = useContext(widgetsContext)
   const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
   const [isDeleting, setIsDeleting] = useState(false)
-  if (!widgetItem) return null
+  if (!widgetItem) {
+    return null
+  }
 
   const minCount = property.out(sh('minCount')).value ? parseInt(property.out(sh('minCount')).value.toString()) : 0
   const itemIsRequired = items.ptrs.length <= minCount

@@ -31,7 +31,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const { jsonLdContext } = useContext(mainContext)
   const { validate } = useContext(validationContext)
 
-  const [items, realSetItems] = useState(() => nodeDataPointer.executeAll(path))
+  const [items, realSetItems] = useState(nodeDataPointer.executeAll(path))
 
   const setItems = () => {
     const oldTerms = items.terms

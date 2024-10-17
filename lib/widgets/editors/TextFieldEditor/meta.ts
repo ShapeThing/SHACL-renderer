@@ -1,18 +1,20 @@
 import factory from '@rdfjs/data-model'
 import { Grapoi } from 'grapoi'
 import { dash, sh, xsd } from '../../../core/namespaces'
+import { TouchableTerm } from '../../../helpers/touchableRdf'
 import { WidgetMeta } from '../../widgets-context'
 
 export default {
   iri: dash('TextFieldEditor'),
   createTerm: () => factory.literal(''),
   score: (data?: Grapoi, propertyShape?: Grapoi) => {
+    const term = data?.terms[0]
+
     if (
-      data &&
-      data.terms &&
-      data.terms[0]?.value &&
-      data.terms[0]?.termType === 'Literal' &&
-      xsd('string').equals(data.terms[0]?.datatype)
+      term &&
+      (term.value || (term as TouchableTerm).touched === false) &&
+      term.termType === 'Literal' &&
+      xsd('string').equals(term.datatype)
     ) {
       return 10
     }
