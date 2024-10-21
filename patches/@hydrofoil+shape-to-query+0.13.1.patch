@@ -1,0 +1,52 @@
+diff --git a/node_modules/@hydrofoil/shape-to-query/lib/shapeToPatterns.js b/node_modules/@hydrofoil/shape-to-query/lib/shapeToPatterns.js
+index 9eec78d..ce5ec7c 100644
+--- a/node_modules/@hydrofoil/shape-to-query/lib/shapeToPatterns.js
++++ b/node_modules/@hydrofoil/shape-to-query/lib/shapeToPatterns.js
+@@ -60,6 +60,7 @@ function buildNodeShape({ nodeShape, variable, focusNode }) {
+             rootPatterns: [],
+         }),
+     };
++
+     return {
+         patterns: flatten(properties, constraints),
+         constraints,
+diff --git a/node_modules/@hydrofoil/shape-to-query/model/NodeShape.js b/node_modules/@hydrofoil/shape-to-query/model/NodeShape.js
+index 6183b59..f429958 100644
+--- a/node_modules/@hydrofoil/shape-to-query/model/NodeShape.js
++++ b/node_modules/@hydrofoil/shape-to-query/model/NodeShape.js
+@@ -16,6 +16,7 @@ export default class extends Shape {
+                 focusNode,
+             })));
+         }
++
+         const rootPatterns = [...arg.rootPatterns, ...targets.whereClause];
+         let properties = emptyPatterns;
+         if (this.properties.length) {
+diff --git a/node_modules/@hydrofoil/shape-to-query/vocabulary.js b/node_modules/@hydrofoil/shape-to-query/vocabulary.js
+index 3324ce6..f31be33 100644
+--- a/node_modules/@hydrofoil/shape-to-query/vocabulary.js
++++ b/node_modules/@hydrofoil/shape-to-query/vocabulary.js
+@@ -1,14 +1,14 @@
+-import loadShacl from '@vocabulary/sh';
+-import loadDash from '@vocabulary/dash';
+-import loadDashSparql from '@vocabulary/dash-sparql';
++import namespace from '@rdfjs/namespace';
++
++export const sh = namespace('http://www.w3.org/ns/shacl#')
++export const dash = namespace('http://datashapes.org/dash#')
++export const dashSparql = namespace('https://prefix.zazuko.com/dash-sparql:')
++
+ import $rdf from '@zazuko/env/web.js';
+-import { rdf } from '@tpluscode/rdf-ns-builders';
+-import { dashSparql } from '@tpluscode/rdf-ns-builders/loose';
+-export { rdf, sh, dashSparql as sparql } from '@tpluscode/rdf-ns-builders/loose';
+ const dataset = $rdf.dataset()
+-    .addAll(loadShacl({ factory: $rdf }))
+-    .addAll(loadDash({ factory: $rdf }))
+-    .addAll(loadDashSparql({ factory: $rdf }));
++    // .addAll(loadShacl({ factory: $rdf }))
++    // .addAll(loadDash({ factory: $rdf }))
++    // .addAll(loadDashSparql({ factory: $rdf }));
+ const vocabulary = $rdf.clownface({ dataset });
+ vocabulary.node([
+     dashSparql.and,
