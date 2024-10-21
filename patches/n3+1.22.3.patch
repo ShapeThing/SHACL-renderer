@@ -1,0 +1,20 @@
+diff --git a/node_modules/n3/src/N3Lexer.js b/node_modules/n3/src/N3Lexer.js
+index 4e734a0..1624da7 100644
+--- a/node_modules/n3/src/N3Lexer.js
++++ b/node_modules/n3/src/N3Lexer.js
+@@ -1,5 +1,5 @@
+ // **N3Lexer** tokenizes N3 documents.
+-import { Buffer } from 'buffer';
++// import { Buffer } from 'buffer';
+ import queueMicrotask from 'queue-microtask';
+ import namespaces from './IRIs';
+ 
+@@ -493,7 +493,7 @@ export default class N3Lexer {
+         if (this._input !== null && data.length !== 0) {
+           // Prepend any previous pending writes
+           if (this._pendingBuffer) {
+-            data = Buffer.concat([this._pendingBuffer, data]);
++            // data = Buffer.concat([this._pendingBuffer, data]);
+             this._pendingBuffer = null;
+           }
+           // Hold if the buffer ends in an incomplete unicode sequence
