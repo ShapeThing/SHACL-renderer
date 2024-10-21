@@ -46,6 +46,7 @@ export const FormWithoutShape = {
     targetClass: schema('Person')
   } as ShaclRendererProps
 }
+
 // export const FormShacl = {
 //   args: {
 //     mode: 'edit',

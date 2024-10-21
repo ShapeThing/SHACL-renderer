@@ -9,11 +9,11 @@ export default {
   score: (data?: Grapoi, property?: Grapoi) => {
     // Does not conform to spec.
     if (data && data.term && data.term.termType === 'BlankNode') {
-      return 1
+      return 10
     }
 
     if (property && sh('BlankNode').equals(property.out(sh('nodeKind')).term)) {
-      return 1
+      return 5
     }
   }
 } satisfies WidgetMeta

@@ -1,9 +1,12 @@
 import factory from '@rdfjs/data-model'
+import datasetFactory from '@rdfjs/dataset'
 import debounce from 'lodash-es/debounce'
 import ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { Validator } from 'shacl-engine'
+import { outAll } from '../helpers/outAll'
 import { mainContext } from './main-context'
+import { sh, stsr } from './namespaces'
 
 export const validationContext = createContext<{ report: ValidationReport | undefined; validate: () => void }>({
   report: undefined,
@@ -12,15 +15,35 @@ export const validationContext = createContext<{ report: ValidationReport | unde
 
 export default function ValidationContextProvider({ children }: { children: ReactNode }) {
   const [report, setReport] = useState<ValidationReport | undefined>(undefined)
-  const { data, shapes } = useContext(mainContext)
-
-  const [validator] = useState(() => {
-    const validator = new Validator(shapes, { factory })
-    return validator
-  })
+  const { data, shapes, shapePointer, dataPointer } = useContext(mainContext)
+  const [validator] = useState(() => new Validator(shapes, { factory }))
 
   const validate = useCallback(
-    debounce(() => validator.validate({ dataset: data }).then(setReport), 100),
+    debounce(async () => {
+      const properties = shapePointer.out(sh('property'))
+      const dataset = datasetFactory.dataset([...data])
+
+      for (const property of properties) {
+        const endpoint = property.out(stsr('endpoint')).value
+
+        if (endpoint) {
+          const shapeQuads = outAll(property.out().distinct().out())
+
+          const importShaclNodeFilterData = (await import('./importShaclNodeFilterData')).importShaclNodeFilterData
+
+          await importShaclNodeFilterData({
+            dataset,
+            endpoint,
+            property,
+            dataPointer,
+            shapeQuads
+          })
+        }
+      }
+
+      const report = await validator.validate({ dataset })
+      setReport(report)
+    }, 100),
     []
   )
 

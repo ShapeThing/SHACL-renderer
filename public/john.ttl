@@ -11,6 +11,8 @@
 
   schema:householdMembers 6 ;
 
+  schema:knows <http://dbpedia.org/resource/Søren_Kierkegaard> ;
+
   schema:address [
     schema:streetAddress "Wagramer Strasse 5" ;
     schema:postalCode "1220" ;

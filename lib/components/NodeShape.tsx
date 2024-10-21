@@ -1,4 +1,5 @@
 import factory from '@rdfjs/data-model'
+import { Term } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'
@@ -21,9 +22,12 @@ export default function NodeShape() {
   const sortablePropertyWithGroups: [number, ReactNode][] = groups
     .map(group => {
       const groupProperties = [...propertiesWithGroups.hasOut(sh('group'), group.term)]
-      // TODO this only works for simple sh:path
-      for (const predicate of groupProperties.map(groupProperty => groupProperty.out(sh('path')).value))
-        usedPredicates.add(predicate)
+
+      for (const groupProperty of groupProperties) {
+        const path: Term = groupProperty.out(sh('path')).term
+        if (path.termType !== 'NamedNode') throw new Error('We do not support anything other than named nodes yet.')
+        usedPredicates.add(path.value)
+      }
       return groupProperties.length ? { group, properties: groupProperties } : null
     })
     .filter(nonNullable)
@@ -71,7 +75,6 @@ export default function NodeShape() {
           factory.quad(propertyIri, rdf('type'), sh('PropertyShape')),
           factory.quad(propertyIri, sh('path'), predicate)
         ]
-
         for (const quad of quads) dataset.add(quad)
 
         const propertyPointer = grapoi({ dataset, factory, term: propertyIri })
