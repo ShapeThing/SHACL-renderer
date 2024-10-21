@@ -4,6 +4,7 @@ import debounce from 'lodash-es/debounce'
 import ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { Validator } from 'shacl-engine'
+import parsePath from 'shacl-engine/lib/parsePath'
 import { outAll } from '../helpers/outAll'
 import { mainContext } from './main-context'
 import { sh, stsr } from './namespaces'
@@ -30,12 +31,14 @@ export default function ValidationContextProvider({ children }: { children: Reac
           const shapeQuads = outAll(property.out().distinct().out())
 
           const importShaclNodeFilterData = (await import('./importShaclNodeFilterData')).importShaclNodeFilterData
+          const path = parsePath(property.out(sh('path')))
+
+          const term = dataPointer.executeAll(path)
 
           await importShaclNodeFilterData({
             dataset,
             endpoint,
-            property,
-            dataPointer,
+            focusNode: term.term,
             shapeQuads
           })
         }

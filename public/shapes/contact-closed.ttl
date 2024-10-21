@@ -70,6 +70,11 @@
       ] ;
 
       sh:property [
+        sh:path <http://dbpedia.org/ontology/thumbnail> ;
+        sh:minCount 1 ;
+      ] ;
+
+      sh:property [
         sh:path <http://purl.org/dc/terms/subject> ;
         sh:hasValue dbc:Philosophers_of_religion ;
       ] ;
