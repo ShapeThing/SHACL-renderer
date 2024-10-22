@@ -1,0 +1,67 @@
+.editor.autocomplete {
+    flex-wrap: wrap;
+    position: relative;
+
+    >.inner {
+        flex: 1 1 auto;
+        display: flex;
+        gap: 8px;
+        position: relative;
+        flex-direction: column;
+    }
+
+    .search-results-wrapper {
+        position: absolute;
+        left: 0;
+        top: calc(100% - 3px);
+        display: flex;
+        width: 100%;
+        padding-bottom: 100px;
+    }
+
+    .search-results {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        border-bottom-left-radius: var(--input-radius);
+        border-bottom-right-radius: var(--input-radius);
+        gap: 4px;
+        margin: 0;
+        padding: 8px;
+        background-color: rgba(var(--primary-rgb), 1);
+    }
+}
+
+.iri-preview {
+    border: 1px solid var(--tertiary);
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 34px;
+    font-size: .68em;
+    align-items: center;
+    gap: 1em;
+    border-radius: var(--input-radius);
+    background-color: white;
+    cursor: pointer;
+    padding-inline-end: 8px;
+
+    .label {
+        flex: 1 1 auto;
+    }
+
+    svg {
+        path[stroke="currentColor"] {
+            stroke: var(--secondary);
+        }
+    }
+
+    .image {
+        display: block;
+        border-top-left-radius: var(--input-radius);
+        border-bottom-left-radius: var(--input-radius);
+    }
+
+    &.selected {
+        flex: 1 1 100%;
+    }
+}

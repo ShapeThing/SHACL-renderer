@@ -35,10 +35,14 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
       }
     : undefined
 
+  const cssType = widgetItem.meta.iri.value.split(/\#|\//g).pop()?.replace('Editor', '').toLocaleLowerCase()
+
   return (
     <div
       onAnimationEnd={onAnimationEnd}
-      className={`editor ${isDeleting ? 'delete-animation' : ''} ${errors?.length ? 'has-error' : ''}`.trim()}
+      className={`editor ${cssType} ${isDeleting ? 'delete-animation' : ''} ${
+        errors?.length ? 'has-error' : ''
+      }`.trim()}
     >
       <widgetItem.Component {...props} term={data.term} setTerm={setTerm} />
       {!itemIsRequired || errors?.length ? (

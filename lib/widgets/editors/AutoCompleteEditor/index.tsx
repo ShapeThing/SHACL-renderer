@@ -2,7 +2,8 @@ import factory from '@rdfjs/data-model'
 import { NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { debounce } from 'lodash-es'
-import { Fragment, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
+import IconPencil from '~icons/mynaui/pencil'
 import { importShaclNodeFilterData } from '../../../core/importShaclNodeFilterData'
 import { mainContext } from '../../../core/main-context'
 import { rdfs, schema, stsr } from '../../../core/namespaces'
@@ -23,6 +24,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   const [search, setSearch] = useState('')
   const [searchInstances, setSearchInstances] = useState<Grapoi>()
   const [selectedInstance, setSelectedInstance] = useState<Grapoi>()
+  const [mode, setMode] = useState<'edit' | 'view'>('view')
 
   const image = getImage(selectedInstance)
 
@@ -48,39 +50,65 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
     }
   }, [search])
 
+  const searchInput = useRef<HTMLInputElement>(null)
+  const searchResults = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (mode === 'edit') {
+      setTimeout(() => searchInput.current?.focus(), 50)
+    }
+  }, ['mode'])
+
+  useEffect(() => {
+    searchResults.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [searchInstances])
+
   return (
-    <Fragment>
-      <div className="iri-preview">
-        {image ? <img src={`//wsrv.nl/?url=${image}&w=32&h=32&fit=cover&a=focal&fpy=0.45`} /> : null}
-        <span>{selectedInstance?.out(labels).value ?? term.value}</span>
-      </div>
-      <input
-        className="input search"
-        placeholder="Search..."
-        value={search}
-        type="search"
-        onChange={debounce(async event => setSearch(event.target.value), 400)}
-      />
+    <div className="inner">
+      {mode === 'view' ? (
+        <div className="iri-preview selected" onClick={() => setMode('edit')}>
+          {image ? (
+            <img className="image" src={`//wsrv.nl/?url=${image}&w=32&h=32&fit=cover&a=focal&fpy=0.45`} />
+          ) : null}
+          <span className="label">{selectedInstance?.out(labels).value ?? term.value}</span>
+          <IconPencil />
+        </div>
+      ) : (
+        <input
+          className="input search"
+          placeholder="Search..."
+          autoFocus
+          ref={searchInput}
+          value={search}
+          type="search"
+          onChange={debounce(async event => setSearch(event.target.value), 400)}
+        />
+      )}
       {searchInstances ? (
-        <ul className="search-results">
-          {searchInstances.map((searchInstance: Grapoi) => {
-            const image = getImage(searchInstance)
-            return (
-              <div
-                className="iri-preview"
-                onClick={() => {
-                  setTerm(searchInstance.term)
-                  setSearch('')
-                  setSearchInstances(undefined)
-                }}
-              >
-                {image ? <img src={`//wsrv.nl/?url=${image}&w=32&h=32&fit=cover&a=focal&fpy=0.45`} /> : null}
-                <span>{searchInstance?.out(labels).value ?? term.value}</span>
-              </div>
-            )
-          })}
-        </ul>
+        <div className="search-results-wrapper" ref={searchResults}>
+          <ul className="search-results">
+            {searchInstances.map((searchInstance: Grapoi) => {
+              const image = getImage(searchInstance)
+              return (
+                <div
+                  className="iri-preview"
+                  onClick={() => {
+                    setTerm(searchInstance.term)
+                    setSearch('')
+                    setMode('view')
+                    setSearchInstances(undefined)
+                  }}
+                >
+                  {image ? (
+                    <img className="image" src={`//wsrv.nl/?url=${image}&w=32&h=32&fit=cover&a=focal&fpy=0.45`} />
+                  ) : null}
+                  <span className="label">{searchInstance?.out(labels).value ?? term.value}</span>
+                </div>
+              )
+            })}
+          </ul>
+        </div>
       ) : null}
-    </Fragment>
+    </div>
   )
 }
