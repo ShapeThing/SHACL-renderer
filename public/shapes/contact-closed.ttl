@@ -41,6 +41,17 @@
   ];
 
   sh:property [
+    sh:name "Self reference"@en ;
+    sh:path schema:selfReference ;
+    sh:node [
+      sh:property [
+        sh:path schema:givenName ;
+        sh:minCount 1;
+      ] ;
+    ]
+  ];
+
+  sh:property [
     sh:name "Date of birth"@en ;
     sh:path schema:birthDate ;
     sh:order 2 ;
@@ -55,6 +66,7 @@
     sh:path schema:address ;
     sh:maxCount 1 ;
     sh:node <#addressShape> ;
+    # sh:class schema:PostalAddress ;
     sh:nodeKind sh:BlankNode ;
   ];
 

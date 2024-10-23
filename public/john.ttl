@@ -11,6 +11,8 @@
 
   schema:householdMembers 6 ;
 
+  schema:selfReference <> ;
+
   schema:knows <http://dbpedia.org/resource/Søren_Kierkegaard> ;
 
   schema:address [

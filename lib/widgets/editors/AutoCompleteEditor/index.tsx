@@ -2,9 +2,10 @@ import factory from '@rdfjs/data-model'
 import { NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { debounce } from 'lodash-es'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import IconPencil from '~icons/mynaui/pencil'
 import { importShaclNodeFilterData } from '../../../core/importShaclNodeFilterData'
+import { mainContext } from '../../../core/main-context'
 import { rdfs, schema, stsr } from '../../../core/namespaces'
 import Image from '../../../helpers/Image'
 import { outAll } from '../../../helpers/outAll'
@@ -13,10 +14,12 @@ import { WidgetProps } from '../../widgets-context'
 const getImage = (pointer?: Grapoi) => {
   return pointer
     ?.out()
-    .values.find(value => ['jpg', 'png', 'jpeg', 'gif', 'webm'].some(extension => value.includes(extension)))
+    ?.values.find(value => ['jpg', 'png', 'jpeg', 'gif', 'webm'].some(extension => value.includes(extension)))
 }
 
 export default function AutoCompleteEditor({ term, setTerm, property }: WidgetProps) {
+  const { data } = useContext(mainContext)
+
   const endpoint = property.out(stsr('endpoint')).value
   const labels = [rdfs('label'), schema('name')]
 
@@ -33,17 +36,18 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   const image = getImage(selectedInstance)
 
   useEffect(() => {
-    if (!term.value && mode !== 'edit') setMode('edit')
+    if (!term && mode !== 'edit') setMode('edit')
   }, [term])
 
   useEffect(() => {
     if (searchInput.current) searchInput.current.value = ''
-    if (!term?.value || !shapeQuads.length || !endpoint) return
+    if (!term?.value || !shapeQuads.length) return
     setIsLoading(true)
     importShaclNodeFilterData({
       focusNode: term as NamedNode,
       shapeQuads,
-      endpoint
+      endpoint,
+      dataset: data
     }).then(dataset => {
       setIsLoading(false)
       setSelectedInstance(grapoi({ dataset, factory }))
@@ -56,6 +60,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
       importShaclNodeFilterData({
         shapeQuads,
         endpoint,
+        dataset: data,
         limit: 20,
         searchTerm: search
       }).then(dataset => {

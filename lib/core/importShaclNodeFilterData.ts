@@ -1,7 +1,9 @@
 import { constructQuery } from '@hydrofoil/shape-to-query'
 import datasetFactory from '@rdfjs/dataset'
-import { DatasetCore, NamedNode, Quad } from '@rdfjs/types'
+import DatasetCore from '@rdfjs/dataset/DatasetCore'
+import { NamedNode, Quad } from '@rdfjs/types'
 import clownFace, { GraphPointer } from 'clownface'
+import { Store } from 'n3'
 import Parser from 'n3/src/N3Parser.js'
 
 type Input = {
@@ -9,13 +11,10 @@ type Input = {
   shapeQuads: Quad[]
   limit?: number
   endpoint?: string
-  dataset?: DatasetCore
+  dataset: DatasetCore
   searchTerm?: string
 } & ({ endpoint: string } | { dataset: DatasetCore })
 
-/**
- * Used when a sh:node has a sibling stsr:endpoint;
- */
 export const importShaclNodeFilterData = async ({
   focusNode,
   endpoint,
@@ -58,10 +57,7 @@ export const importShaclNodeFilterData = async ({
   } else {
     const { QueryEngine } = await import('@comunica/query-sparql-rdfjs')
     const queryEngine = new QueryEngine()
-    const quadsStream = await queryEngine.queryQuads(query, {
-      sources: [dataset]
-    })
-
-    return quadsStream.toArray()
+    const quadsStream = await queryEngine.queryQuads(query, { sources: [new Store([...dataset])] })
+    return datasetFactory.dataset(await quadsStream.toArray())
   }
 }
