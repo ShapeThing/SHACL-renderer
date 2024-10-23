@@ -13,7 +13,7 @@ export default {
     }
 
     if (property && sh('BlankNode').equals(property.out(sh('nodeKind')).term)) {
-      return 5
+      return 50
     }
   }
 } satisfies WidgetMeta

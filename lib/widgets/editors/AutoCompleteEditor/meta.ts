@@ -11,20 +11,20 @@ export default {
     const term = data?.terms[0]
 
     if (term && (term.value || (term as TouchableTerm).touched === false) && term.termType === 'NamedNode') {
-      return 2
+      return 10
     }
 
     if (
       propertyShape &&
       (sh('BlankNodeOrIRI').equals(propertyShape.out(sh('nodeKind')).term) ||
         sh('IRI').equals(propertyShape.out(sh('nodeKind')).term) ||
-        sh('BlankNode').equals(propertyShape.out(sh('nodeKind')).term))
+        !propertyShape.out(sh('nodeKind')).term)
     ) {
-      return 2
+      return 10
     }
 
     if (propertyShape && propertyShape.out(sh('node')).term) {
-      return 1
+      return 2
     }
   }
 } satisfies WidgetMeta

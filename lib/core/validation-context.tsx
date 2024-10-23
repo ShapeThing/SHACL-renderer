@@ -35,12 +35,13 @@ export default function ValidationContextProvider({ children }: { children: Reac
 
           const term = dataPointer.executeAll(path)
 
-          await importShaclNodeFilterData({
-            dataset,
+          const additionalQuads = await importShaclNodeFilterData({
             endpoint,
             focusNode: term.term,
             shapeQuads
           })
+
+          for (const quad of [...additionalQuads]) dataset.add(quad)
         }
       }
 

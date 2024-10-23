@@ -61,6 +61,7 @@
   sh:property [
     sh:name "Knows"@en ;
     sh:path schema:knows ;
+    sh:maxCount 4 ;
     stsr:endpoint <https://dbpedia.org/sparql>;
     sh:message "You must select a philosopher of religion" ;
     sh:node [
@@ -71,7 +72,6 @@
 
       sh:property [
         sh:path <http://dbpedia.org/ontology/thumbnail> ;
-        sh:minCount 1 ;
       ] ;
 
       sh:property [
