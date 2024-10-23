@@ -18,7 +18,7 @@ export default {
       propertyShape &&
       (sh('BlankNodeOrIRI').equals(propertyShape.out(sh('nodeKind')).term) ||
         sh('IRI').equals(propertyShape.out(sh('nodeKind')).term) ||
-        !propertyShape.out(sh('nodeKind')).term)
+        (!propertyShape.out(sh('nodeKind')).term && propertyShape.out(sh('node')).term))
     ) {
       return 10
     }

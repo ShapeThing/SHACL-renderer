@@ -6,6 +6,7 @@ import { ReactNode, createContext, useCallback, useContext, useEffect, useState 
 import { Validator } from 'shacl-engine'
 import parsePath from 'shacl-engine/lib/parsePath'
 import { outAll } from '../helpers/outAll'
+import { TouchableQuad } from '../helpers/touchableRdf'
 import { mainContext } from './main-context'
 import { sh, stsr } from './namespaces'
 
@@ -22,7 +23,7 @@ export default function ValidationContextProvider({ children }: { children: Reac
   const validate = useCallback(
     debounce(async () => {
       const properties = shapePointer.out(sh('property'))
-      const dataset = datasetFactory.dataset([...data])
+      const dataset = datasetFactory.dataset([...data].filter(quad => !('touched' in (quad as TouchableQuad).object)))
 
       for (const property of properties) {
         const endpoint = property.out(stsr('endpoint')).value
