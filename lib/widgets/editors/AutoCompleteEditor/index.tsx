@@ -103,7 +103,9 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
           placeholder="Search..."
           autoFocus
           onKeyUp={event => (event.key === 'Escape' ? clear() : null)}
-          onBlur={(event: any) => (event.rangeParent === searchInput.current ? clear() : null)}
+          onBlur={(event: any) =>
+            event.rangeParent === searchInput.current || searchInput.current?.value === '' ? clear() : null
+          }
           ref={searchInput}
           type="search"
           onChange={debounce(async event => setSearch(event.target.value), 400)}
