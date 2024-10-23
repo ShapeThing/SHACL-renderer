@@ -60,7 +60,10 @@
     gap: 1em;
     border-radius: var(--input-radius);
     background-color: white;
-    cursor: pointer;
+
+    &.search-result {
+        cursor: pointer;
+    }
 
     .label {
         flex: 1 1 auto;
@@ -69,6 +72,7 @@
 
     svg {
         margin-right: 8px;
+        cursor: pointer;
 
         path[stroke="currentColor"] {
             stroke: var(--secondary);

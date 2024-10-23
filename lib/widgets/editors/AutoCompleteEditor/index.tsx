@@ -2,7 +2,7 @@ import factory from '@rdfjs/data-model'
 import { NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { debounce } from 'lodash-es'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { startTransition, useContext, useEffect, useRef, useState } from 'react'
 import IconPencil from '~icons/mynaui/pencil'
 import { importShaclNodeFilterData } from '../../../core/importShaclNodeFilterData'
 import { mainContext } from '../../../core/main-context'
@@ -23,7 +23,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   const endpoint = property.out(stsr('endpoint')).value
   const labels = [rdfs('label'), schema('name')]
 
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(term.value)
   const [searchInstances, setSearchInstances] = useState<Grapoi>()
   const [selectedInstance, setSelectedInstance] = useState<Grapoi>()
   const [mode, setMode] = useState<'edit' | 'view'>('view')
@@ -40,7 +40,6 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   }, [term])
 
   useEffect(() => {
-    if (searchInput.current) searchInput.current.value = ''
     if (!term?.value || !shapeQuads.length) return
     setIsLoading(true)
     importShaclNodeFilterData({
@@ -74,7 +73,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   }, [search])
 
   useEffect(() => {
-    if (mode === 'edit') searchInput.current?.focus()
+    if (mode === 'edit') searchInput.current?.select()
   }, [mode])
 
   useEffect(() => {
@@ -82,7 +81,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   }, [searchInstances])
 
   const clear = () => {
-    setSearch('')
+    setSearch(term?.value ?? '')
     setMode('view')
     setSearchInstances(undefined)
   }
@@ -91,27 +90,31 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
     <div className={`inner ${isLoading ? 'is-loading' : ''}`}>
       {isLoading ? <span className="loader"></span> : ''}
       {!isLoading && mode === 'view' ? (
-        <div className="iri-preview selected" onClick={() => setMode('edit')}>
+        <div className="iri-preview selected" title={term.value}>
           {image ? <Image className="image" url={image} size={32} /> : null}
           <span className="label">{selectedInstance?.out(labels).value ?? term.value}</span>
-          <IconPencil />
+          <IconPencil onClick={() => setMode('edit')} />
         </div>
       ) : null}
+      {/* TODO Allow inserting an IRI by typing */}
       {!isLoading && mode === 'edit' ? (
         <input
           className="input search"
-          placeholder="Search..."
+          placeholder="Search or paste a link..."
           autoFocus
+          value={search}
           onKeyUp={event => (event.key === 'Escape' ? clear() : null)}
-          onBlur={(event: any) =>
-            event.rangeParent === searchInput.current || searchInput.current?.value === '' ? clear() : null
-          }
+          onBlur={clear}
           ref={searchInput}
           type="search"
-          onChange={debounce(async event => setSearch(event.target.value), 400)}
+          onChange={debounce(async event => {
+            startTransition(() => {
+              setSearch(event.target.value)
+            })
+          }, 400)}
         />
       ) : null}
-      {searchInstances ? (
+      {searchInstances && mode === 'edit' ? (
         <div className="search-results-wrapper" ref={searchResults}>
           <div className="search-results">
             {searchInstances.ptrs.length
@@ -119,10 +122,10 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
                   const image = getImage(searchInstance)
                   return (
                     <div
-                      className="iri-preview"
+                      className="iri-preview search-result"
                       onClick={() => {
                         setTerm(searchInstance.term)
-                        setSearch('')
+                        setSearch(searchInstance.term.value)
                         setMode('view')
                         setSearchInstances(undefined)
                       }}
@@ -133,7 +136,9 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
                   )
                 })
               : null}
-            {!searchInstances.ptrs.length ? <div className="no-results">No results found</div> : null}
+            {!searchInstances.ptrs.length ? (
+              <div className="no-results">Search for something, no results found</div>
+            ) : null}
           </div>
         </div>
       ) : null}
