@@ -16,17 +16,21 @@ export const resolveRdfInput = async (
       prefixes: {}
     }
 
+  let originalUrl: string | undefined = undefined
   if (input instanceof URL) {
     const response = await cachedFetch(input)
 
     if (!['text/turtle'].includes(response.headers.get('content-type').split(';')[0] ?? ''))
       throw new Error('Unexpected mime type')
 
+    originalUrl = input.toString()
     input = await response.text()
   }
 
   if (typeof input === 'string') {
-    const parser = new Parser()
+    const parser = new Parser({
+      baseIRI: originalUrl
+    })
     const quads = await parser.parse(input)
     return {
       dataset: datasetFactory.dataset(quads),
