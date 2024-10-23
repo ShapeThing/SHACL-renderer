@@ -12,6 +12,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@comunica/query-sparql-rdfjs": "^4.0.2",
     "@hydrofoil/shape-to-query": "^0.13.1",
     "@jeswr/pretty-turtle": "^1.5.0",
     "@rdfjs/data-model": "^2.0.2",
