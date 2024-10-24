@@ -2,7 +2,7 @@ import factory from '@rdfjs/data-model'
 import { NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { debounce } from 'lodash-es'
-import { startTransition, useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import IconPencil from '~icons/mynaui/pencil'
 import { importShaclNodeFilterData } from '../../../core/importShaclNodeFilterData'
 import { mainContext } from '../../../core/main-context'
@@ -19,26 +19,44 @@ const getImage = (pointer?: Grapoi) => {
 
 export default function AutoCompleteEditor({ term, setTerm, property }: WidgetProps) {
   const { data } = useContext(mainContext)
-
   const endpoint = property.out(stsr('endpoint')).value
   const labels = [rdfs('label'), schema('name')]
-
   const [search, setSearch] = useState(term.value)
   const [searchInstances, setSearchInstances] = useState<Grapoi>()
   const [selectedInstance, setSelectedInstance] = useState<Grapoi>()
   const [mode, setMode] = useState<'edit' | 'view'>('view')
   const [isLoading, setIsLoading] = useState(true)
   const shapeQuads = outAll(property.out().distinct().out())
-
   const searchInput = useRef<HTMLInputElement>(null)
   const searchResults = useRef<HTMLDivElement>(null)
-
   const image = getImage(selectedInstance)
 
-  useEffect(() => {
-    if (!term && mode !== 'edit') setMode('edit')
-  }, [term])
+  const debouncedOnChange = useMemo(
+    () =>
+      debounce(async event => {
+        const search = event.target.value
+        setSearch(search)
+        if (search) {
+          setIsLoading(true)
+          importShaclNodeFilterData({
+            shapeQuads,
+            endpoint,
+            dataset: data,
+            limit: 20,
+            searchTerm: search
+          }).then(dataset => {
+            setIsLoading(false)
+            setSearchInstances(grapoi({ dataset, factory }).out().in().distinct())
+          })
+        } else {
+          setIsLoading(false)
+          setSearchInstances(undefined)
+        }
+      }, 200),
+    [setIsLoading, data, setSearchInstances]
+  )
 
+  // Loading the triples from the selected subject
   useEffect(() => {
     if (!term?.value || !shapeQuads.length) return
     setIsLoading(true)
@@ -54,41 +72,35 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   }, [term])
 
   useEffect(() => {
-    if (search) {
-      setIsLoading(true)
-      importShaclNodeFilterData({
-        shapeQuads,
-        endpoint,
-        dataset: data,
-        limit: 20,
-        searchTerm: search
-      }).then(dataset => {
-        setIsLoading(false)
-        setSearchInstances(grapoi({ dataset, factory }).out().in().distinct())
-      })
-    } else {
-      setIsLoading(false)
-      setSearchInstances(undefined)
-    }
-  }, [search])
+    if (!term && mode === 'view') setMode('edit')
+  }, [term])
 
   useEffect(() => {
     if (mode === 'edit') searchInput.current?.select()
   }, [mode])
 
   useEffect(() => {
-    searchResults.current?.scrollIntoView({ behavior: 'smooth' })
+    if (searchInstances?.ptrs.length) searchResults.current?.scrollIntoView({ behavior: 'smooth' })
   }, [searchInstances])
 
-  const clear = () => {
-    setSearch(term?.value ?? '')
+  const apply = (iri: NamedNode) => {
+    setTerm(iri)
     setMode('view')
+    setSearch(iri.value)
     setSearchInstances(undefined)
+    setSelectedInstance(undefined)
+  }
+
+  const tryApply = (event: any) => {
+    try {
+      new URL(event.target.value)
+      apply(factory.namedNode(event.target.value))
+    } catch {}
   }
 
   return (
     <div className={`inner ${isLoading ? 'is-loading' : ''}`}>
-      {isLoading ? <span className="loader"></span> : ''}
+      <span className={`${isLoading ? 'loader' : ''}`}></span>
       {!isLoading && mode === 'view' ? (
         <div className="iri-preview selected" title={term.value}>
           {image ? <Image className="image" url={image} size={32} /> : null}
@@ -96,22 +108,17 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
           <IconPencil onClick={() => setMode('edit')} />
         </div>
       ) : null}
-      {/* TODO Allow inserting an IRI by typing */}
-      {!isLoading && mode === 'edit' ? (
+      {mode === 'edit' ? (
         <input
           className="input search"
           placeholder="Search or paste a link..."
           autoFocus
           value={search}
-          onKeyUp={event => (event.key === 'Escape' ? clear() : null)}
-          onBlur={clear}
+          onKeyUp={event => (['Escape', 'Enter'].includes(event.key) ? tryApply(event) : null)}
+          onBlur={tryApply}
           ref={searchInput}
           type="search"
-          onChange={debounce(async event => {
-            startTransition(() => {
-              setSearch(event.target.value)
-            })
-          }, 400)}
+          onChange={debouncedOnChange}
         />
       ) : null}
       {searchInstances && mode === 'edit' ? (
@@ -121,15 +128,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
               ? searchInstances.map((searchInstance: Grapoi) => {
                   const image = getImage(searchInstance)
                   return (
-                    <div
-                      className="iri-preview search-result"
-                      onClick={() => {
-                        setTerm(searchInstance.term)
-                        setSearch(searchInstance.term.value)
-                        setMode('view')
-                        setSearchInstances(undefined)
-                      }}
-                    >
+                    <div className="iri-preview search-result" onClick={() => apply(searchInstance.term)}>
                       {image ? <Image className="image" url={image} size={32} /> : null}
                       <span className="label">{searchInstance?.out(labels).value ?? term.value}</span>
                     </div>

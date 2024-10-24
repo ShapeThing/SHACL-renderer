@@ -32,6 +32,29 @@
   ];
   
   sh:property [
+    sh:name "Knows"@en ;
+    sh:path schema:knows ;
+    sh:maxCount 4 ;
+    stsr:endpoint <https://dbpedia.org/sparql>;
+    sh:message "You must select a philosopher of religion" ;
+    sh:node [
+      sh:property [
+        sh:path rdfs:label ;
+        sh:languageIn ( "en" ) ;
+      ] ;
+
+      sh:property [
+        sh:path <http://dbpedia.org/ontology/thumbnail> ;
+      ] ;
+
+      sh:property [
+        sh:path <http://purl.org/dc/terms/subject> ;
+        sh:hasValue dbc:Philosophers_of_religion ;
+      ] ;
+    ]
+  ] ;
+
+  sh:property [
     sh:name "Children"@en ;
     sh:path schema:child ;
     sh:order 3 ;
@@ -69,29 +92,6 @@
     # sh:class schema:PostalAddress ;
     sh:nodeKind sh:BlankNode ;
   ];
-
-  sh:property [
-    sh:name "Knows"@en ;
-    sh:path schema:knows ;
-    sh:maxCount 4 ;
-    stsr:endpoint <https://dbpedia.org/sparql>;
-    sh:message "You must select a philosopher of religion" ;
-    sh:node [
-      sh:property [
-        sh:path rdfs:label ;
-        sh:languageIn ( "en" ) ;
-      ] ;
-
-      sh:property [
-        sh:path <http://dbpedia.org/ontology/thumbnail> ;
-      ] ;
-
-      sh:property [
-        sh:path <http://purl.org/dc/terms/subject> ;
-        sh:hasValue dbc:Philosophers_of_religion ;
-      ] ;
-    ]
-  ] ;
 
   # This field is hidden for viewing and editing.
   # In facet mode it renders a search field for the predicates: 

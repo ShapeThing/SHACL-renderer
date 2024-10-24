@@ -24,8 +24,11 @@ export const importShaclNodeFilterData = async ({
   searchTerm
 }: Input) => {
   const filterShapeDataset = datasetFactory.dataset([...shapeQuads])
+  const subject = [...filterShapeDataset]?.[0]?.subject
 
-  const shape = clownFace({ dataset: filterShapeDataset, term: [...filterShapeDataset][0].subject }) as GraphPointer
+  if (!subject) return datasetFactory.dataset()
+
+  const shape = clownFace({ dataset: filterShapeDataset, term: subject }) as GraphPointer
   let constructPart = constructQuery(shape, { focusNode }).trim()
 
   const query = `${constructPart.substring(0, constructPart.length - 1)}${
