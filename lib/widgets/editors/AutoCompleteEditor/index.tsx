@@ -1,14 +1,14 @@
 import factory from '@rdfjs/data-model'
 import { NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
-import { debounce } from 'lodash-es'
-import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import IconPencil from '~icons/mynaui/pencil'
 import { importShaclNodeFilterData } from '../../../core/importShaclNodeFilterData'
 import { mainContext } from '../../../core/main-context'
 import { rdfs, schema, stsr } from '../../../core/namespaces'
 import Image from '../../../helpers/Image'
 import { outAll } from '../../../helpers/outAll'
+import { useDebounced } from '../../../helpers/useDebounced'
 import { WidgetProps } from '../../widgets-context'
 
 const getImage = (pointer?: Grapoi) => {
@@ -31,38 +31,35 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   const [search, setSearch] = useState(term.value)
   const [searchInstances, setSearchInstances] = useState<Grapoi>()
   const [selectedInstance, setSelectedInstance] = useState<Grapoi>()
-  const [mode, setMode] = useState<'edit' | 'view'>('view')
+  const [mode, setMode] = useState<'edit' | 'view'>(!term ? 'edit' : 'view')
   const [isLoading, setIsLoading] = useState(true)
   const shapeQuads = outAll(property.out().distinct().out())
   const searchInput = useRef<HTMLInputElement>(null)
   const searchResults = useRef<HTMLDivElement>(null)
   const image = getImage(selectedInstance)
 
-  const debouncedOnChange = useMemo(
-    () =>
-      debounce(async event => {
-        const search = event.target.value
-        setSearchInstances(undefined)
-        setSearch(search)
-        if (search) {
-          setIsLoading(true)
-          importShaclNodeFilterData({
-            shapeQuads,
-            endpoint,
-            dataset: data,
-            limit: 20,
-            focusNode: isValidIri(search) ? factory.namedNode(search) : undefined,
-            searchTerm: isValidIri(search) ? undefined : search
-          }).then(dataset => {
-            setIsLoading(false)
-            setSearchInstances(grapoi({ dataset, factory }).out().in().distinct())
-          })
-        } else {
-          setIsLoading(false)
-        }
-      }, 200),
-    [setIsLoading, data, setSearchInstances]
-  )
+  const debouncedOnChange = useDebounced(async event => {
+    const search = event.target.value
+    setSearchInstances(undefined)
+    setSearch(search)
+    if (search) {
+      setIsLoading(true)
+      importShaclNodeFilterData({
+        shapeQuads,
+        endpoint,
+        dataset: data,
+        limit: 20,
+        focusNode: isValidIri(search) ? factory.namedNode(search) : undefined,
+        searchTerm: isValidIri(search) ? undefined : search
+      }).then(dataset => {
+        setIsLoading(false)
+        setSearchInstances(grapoi({ dataset, factory }).out().in().distinct())
+        setTimeout(() => searchResults.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
+      })
+    } else {
+      setIsLoading(false)
+    }
+  })
 
   // Loading the triples from the selected subject
   useEffect(() => {
@@ -78,18 +75,6 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
       setSelectedInstance(grapoi({ dataset, factory }))
     })
   }, [term])
-
-  useEffect(() => {
-    if (!term && mode === 'view') setMode('edit')
-  }, [term])
-
-  useEffect(() => {
-    if (mode === 'edit') searchInput.current?.select()
-  }, [mode])
-
-  useEffect(() => {
-    if (searchInstances?.ptrs.length) searchResults.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }, [searchInstances])
 
   const apply = (iri: NamedNode) => {
     setTerm(iri)
@@ -112,7 +97,12 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
         <div className="iri-preview selected" title={term.value}>
           {image ? <Image className="image" url={image} size={32} /> : null}
           <span className="label">{selectedInstance?.out(labels).value ?? term.value}</span>
-          <IconPencil onClick={() => setMode('edit')} />
+          <IconPencil
+            onClick={() => {
+              setMode('edit')
+              setTimeout(() => searchInput.current?.select())
+            }}
+          />
         </div>
       ) : null}
       {mode === 'edit' ? (

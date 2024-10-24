@@ -66,6 +66,7 @@
   sh:property [
     sh:name "Self reference"@en ;
     sh:path schema:selfReference ;
+    sh:message "You must reference this document it self" ;
     sh:node [
       sh:property [
         sh:path schema:givenName ;
