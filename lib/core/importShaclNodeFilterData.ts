@@ -28,6 +28,9 @@ export const importShaclNodeFilterData = async ({
 
   if (!subject) return datasetFactory.dataset()
 
+  // TODO Create a shacl property grapoi pointer
+  // TODO filter so that only text predicates are captured so we can make rdfs:label dynamic
+
   const shape = clownFace({ dataset: filterShapeDataset, term: subject }) as GraphPointer
   let constructPart = constructQuery(shape, { focusNode }).trim()
 

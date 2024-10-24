@@ -17,6 +17,13 @@ const getImage = (pointer?: Grapoi) => {
     ?.values.find(value => ['jpg', 'png', 'jpeg', 'gif', 'webm'].some(extension => value.includes(extension)))
 }
 
+const isValidIri = (iri: string) => {
+  try {
+    new URL(iri)
+    return true
+  } catch {}
+}
+
 export default function AutoCompleteEditor({ term, setTerm, property }: WidgetProps) {
   const { data } = useContext(mainContext)
   const endpoint = property.out(stsr('endpoint')).value
@@ -35,6 +42,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
     () =>
       debounce(async event => {
         const search = event.target.value
+        setSearchInstances(undefined)
         setSearch(search)
         if (search) {
           setIsLoading(true)
@@ -43,14 +51,14 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
             endpoint,
             dataset: data,
             limit: 20,
-            searchTerm: search
+            focusNode: isValidIri(search) ? factory.namedNode(search) : undefined,
+            searchTerm: isValidIri(search) ? undefined : search
           }).then(dataset => {
             setIsLoading(false)
             setSearchInstances(grapoi({ dataset, factory }).out().in().distinct())
           })
         } else {
           setIsLoading(false)
-          setSearchInstances(undefined)
         }
       }, 200),
     [setIsLoading, data, setSearchInstances]
@@ -80,7 +88,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   }, [mode])
 
   useEffect(() => {
-    if (searchInstances?.ptrs.length) searchResults.current?.scrollIntoView({ behavior: 'smooth' })
+    if (searchInstances?.ptrs.length) searchResults.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }, [searchInstances])
 
   const apply = (iri: NamedNode) => {
@@ -88,7 +96,6 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
     setMode('view')
     setSearch(iri.value)
     setSearchInstances(undefined)
-    setSelectedInstance(undefined)
   }
 
   const tryApply = (event: any) => {
