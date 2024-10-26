@@ -22,12 +22,24 @@ export default function PropertyElement({
     property?.out([sh('name'), rdfs('label')]).values?.[0] ??
     property?.out(sh('path')).value.split(/\#|\//g).pop()
 
+  const descriptionLines = property?.out(sh('description')).values[0]?.split('\n')
+
   return (
     <div className={`property ${cssClass ?? ''}`.trim()} data-term={property?.term.value}>
       <label>
         {label}
         {showColon ? ': ' : ''}
       </label>
+      {descriptionLines?.length ? (
+        <p className="field-description">
+          {descriptionLines.map(line => (
+            <>
+              {line}
+              <br />
+            </>
+          ))}
+        </p>
+      ) : null}
       {children}
     </div>
   )

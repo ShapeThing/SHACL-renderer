@@ -38,27 +38,24 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   const searchResults = useRef<HTMLDivElement>(null)
   const image = getImage(selectedInstance)
 
-  const debouncedOnChange = useDebounced(async event => {
+  const searchHandler = useDebounced(async event => {
     const search = event.target.value
     setSearchInstances(undefined)
     setSearch(search)
-    if (search) {
-      setIsLoading(true)
-      importShaclNodeFilterData({
-        shapeQuads,
-        endpoint,
-        dataset: data,
-        limit: 20,
-        focusNode: isValidIri(search) ? factory.namedNode(search) : undefined,
-        searchTerm: isValidIri(search) ? undefined : search
-      }).then(dataset => {
-        setIsLoading(false)
-        setSearchInstances(grapoi({ dataset, factory }).out().in().distinct())
-        setTimeout(() => searchResults.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
-      })
-    } else {
+    setIsLoading(true)
+
+    importShaclNodeFilterData({
+      shapeQuads,
+      endpoint,
+      dataset: data,
+      limit: 20,
+      focusNode: isValidIri(search) ? factory.namedNode(search) : undefined,
+      searchTerm: isValidIri(search) ? undefined : search
+    }).then(dataset => {
       setIsLoading(false)
-    }
+      setSearchInstances(grapoi({ dataset, factory }).out().in().distinct())
+      setTimeout(() => searchResults.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
+    })
   })
 
   // Loading the triples from the selected subject
@@ -92,11 +89,13 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
 
   return (
     <div className={`inner ${isLoading ? 'is-loading' : ''}`}>
-      <span className={`${isLoading ? 'loader' : ''}`}></span>
+      <span className={`${isLoading ? 'loader' : 'hidden'}`}></span>
       {!isLoading && mode === 'view' ? (
         <div className="iri-preview selected" title={term.value}>
           {image ? <Image className="image" url={image} size={32} /> : null}
-          <span className="label">{selectedInstance?.out(labels).value ?? term.value}</span>
+          <a href={term.value} target="_blank" className="label">
+            {selectedInstance?.out(labels).value ?? term.value}
+          </a>
           <IconPencil
             onClick={() => {
               setMode('edit')
@@ -115,7 +114,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
           onBlur={tryApply}
           ref={searchInput}
           type="search"
-          onChange={debouncedOnChange}
+          onChange={searchHandler}
         />
       ) : null}
       {searchInstances && mode === 'edit' ? (

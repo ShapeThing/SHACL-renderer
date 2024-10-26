@@ -30,9 +30,19 @@
     sh:maxCount 1;
     sh:datatype xsd:string ;
   ];
-  
+    
+  sh:property [
+    sh:name "Icon"@en ;
+    sh:path schema:icon ;
+    # stsr:collections "fluent-emoji" ;
+    sh:datatype <https://iconify.design> ;
+  ];
+
   sh:property [
     sh:name "Knows"@en ;
+    sh:description """Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
     sh:path schema:knows ;
     sh:maxCount 4 ;
     stsr:endpoint <https://dbpedia.org/sparql>;
@@ -40,6 +50,7 @@
     sh:node [
       sh:property [
         sh:path rdfs:label ;
+        sh:minCount 1;
         sh:languageIn ( "en" ) ;
       ] ;
 

@@ -1,0 +1,31 @@
+.editor.iconify {
+    .inner {
+        flex: 1 1 90%;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .top {
+        display: flex;
+        gap: 10px;
+
+    }
+
+    iconify-icon {
+        width: 30px;
+        font-size: 30px;
+        height: 30px;
+    }
+
+    .selected>.image {
+        margin-left: 10px;
+    }
+
+    .iconify-search-results {
+        margin-block: 20px;
+        flex: 1 1 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}

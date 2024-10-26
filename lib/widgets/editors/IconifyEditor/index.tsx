@@ -1,0 +1,79 @@
+import { Icon } from '@iconify-icon/react'
+import factory from '@rdfjs/data-model'
+import { useEffect, useRef, useState } from 'react'
+import IconPencil from '~icons/mynaui/pencil'
+import { stsr } from '../../../core/namespaces'
+import { WidgetProps } from '../../widgets-context'
+
+export default function IconifyEditor({ term, setTerm, property }: WidgetProps) {
+  const [searchTerm, setSearchTerm] = useState(term?.value)
+  const [results, setResults] = useState<Array<string> | null>(null)
+  const collections = property.out([stsr('collections')]).values
+  const [mode, setMode] = useState<'view' | 'edit'>(term.value ? 'view' : 'edit')
+  const inputReference = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setResults([])
+
+    if (!searchTerm) return
+
+    fetch(`https://api.iconify.design/search?query=${searchTerm}&limit=96`)
+      .then(response => response.json())
+      .then(response => {
+        const filteredIcons = response.icons.filter((icon: string) =>
+          collections.length ? collections.some(collection => icon.includes(collection)) : true
+        )
+
+        setResults(filteredIcons)
+      })
+  }, [searchTerm])
+
+  return (
+    <>
+      <div className="inner">
+        {mode === 'view' ? (
+          <div className="iri-preview selected" title={term.value}>
+            <Icon className="image" icon={term.value} />
+            <span className="label">{term.value}</span>
+            <IconPencil
+              onClick={() => {
+                setMode('edit')
+                setTimeout(() => inputReference.current?.select())
+              }}
+            />
+          </div>
+        ) : null}
+
+        {mode === 'edit' ? (
+          <input
+            type="text"
+            ref={inputReference}
+            className="input"
+            onChange={event => setSearchTerm(event.target.value)}
+            value={searchTerm}
+          />
+        ) : null}
+
+        {mode === 'edit' && results?.length ? (
+          <div className="iconify-search-results">
+            {results.map(icon => (
+              <button
+                title={icon}
+                onClick={() => {
+                  setTerm(factory.literal(icon, factory.namedNode('https://iconify.design')))
+                  setSearchTerm(icon)
+                  setResults([])
+                  setMode('view')
+                }}
+                className="button"
+                key={icon}
+              >
+                <Icon icon={icon} />
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </>
+  )
+}
