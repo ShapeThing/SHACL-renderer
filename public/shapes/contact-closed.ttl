@@ -30,7 +30,13 @@
     sh:maxCount 1;
     sh:datatype xsd:string ;
   ];
-    
+
+  sh:property [
+    sh:name "Favorite color"@en ;
+    sh:path schema:favoriteColor ;
+    sh:datatype stsr:color ;
+  ];
+
   sh:property [
     sh:name "Icon"@en ;
     sh:path schema:icon ;

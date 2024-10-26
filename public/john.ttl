@@ -1,5 +1,6 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
 
 <>
   a schema:Person ;
@@ -14,6 +15,8 @@
   schema:icon "line-md:buy-me-a-coffee-twotone"^^<https://iconify.design> ;
 
   schema:selfReference <> ;
+
+  schema:favoriteColor "#ff33ff"^^stsr:color ;
 
   schema:knows <http://dbpedia.org/resource/Søren_Kierkegaard> ;
 
