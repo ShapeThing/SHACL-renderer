@@ -4,7 +4,7 @@ import { dash, sh, xsd } from '../../../core/namespaces'
 import { WidgetMeta } from '../../widgets-context'
 
 export default {
-  iri: dash('TextFieldEditor'),
+  iri: dash('BooleanSelectEditor'),
   createTerm: () => factory.literal('false', xsd('boolean')),
   score: (data?: Grapoi, propertyShape?: Grapoi) => {
     if (

@@ -2,7 +2,7 @@ import factory from '@rdfjs/data-model'
 import { stsr } from '../../../core/namespaces'
 import { WidgetProps } from '../../widgets-context'
 
-export default function TextFieldEditor({ term, setTerm }: WidgetProps) {
+export default function ColorEditor({ term, setTerm }: WidgetProps) {
   return (
     <input
       className="input"

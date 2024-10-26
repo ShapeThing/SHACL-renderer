@@ -18,6 +18,8 @@
 
   schema:favoriteColor "#ff33ff"^^stsr:color ;
 
+  schema:isHuman true ;
+
   schema:knows <http://dbpedia.org/resource/Søren_Kierkegaard> ;
 
   schema:address [

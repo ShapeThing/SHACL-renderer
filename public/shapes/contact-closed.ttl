@@ -35,6 +35,14 @@
     sh:name "Favorite color"@en ;
     sh:path schema:favoriteColor ;
     sh:datatype stsr:color ;
+    sh:maxCount 1;
+  ];
+
+  sh:property [
+    sh:name "Is human"@en ;
+    sh:path schema:isHuman ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount 1;
   ];
 
   sh:property [

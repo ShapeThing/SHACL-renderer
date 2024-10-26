@@ -14,8 +14,10 @@ export default function PropertyGroup({
   properties,
   facetSearchDataPointer
 }: PropertyGroupProps) {
+  const localName = group.term.value.split(/\/|#/g).pop()
+
   return (
-    <div className="group" data-term={group.term.value}>
+    <div className={`group ${localName}`} data-term={group.term.value}>
       {properties.map(property => (
         <PropertyShape
           facetSearchDataPointer={facetSearchDataPointer}
