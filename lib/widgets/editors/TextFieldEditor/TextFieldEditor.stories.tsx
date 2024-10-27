@@ -1,15 +1,15 @@
-import factory from '@rdfjs/data-model'
-import TextFieldEditor from '.'
-import { WidgetProps } from '../../widgets-context'
+import ShaclRenderer, { ShaclRendererProps } from '../../../components/ShaclRenderer'
 
 export default {
-  title: 'Widgets/Editors/TextFieldEditor',
-  component: TextFieldEditor,
+  title: 'Widgets/Editors/TextField',
+  component: ShaclRenderer,
   argTypes: {}
 }
 
-export const Widget = {
+export const Default = {
   args: {
-    term: factory.literal('Lorem Ipsum')
-  } as WidgetProps
+    mode: 'edit',
+    shapes: new URL('/shapes/widgets/editors/textfield.ttl#default', location.origin),
+    data: new URL('/shapes/widgets/editors/textfield.ttl#data', location.origin)
+  } as ShaclRendererProps
 }

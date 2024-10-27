@@ -1,22 +1,15 @@
-import factory from '@rdfjs/data-model'
-import BooleanSelectEditor from '.'
-import { xsd } from '../../../core/namespaces'
-import { WidgetProps } from '../../widgets-context'
+import ShaclRenderer, { ShaclRendererProps } from '../../../components/ShaclRenderer'
 
 export default {
-  title: 'Widgets/Editors/BooleanSelectEditor',
-  component: BooleanSelectEditor,
+  title: 'Widgets/Editors/BooleanSelect',
+  component: ShaclRenderer,
   argTypes: {}
 }
 
-export const WidgetOn = {
+export const Default = {
   args: {
-    term: factory.literal('1', xsd('boolean'))
-  } as WidgetProps
-}
-
-export const WidgetOff = {
-  args: {
-    term: factory.literal('0', xsd('boolean'))
-  } as WidgetProps
+    mode: 'edit',
+    shapes: new URL('/shapes/widgets/editors/boolean-select.ttl#default', location.origin),
+    data: new URL('/shapes/widgets/editors/boolean-select.ttl#data', location.origin)
+  } as ShaclRendererProps
 }

@@ -1,16 +1,15 @@
-import factory from '@rdfjs/data-model'
-import NumberFieldEditor from '.'
-import { xsd } from '../../../core/namespaces'
-import { WidgetProps } from '../../widgets-context'
+import ShaclRenderer, { ShaclRendererProps } from '../../../components/ShaclRenderer'
 
 export default {
-  title: 'Widgets/Editors/NumberFieldEditor',
-  component: NumberFieldEditor,
+  title: 'Widgets/Editors/NumberField',
+  component: ShaclRenderer,
   argTypes: {}
 }
 
-export const Widget = {
+export const Default = {
   args: {
-    term: factory.literal('7', xsd('date'))
-  } as WidgetProps
+    mode: 'edit',
+    shapes: new URL('/shapes/widgets/editors/numberfield.ttl#default', location.origin),
+    data: new URL('/shapes/widgets/editors/numberfield.ttl#data', location.origin)
+  } as ShaclRendererProps
 }

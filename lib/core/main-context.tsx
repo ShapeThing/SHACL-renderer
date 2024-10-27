@@ -78,6 +78,11 @@ export const initContext = async ({
 
   if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
 
+  const localShapeName = shapes.toString().split(/\/|\#/g).pop()
+  if (localShapeName) {
+    shapePointers = shapePointers.filter(pointer => pointer.term.value.split(/\/|\#/g).pop() === localShapeName)
+  }
+
   const resolvedData = data ? await resolveRdfInput(data) : null
   let dataset = resolvedData ? resolvedData.dataset : datasetFactory.dataset()
 

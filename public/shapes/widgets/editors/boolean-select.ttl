@@ -1,0 +1,23 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
+@prefix stf: <http://ontology.shapething.com/facet#> .
+
+<data>
+  schema:isHuman true ;
+.
+
+<default>
+  a sh:NodeShape ;
+  sh:closed true ;
+
+  sh:property [
+    sh:name "Is human"@en ;
+    sh:path schema:isHuman ;
+    sh:maxCount 1;
+  ];
+.

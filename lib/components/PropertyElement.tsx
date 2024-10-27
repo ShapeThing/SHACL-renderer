@@ -1,5 +1,6 @@
 import { Grapoi } from 'grapoi'
-import { ReactNode } from 'react'
+import { ReactNode, useContext } from 'react'
+import { mainContext } from '../core/main-context'
 import { rdfs, sh } from '../core/namespaces'
 
 type PropertyElementProps = {
@@ -17,6 +18,8 @@ export default function PropertyElement({
   showColon,
   label: givenLabel
 }: PropertyElementProps) {
+  const { mode } = useContext(mainContext)
+
   const label =
     givenLabel ??
     property?.out([sh('name'), rdfs('label')]).values?.[0] ??
@@ -30,7 +33,7 @@ export default function PropertyElement({
         {label}
         {showColon ? ': ' : ''}
       </label>
-      {descriptionLines?.length ? (
+      {mode === 'edit' && descriptionLines?.length ? (
         <p className="field-description">
           {descriptionLines.map(line => (
             <>

@@ -1,16 +1,15 @@
-import factory from '@rdfjs/data-model'
-import DatePickerEditor from '.'
-import { xsd } from '../../../components/ShaclRenderer'
-import { WidgetProps } from '../../widgets-context'
+import ShaclRenderer, { ShaclRendererProps } from '../../../components/ShaclRenderer'
 
 export default {
-  title: 'Widgets/Editors/DatePickerEditor',
-  component: DatePickerEditor,
+  title: 'Widgets/Editors/DatePicker',
+  component: ShaclRenderer,
   argTypes: {}
 }
 
-export const Widget = {
+export const Default = {
   args: {
-    term: factory.literal('1947-01-14', xsd('date'))
-  } as WidgetProps
+    mode: 'edit',
+    shapes: new URL('/shapes/widgets/editors/datepicker.ttl#default', location.origin),
+    data: new URL('/shapes/widgets/editors/datepicker.ttl#data', location.origin)
+  } as ShaclRendererProps
 }
