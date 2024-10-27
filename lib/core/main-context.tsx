@@ -78,7 +78,7 @@ export const initContext = async ({
 
   if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
 
-  const localShapeName = shapes?.toString().split(/\/|\#/g).pop()
+  const localShapeName = shapes?.toString().split('#').pop()
   if (localShapeName) {
     shapePointers = shapePointers.filter(pointer => pointer.term.value.split(/\/|\#/g).pop() === localShapeName)
   }
@@ -87,10 +87,17 @@ export const initContext = async ({
   let dataset = resolvedData ? resolvedData.dataset : datasetFactory.dataset()
 
   if (!subject) {
+    if (data instanceof URL) {
+      const localDataName = data?.toString().split('#').pop()
+      if (localDataName) {
+        subject = factory.namedNode(data.toString())
+      }
+    }
+
     const firstQuad = [...dataset]?.[0]
-    if (firstQuad) {
+    if (firstQuad && !subject) {
       subject = firstQuad.subject as NamedNode
-    } else {
+    } else if (!subject) {
       subject = factory.blankNode()
     }
   }

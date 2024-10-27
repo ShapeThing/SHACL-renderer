@@ -7,12 +7,12 @@
 @prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
 @prefix stf: <http://ontology.shapething.com/facet#> .
 
-<data>
+<#data>
   a schema:Person ;
   schema:name "John Doe" ;
 .
 
-<default>
+<#default>
   a sh:NodeShape ;
   sh:targetClass schema:Person ;
   sh:closed true ;

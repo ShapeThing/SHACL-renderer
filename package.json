@@ -12,7 +12,6 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@comunica/query-sparql": "^4.0.2",
     "@comunica/query-sparql-rdfjs-lite": "^4.0.2",
     "@hydrofoil/shape-to-query": "^0.13.1",
     "@iconify-icon/react": "^2.1.0",
@@ -35,6 +34,7 @@
     "preact": "^10.24.3",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
+    "react-custom-element-wrapper": "^1.0.0",
     "react-dom": "^18.3.1",
     "react-use": "^17.5.1",
     "shacl-engine": "^1.0.1",

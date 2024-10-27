@@ -7,12 +7,12 @@
 @prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
 @prefix stf: <http://ontology.shapething.com/facet#> .
 
-<data>
+<#data>
   a schema:Person ;
   schema:icon "line-md:buy-me-a-coffee-twotone"^^<https://iconify.design>, "hugeicons:coffee-beans"^^<https://iconify.design> ;
 .
 
-<default>
+<#default>
   a sh:NodeShape ;
   sh:targetClass schema:Person ;
   sh:closed true ;
@@ -25,7 +25,7 @@
   ];
 .
 
-<with-limit>
+<#with-limit>
   a sh:NodeShape ;
   sh:targetClass schema:Person ;
   sh:closed true ;

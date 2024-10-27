@@ -7,11 +7,11 @@
 @prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
 @prefix stf: <http://ontology.shapething.com/facet#> .
 
-<data>
+<#data>
   schema:isHuman true ;
 .
 
-<default>
+<#default>
   a sh:NodeShape ;
   sh:closed true ;
 

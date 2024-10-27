@@ -7,18 +7,17 @@
 @prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
 @prefix stf: <http://ontology.shapething.com/facet#> .
 
-<#data>
-  a schema:Person ;
-  schema:birthDate "1947-01-14"^^xsd:date ;
-.
-
 <#default>
   a sh:NodeShape ;
-  sh:targetClass schema:Person ;
-  sh:closed true ;
 
   sh:property [
-    sh:name "Birthdate"@en ;
-    sh:path schema:birthDate ;
+    sh:name "Name"@en ;
+    sh:path schema:name ;
+    sh:minCount 1;
+    sh:datatype rdf:langString ;
   ];
-.
+  
+  .
+
+<#data>
+ schema:name "French"@fr, "English"@en, "Dutch"@nl .

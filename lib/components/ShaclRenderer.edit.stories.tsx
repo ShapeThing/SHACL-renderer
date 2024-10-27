@@ -40,6 +40,13 @@ export const InvalidData = {
   } as ShaclRendererProps
 }
 
+export const Multilingual = {
+  args: {
+    mode: 'edit',
+    data: new URL('/shapes/multilingual.ttl#data', location.origin),
+    shapes: new URL('/shapes/multilingual.ttl#default', location.origin)
+  } as ShaclRendererProps
+}
 // export const FormShacl = {
 //   args: {
 //     mode: 'edit',
