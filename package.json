@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@comunica/query-sparql": "^4.0.2",
-    "@comunica/query-sparql-rdfjs": "^4.0.2",
+    "@comunica/query-sparql-rdfjs-lite": "^4.0.2",
     "@hydrofoil/shape-to-query": "^0.13.1",
     "@iconify-icon/react": "^2.1.0",
     "@jeswr/pretty-turtle": "^1.5.0",

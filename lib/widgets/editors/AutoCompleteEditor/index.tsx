@@ -32,7 +32,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   const [searchInstances, setSearchInstances] = useState<Grapoi>()
   const [selectedInstance, setSelectedInstance] = useState<Grapoi>()
   const [mode, setMode] = useState<'edit' | 'view'>(!term ? 'edit' : 'view')
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const shapeQuads = outAll(property.out().distinct().out())
   const searchInput = useRef<HTMLInputElement>(null)
   const searchResults = useRef<HTMLDivElement>(null)

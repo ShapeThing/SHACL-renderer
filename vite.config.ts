@@ -6,7 +6,14 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [preact(), Icons({ compiler: 'jsx', jsx: 'react', autoInstall: true })],
   build: {
-    target: 'ES2022'
+    target: 'ES2022',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          comunica: ['@comunica/core']
+        }
+      }
+    }
   },
   css: {
     preprocessorOptions: {

@@ -1,4 +1,4 @@
-import { debounce } from 'lodash-es'
+import debounce from 'lodash-es/debounce'
 import { useMemo } from 'react'
 
 export function useDebounced<T extends (...args: any) => any>(

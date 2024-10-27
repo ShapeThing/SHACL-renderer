@@ -61,7 +61,7 @@ export const importShaclNodeFilterData = async ({
     for (const quad of quads) returnDataset.add(quad)
     return returnDataset
   } else {
-    const { QueryEngine } = await import('@comunica/query-sparql-rdfjs')
+    const { QueryEngine } = await import('@comunica/query-sparql-rdfjs-lite')
     const queryEngine = new QueryEngine()
     const quadsStream = await queryEngine.queryQuads(query, { sources: [new Store([...dataset])] })
     return datasetFactory.dataset(await quadsStream.toArray())
