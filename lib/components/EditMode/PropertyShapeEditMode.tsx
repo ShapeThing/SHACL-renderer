@@ -2,9 +2,8 @@ import factory from '@rdfjs/data-model'
 import { Quad_Object, Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import ValidationReport from 'rdf-validate-shacl/src/validation-report'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import IconPlus from '~icons/iconoir/plus'
-import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
@@ -12,7 +11,7 @@ import { validationContext } from '../../core/validation-context'
 import { deleteTermAndDescendants } from '../../helpers/deleteTermAndDescendants'
 import { sortPointersStable } from '../../helpers/sortPointersStable'
 import { TouchableTerm } from '../../helpers/touchableRdf'
-import { useLanguageFilter } from '../../helpers/useLanguageFilter'
+import { useLanguageFilteredItems } from '../../helpers/useLanguageFilteredItems'
 import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
@@ -31,15 +30,9 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const { property, nodeDataPointer, errors, path } = props
   const { editors } = useContext(widgetsContext)
   const { jsonLdContext, data: dataset } = useContext(mainContext)
-  const { activeContentLanguage } = useContext(languageContext)
   const { validate } = useContext(validationContext)
-  const languageFilter = useLanguageFilter()
 
-  const [items, realSetItems] = useState(languageFilter(nodeDataPointer.executeAll(path)))
-
-  useEffect(() => {
-    realSetItems(languageFilter(nodeDataPointer.executeAll(path)))
-  }, [activeContentLanguage])
+  const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
 
   const setItems = () => {
     const oldTerms = items.terms
