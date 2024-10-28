@@ -61,6 +61,64 @@ type MainContextProviderProps = {
   context: MainContext
 }
 
+const getData = async (dataInput?: URL | DatasetCore | string, subject?: NamedNode | BlankNode) => {
+  const resolvedData = dataInput ? await resolveRdfInput(dataInput) : null
+  let dataset = resolvedData ? resolvedData.dataset : datasetFactory.dataset()
+
+  if (!subject && dataInput instanceof URL) {
+    const localDataName = dataInput?.toString().split('#').pop()
+    if (localDataName) subject = factory.namedNode(dataInput.toString())
+  }
+
+  const firstQuad = [...dataset]?.[0]
+  if (!subject && firstQuad) {
+    subject = firstQuad.subject as NamedNode
+  } else if (!subject) {
+    subject = factory.blankNode()
+  }
+
+  return {
+    dataPointer: grapoi({ dataset, factory, term: subject }),
+    prefixes: resolvedData?.prefixes,
+    subject,
+    dataset
+  }
+}
+
+const getShapes = async (
+  shapes: URL | DatasetCore | string,
+  givenTargetClass?: NamedNode,
+  shapeSubject?: URL | string
+) => {
+  const { dataset: resolvedShapes } = shapes
+    ? await resolveRdfInput(shapes)
+    : {
+        dataset: datasetFactory.dataset([
+          factory.quad(factory.namedNode(''), rdf('type'), sh('NodeShape')),
+          factory.quad(factory.namedNode(''), sh('targetClass'), givenTargetClass!)
+        ])
+      }
+  const rootShapePointer = grapoi({ dataset: resolvedShapes, factory })
+  let shapePointers = rootShapePointer.hasOut(rdf('type'), sh('NodeShape'))
+  if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
+
+  const localShapeName = shapes?.toString().includes('#') ? shapes?.toString().split('#').pop() : false
+  if (localShapeName)
+    shapePointers = shapePointers.filter(pointer => pointer.term.value.split(/\/|\#/g).pop() === localShapeName)
+
+  const shapePointer = shapeSubject?.toString()
+    ? shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!
+    : [...shapePointers].at(0)!
+  const targetClass: NamedNode = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
+
+  return {
+    shapePointer,
+    targetClass,
+    shapePointers,
+    resolvedShapes
+  }
+}
+
 export const initContext = async ({
   shapes,
   data,
@@ -72,49 +130,12 @@ export const initContext = async ({
   allowedLanguages,
   ...settings
 }: MainContextInput): Promise<MainContext> => {
-  const { dataset: resolvedShapes } = shapes
-    ? await resolveRdfInput(shapes)
-    : {
-        dataset: datasetFactory.dataset([
-          factory.quad(factory.namedNode(''), rdf('type'), sh('NodeShape')),
-          factory.quad(factory.namedNode(''), sh('targetClass'), givenTargetClass!)
-        ])
-      }
-  const rootShapePointer = grapoi({ dataset: resolvedShapes, factory })
-  let shapePointers = rootShapePointer.hasOut(rdf('type'), sh('NodeShape'))
-
-  if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
-
-  const localShapeName = shapes?.toString().includes('#') ? shapes?.toString().split('#').pop() : false
-  if (localShapeName) {
-    shapePointers = shapePointers.filter(pointer => pointer.term.value.split(/\/|\#/g).pop() === localShapeName)
-  }
-
-  const resolvedData = data ? await resolveRdfInput(data) : null
-  let dataset = resolvedData ? resolvedData.dataset : datasetFactory.dataset()
-
-  if (!subject) {
-    if (data instanceof URL) {
-      const localDataName = data?.toString().split('#').pop()
-      if (localDataName) {
-        subject = factory.namedNode(data.toString())
-      }
-    }
-
-    const firstQuad = [...dataset]?.[0]
-    if (firstQuad && !subject) {
-      subject = firstQuad.subject as NamedNode
-    } else if (!subject) {
-      subject = factory.blankNode()
-    }
-  }
-
-  const shapePointer = shapeSubject?.toString()
-    ? shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!
-    : [...shapePointers].at(0)!
-  const targetClass: NamedNode = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
-
-  let dataPointer = grapoi({ dataset, factory, term: subject })
+  let { shapePointer, resolvedShapes, targetClass, shapePointers } = await getShapes(
+    shapes,
+    givenTargetClass,
+    shapeSubject
+  )
+  let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject)
 
   // This is only for facets, it contains a dataset that we will filter through.
   const facetSearchDataset = facetSearchData
@@ -134,15 +155,15 @@ export const initContext = async ({
     shapes: resolvedShapes,
     data: dataset,
     dataPointer,
-    subject,
+    subject: finalSubject,
     targetClass,
     facetSearchData: facetSearchDataset,
     shapePointer,
     usedLanguageCodes: [],
     shapePointers,
     facetSearchDataPointer,
-    allowedLanguages,
-    jsonLdContext: new JsonLdContextNormalized({ ...(resolvedData?.prefixes ?? {}) }),
+    allowedLanguages: allowedLanguages ?? {},
+    jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}) }),
     mode,
     ...settings
   }
