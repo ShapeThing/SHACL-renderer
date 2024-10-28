@@ -1,5 +1,6 @@
 import { useContext } from 'react'
-import { dash } from '../../core/namespaces'
+import parsePath from 'shacl-engine/lib/parsePath'
+import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { wrapWithList } from '../../helpers/wrapWithList'
 import { widgetsContext } from '../../widgets/widgets-context'
@@ -7,8 +8,10 @@ import PropertyElement from '../PropertyElement'
 import { PropertyShapeInnerProps } from '../PropertyShape'
 
 export default function PropertyShapeViewMode(props: PropertyShapeInnerProps) {
-  const { data, property } = props
+  const { nodeDataPointer, property } = props
   const { viewers } = useContext(widgetsContext)
+  const path = parsePath(property.out(sh('path')))
+  const data = nodeDataPointer.executeAll(path)
 
   return (
     <PropertyElement showColon property={property}>

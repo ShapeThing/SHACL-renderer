@@ -1,10 +1,12 @@
 import '@fontsource/roboto/latin-400.css'
 import { Suspense } from 'react'
 import useSwrImmutable from 'swr/immutable'
+import LanguageProvider from '../core/language-context'
 import { MainContextInput, MainContextProvider, initContext } from '../core/main-context'
 import ValidationContextProvider from '../core/validation-context'
 import { createCidFromProps } from '../helpers/createCidFromProps'
 import '../scss/style.scss'
+import LanguageAwareTabs from './LanguageAwareTabs'
 import NodeShape from './NodeShape'
 export * from '../core/namespaces'
 
@@ -17,7 +19,11 @@ function ShaclRendererInner(props: ShaclRendererProps) {
   return (
     <MainContextProvider context={context}>
       <ValidationContextProvider>
-        <NodeShape {...context} key="root" />
+        <LanguageProvider>
+          <LanguageAwareTabs>
+            <NodeShape {...context} key="root" />
+          </LanguageAwareTabs>
+        </LanguageProvider>
       </ValidationContextProvider>
     </MainContextProvider>
   )

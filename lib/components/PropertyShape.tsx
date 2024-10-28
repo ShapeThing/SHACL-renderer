@@ -42,35 +42,21 @@ const modePredicates = {
 }
 
 export default function PropertyShape(props: PropertyShapeProps) {
-  const { property, nodeDataPointer, facetSearchDataPointer } = props
-  const { mode, data: dataset } = useContext(mainContext)
+  const { property } = props
+  const { mode } = useContext(mainContext)
 
   const selectedWidgetIri = property.out(modePredicates[mode]).term
   if (selectedWidgetIri?.equals(stsr('HideWidget'))) return null
 
   const path = parsePath(property.out(sh('path')))
-  let data = nodeDataPointer.executeAll(path)
-  const facetSearchData = facetSearchDataPointer.executeAll(path)
   const PropertyShapeInner = modes[mode]
-
-  if (mode === 'facet') {
-    const predicate = property.out(sh('path')).term
-    data = nodeDataPointer.out(sh('property')).distinct().hasOut(sh('path'), predicate)
-  }
 
   const { report } = useContext(validationContext)
   const errors = report?.results?.filter((result: { path: unknown }) => isEqual(result.path, path)) ?? []
 
   return PropertyShapeInner ? (
     <Suspense>
-      <PropertyShapeInner
-        {...props}
-        errors={errors}
-        dataset={dataset}
-        facetSearchData={facetSearchData}
-        data={data}
-        path={path}
-      />
+      <PropertyShapeInner {...props} errors={errors} path={path} />
     </Suspense>
   ) : null
 }

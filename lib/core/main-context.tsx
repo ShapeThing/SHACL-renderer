@@ -1,10 +1,9 @@
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
-import grapoi from 'grapoi'
+import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser/lib/JsonLdContextNormalized'
 import { ReactNode, createContext } from 'react'
-import { getUsedLanguageCodes } from '../helpers/getUsedLanguageCodes'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import { rdf, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
@@ -13,6 +12,7 @@ export type MainContextInput = {
   shapes: URL | DatasetCore | string
   shapeSubject?: URL | string
   data?: URL | DatasetCore | string
+  languageMode?: 'tabs' | 'individual'
   facetSearchData?: URL | DatasetCore | string
   subject?: NamedNode | BlankNode
   targetClass?: NamedNode
@@ -22,8 +22,6 @@ export type MainContextInput = {
 export type Settings = {
   mode: 'edit' | 'facet' | 'view' | 'inline-edit'
 }
-
-type Grapoi = ReturnType<typeof grapoi>
 
 export type MainContext = {
   shapes: DatasetCore
@@ -36,15 +34,14 @@ export type MainContext = {
   dataPointer: Grapoi
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
-  usedLanguageCodes: string[]
+  languageMode: 'tabs' | 'individual'
   allowedLanguages: Record<string, string>
 } & Settings
 
+// The default context because react needs it this way.
 export const mainContext = createContext<MainContext>({
   shapes: datasetFactory.dataset(),
   data: datasetFactory.dataset(),
-  usedLanguageCodes: [],
-  allowedLanguages: {},
   facetSearchData: datasetFactory.dataset(),
   subject: factory.blankNode(),
   targetClass: undefined,
@@ -53,7 +50,9 @@ export const mainContext = createContext<MainContext>({
   dataPointer: undefined as unknown as Grapoi,
   facetSearchDataPointer: undefined as unknown as Grapoi,
   mode: 'edit',
-  jsonLdContext: new JsonLdContextNormalized({})
+  jsonLdContext: new JsonLdContextNormalized({}),
+  languageMode: 'tabs',
+  allowedLanguages: {}
 })
 
 type MainContextProviderProps = {
@@ -61,6 +60,9 @@ type MainContextProviderProps = {
   context: MainContext
 }
 
+/**
+ * Fetches the data, returns an empty dataset if no data was given.
+ */
 const getData = async (dataInput?: URL | DatasetCore | string, subject?: NamedNode | BlankNode) => {
   const resolvedData = dataInput ? await resolveRdfInput(dataInput) : null
   let dataset = resolvedData ? resolvedData.dataset : datasetFactory.dataset()
@@ -85,6 +87,9 @@ const getData = async (dataInput?: URL | DatasetCore | string, subject?: NamedNo
   }
 }
 
+/**
+ * Fetches the shape part, can return a generic shape if none was given
+ */
 const getShapes = async (
   shapes: URL | DatasetCore | string,
   givenTargetClass?: NamedNode,
@@ -119,6 +124,9 @@ const getShapes = async (
   }
 }
 
+/**
+ * Creates a new main context. This is a promise, so it should be awaited.
+ */
 export const initContext = async ({
   shapes,
   data,
@@ -126,16 +134,17 @@ export const initContext = async ({
   subject,
   targetClass: givenTargetClass,
   mode,
+  languageMode,
   shapeSubject,
   allowedLanguages,
   ...settings
 }: MainContextInput): Promise<MainContext> => {
+  let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject)
   let { shapePointer, resolvedShapes, targetClass, shapePointers } = await getShapes(
     shapes,
     givenTargetClass,
     shapeSubject
   )
-  let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject)
 
   // This is only for facets, it contains a dataset that we will filter through.
   const facetSearchDataset = facetSearchData
@@ -159,7 +168,7 @@ export const initContext = async ({
     targetClass,
     facetSearchData: facetSearchDataset,
     shapePointer,
-    usedLanguageCodes: [],
+    languageMode: languageMode ?? 'tabs',
     shapePointers,
     facetSearchDataPointer,
     allowedLanguages: allowedLanguages ?? {},
@@ -170,10 +179,5 @@ export const initContext = async ({
 }
 
 export function MainContextProvider({ children, context }: MainContextProviderProps) {
-  // TODO is this the best way for doing this?
-  const usedLanguageCodes = context.data ? getUsedLanguageCodes(context.data) : []
-
-  return context ? (
-    <mainContext.Provider value={{ ...context, usedLanguageCodes }}>{children}</mainContext.Provider>
-  ) : null
+  return context ? <mainContext.Provider value={{ ...context }}>{children}</mainContext.Provider> : null
 }
