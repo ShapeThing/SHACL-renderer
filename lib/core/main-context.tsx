@@ -78,7 +78,7 @@ export const initContext = async ({
 
   if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
 
-  const localShapeName = shapes?.toString().split('#').pop()
+  const localShapeName = shapes?.toString().includes('#') ? shapes?.toString().split('#').pop() : false
   if (localShapeName) {
     shapePointers = shapePointers.filter(pointer => pointer.term.value.split(/\/|\#/g).pop() === localShapeName)
   }
