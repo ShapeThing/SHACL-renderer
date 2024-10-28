@@ -19,5 +19,9 @@ export const useLanguageFilteredItems = (fetcher: () => Grapoi) => {
     setItems(filter(fetcher()))
   }, [activeContentLanguage])
 
-  return [items, setItems] as [Grapoi, React.Dispatch<React.SetStateAction<Grapoi>>]
+  const setItemsFiltered = (pointer: Grapoi) => {
+    setItems(filter(pointer))
+  }
+
+  return [items, setItemsFiltered] as [Grapoi, React.Dispatch<React.SetStateAction<Grapoi>>]
 }
