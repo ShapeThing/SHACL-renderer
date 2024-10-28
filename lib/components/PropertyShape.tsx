@@ -1,3 +1,4 @@
+import { DatasetCore } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import isEqual from 'lodash-es/isEqual'
 import { ReactComponentLike } from 'prop-types'
@@ -14,6 +15,7 @@ import PropertyShapeViewMode from './ViewMode/PropertyShapeViewMode'
 type PropertyShapeProps = {
   property: Grapoi
   nodeDataPointer: Grapoi
+  dataset: DatasetCore
   facetSearchDataPointer: Grapoi
 }
 
@@ -41,7 +43,7 @@ const modePredicates = {
 
 export default function PropertyShape(props: PropertyShapeProps) {
   const { property, nodeDataPointer, facetSearchDataPointer } = props
-  const { mode } = useContext(mainContext)
+  const { mode, data: dataset } = useContext(mainContext)
 
   const selectedWidgetIri = property.out(modePredicates[mode]).term
   if (selectedWidgetIri?.equals(stsr('HideWidget'))) return null
@@ -61,7 +63,14 @@ export default function PropertyShape(props: PropertyShapeProps) {
 
   return PropertyShapeInner ? (
     <Suspense>
-      <PropertyShapeInner {...props} errors={errors} facetSearchData={facetSearchData} data={data} path={path} />
+      <PropertyShapeInner
+        {...props}
+        errors={errors}
+        dataset={dataset}
+        facetSearchData={facetSearchData}
+        data={data}
+        path={path}
+      />
     </Suspense>
   ) : null
 }

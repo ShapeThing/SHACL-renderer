@@ -4,6 +4,7 @@ import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser/lib/JsonLdContextNormalized'
 import { ReactNode, createContext } from 'react'
+import { getUsedLanguageCodes } from '../helpers/getUsedLanguageCodes'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import { rdf, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
@@ -15,6 +16,7 @@ export type MainContextInput = {
   facetSearchData?: URL | DatasetCore | string
   subject?: NamedNode | BlankNode
   targetClass?: NamedNode
+  allowedLanguages?: Record<string, string>
 } & Settings
 
 export type Settings = {
@@ -34,11 +36,15 @@ export type MainContext = {
   dataPointer: Grapoi
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
+  usedLanguageCodes: string[]
+  allowedLanguages: Record<string, string>
 } & Settings
 
 export const mainContext = createContext<MainContext>({
   shapes: datasetFactory.dataset(),
   data: datasetFactory.dataset(),
+  usedLanguageCodes: [],
+  allowedLanguages: {},
   facetSearchData: datasetFactory.dataset(),
   subject: factory.blankNode(),
   targetClass: undefined,
@@ -63,6 +69,7 @@ export const initContext = async ({
   targetClass: givenTargetClass,
   mode,
   shapeSubject,
+  allowedLanguages,
   ...settings
 }: MainContextInput): Promise<MainContext> => {
   const { dataset: resolvedShapes } = shapes
@@ -102,7 +109,6 @@ export const initContext = async ({
     }
   }
 
-  // TODO in the future we could make it possible to select a specific shape.
   const shapePointer = shapeSubject?.toString()
     ? shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!
     : [...shapePointers].at(0)!
@@ -132,8 +138,10 @@ export const initContext = async ({
     targetClass,
     facetSearchData: facetSearchDataset,
     shapePointer,
+    usedLanguageCodes: [],
     shapePointers,
     facetSearchDataPointer,
+    allowedLanguages,
     jsonLdContext: new JsonLdContextNormalized({ ...(resolvedData?.prefixes ?? {}) }),
     mode,
     ...settings
@@ -141,5 +149,10 @@ export const initContext = async ({
 }
 
 export function MainContextProvider({ children, context }: MainContextProviderProps) {
-  return context ? <mainContext.Provider value={context}>{children}</mainContext.Provider> : null
+  // TODO is this the best way for doing this?
+  const usedLanguageCodes = context.data ? getUsedLanguageCodes(context.data) : []
+
+  return context ? (
+    <mainContext.Provider value={{ ...context, usedLanguageCodes }}>{children}</mainContext.Provider>
+  ) : null
 }

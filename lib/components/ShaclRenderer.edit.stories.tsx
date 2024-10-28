@@ -44,7 +44,11 @@ export const Multilingual = {
   args: {
     mode: 'edit',
     data: new URL('/shapes/multilingual.ttl#data', location.origin),
-    shapes: new URL('/shapes/multilingual.ttl#default', location.origin)
+    shapes: new URL('/shapes/multilingual.ttl#default', location.origin),
+    allowedLanguages: {
+      en: 'English',
+      nl: 'Dutch'
+    }
   } as ShaclRendererProps
 }
 // export const FormShacl = {

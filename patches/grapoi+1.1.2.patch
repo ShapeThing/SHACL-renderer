@@ -1,0 +1,21 @@
+diff --git a/node_modules/grapoi/types/Grapoi.d.ts b/node_modules/grapoi/types/Grapoi.d.ts
+index d21c73f..ddfa078 100644
+--- a/node_modules/grapoi/types/Grapoi.d.ts
++++ b/node_modules/grapoi/types/Grapoi.d.ts
+@@ -81,14 +81,14 @@ declare class Grapoi extends PathList {
+      * @param {Grapoi|Grapoi[]|Term|Term[]} [subjects] Subjects of the quads
+      * @returns {Grapoi} Instance with pointers of the traversed target terms
+      */
+-    in(predicates: Grapoi | Grapoi[] | Term | Term[], subjects?: Grapoi | Grapoi[] | Term | Term[]): this;
++    in(predicates?: Grapoi | Grapoi[] | Term | Term[], subjects?: Grapoi | Grapoi[] | Term | Term[]): this;
+     /**
+      * Traverse the graph with the current terms as the subject.
+      * @param {Grapoi|Grapoi[]|Term|Term[]} predicates Predicates of the quads
+      * @param {Grapoi|Grapoi[]|Term|Term[]} [objects] Objects of the quads
+      * @returns {Grapoi} Instance with pointers of the traversed target terms
+      */
+-    out(predicates: Grapoi | Grapoi[] | Term | Term[], objects?: Grapoi | Grapoi[] | Term | Term[]): this;
++    out(predicates?: Grapoi | Grapoi[] | Term | Term[], objects?: Grapoi | Grapoi[] | Term | Term[]): this;
+     /**
+      * Jump to random terms.
+      * @param {Grapoi|Grapoi[]|Term|Term[]} predicates Terms for the new pointers

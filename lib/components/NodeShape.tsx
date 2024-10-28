@@ -9,7 +9,7 @@ import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
 
 export default function NodeShape() {
-  const { mode, shapePointer, dataPointer, facetSearchDataPointer } = useContext(mainContext)
+  const { mode, shapePointer, dataPointer, facetSearchDataPointer, data: dataset } = useContext(mainContext)
 
   const isClosed = shapePointer.out(sh('closed')).value === 'true'
 
@@ -51,6 +51,7 @@ export default function NodeShape() {
     return [
       parseInt(property.out(sh('order')).value as string) ?? 0,
       <PropertyShape
+        dataset={dataset}
         facetSearchDataPointer={facetSearchDataPointer}
         nodeDataPointer={dataPointer}
         property={property}
@@ -81,6 +82,7 @@ export default function NodeShape() {
 
         return (
           <PropertyShape
+            dataset={dataset}
             facetSearchDataPointer={facetSearchDataPointer}
             nodeDataPointer={dataPointer}
             property={propertyPointer}

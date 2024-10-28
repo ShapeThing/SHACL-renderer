@@ -1,4 +1,4 @@
-import { NamedNode, Term } from '@rdfjs/types'
+import { DatasetCore, NamedNode, Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { ComponentType, LazyExoticComponent, ReactNode, createContext } from 'react'
 import { coreWidgets } from './coreWidgets'
@@ -24,6 +24,7 @@ type WidgetsContext = {
 
 export type WidgetProps = {
   data: Grapoi
+  dataset: DatasetCore
   setConstraint: (predicate: NamedNode, value: string | number) => void
   property: Grapoi
   facetSearchData: Grapoi
