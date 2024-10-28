@@ -5,6 +5,7 @@ import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser/lib/JsonLdContextNormalized'
 import { ReactNode, createContext } from 'react'
 import { getShapeSkeleton } from './getShapeSkeleton'
+import LanguageProvider from './language-context'
 import { rdf, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
 
@@ -179,5 +180,9 @@ export const initContext = async ({
 }
 
 export function MainContextProvider({ children, context }: MainContextProviderProps) {
-  return context ? <mainContext.Provider value={{ ...context }}>{children}</mainContext.Provider> : null
+  return context ? (
+    <mainContext.Provider value={{ ...context }}>
+      <LanguageProvider>{children}</LanguageProvider>
+    </mainContext.Provider>
+  ) : null
 }
