@@ -17,7 +17,7 @@ export type MainContextInput = {
   facetSearchData?: URL | DatasetCore | string
   subject?: NamedNode | BlankNode
   targetClass?: NamedNode
-  allowedLanguages?: Record<string, string>
+  languages?: Record<string, string>
 } & Settings
 
 export type Settings = {
@@ -36,7 +36,7 @@ export type MainContext = {
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
   languageMode: 'tabs' | 'individual'
-  allowedLanguages: Record<string, string>
+  languages: Record<string, string>
 } & Settings
 
 // The default context because react needs it this way.
@@ -53,7 +53,7 @@ export const mainContext = createContext<MainContext>({
   mode: 'edit',
   jsonLdContext: new JsonLdContextNormalized({}),
   languageMode: 'tabs',
-  allowedLanguages: {}
+  languages: {}
 })
 
 type MainContextProviderProps = {
@@ -137,7 +137,7 @@ export const initContext = async ({
   mode,
   languageMode,
   shapeSubject,
-  allowedLanguages,
+  languages,
   ...settings
 }: MainContextInput): Promise<MainContext> => {
   let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject)
@@ -172,7 +172,7 @@ export const initContext = async ({
     languageMode: languageMode ?? 'tabs',
     shapePointers,
     facetSearchDataPointer,
-    allowedLanguages: allowedLanguages ?? {},
+    languages: languages ?? {},
     jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}) }),
     mode,
     ...settings

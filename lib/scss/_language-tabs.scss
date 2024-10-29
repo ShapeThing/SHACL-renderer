@@ -1,6 +1,6 @@
 .language-button {
     padding: 8px;
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     border-top-left-radius: var(--input-radius);
     border-top-right-radius: var(--input-radius);
     transition: box-shadow var(--easing) var(--speed);
@@ -25,5 +25,21 @@
 }
 
 .languages {
+    display: flex;
     border-bottom: 1px solid var(--gray);
+}
+
+.add-language {
+    margin-inline-start: auto;
+}
+
+.add-language-dialog {
+    z-index: 1000;
+
+    .actions {
+        justify-content: end;
+        margin-block-start: 20px;
+        display: flex;
+        gap: 20px;
+    }
 }

@@ -46,7 +46,7 @@ export const MultilingualWithTabs = {
     data: new URL('/shapes/multilingual.ttl#data', location.origin),
     shapes: new URL('/shapes/multilingual.ttl#default', location.origin),
     languageMode: 'tabs',
-    allowedLanguages: {
+    languages: {
       en: 'English',
       nl: 'Dutch',
       de: 'German'
@@ -60,7 +60,7 @@ export const MultilingualIndividual = {
     data: new URL('/shapes/multilingual.ttl#data', location.origin),
     shapes: new URL('/shapes/multilingual.ttl#default', location.origin),
     languageMode: 'individual',
-    allowedLanguages: {
+    languages: {
       en: 'English',
       nl: 'Dutch',
       de: 'German'
