@@ -2,12 +2,13 @@ import factory from '@rdfjs/data-model'
 import { Quad_Object, Term } from '@rdfjs/types'
 import { useContext, useEffect, useState } from 'react'
 import IconPlus from '~icons/iconoir/plus'
+import { languageContext } from '../../core/language-context'
 import { sh } from '../../core/namespaces'
 import { deleteTermAndDescendants } from '../../helpers/deleteTermAndDescendants'
 import { sortPointersStable } from '../../helpers/sortPointersStable'
 import { wrapWithList } from '../../helpers/wrapWithList'
 import { widgetsContext } from '../../widgets/widgets-context'
-import { createAddObject } from '../EditMode/createAddObject'
+import { useCreateAddObject } from '../EditMode/useCreateAddObject'
 import PropertyElement from '../PropertyElement'
 import { PropertyShapeInnerProps } from '../PropertyShape'
 import PropertyObjectInlineEditMode from './PropertyObjectInlineEditMode'
@@ -17,6 +18,7 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
   const { editors } = useContext(widgetsContext)
 
   const [items, realSetItems] = useState(() => nodeDataPointer.executeAll(path))
+  const { activeContentLanguage } = useContext(languageContext)
 
   const setItems = () => {
     const oldTerms = items.terms
@@ -25,10 +27,10 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
     realSetItems(newItems)
   }
 
-  const addObject = createAddObject(editors, property, items, nodeDataPointer, setItems)
+  const addObject = useCreateAddObject(editors, property, items, nodeDataPointer, setItems)
 
   useEffect(() => {
-    if (items.ptrs.length === 0) addObject()
+    if (items.ptrs.length === 0) addObject({ activeContentLanguage })
   }, [])
 
   const maxCount = property.out(sh('maxCount')).value
@@ -63,7 +65,7 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
       )}
 
       {items.ptrs.length < maxCount ? (
-        <button onClick={() => addObject()}>
+        <button onClick={() => addObject({ activeContentLanguage })}>
           <IconPlus />
         </button>
       ) : null}

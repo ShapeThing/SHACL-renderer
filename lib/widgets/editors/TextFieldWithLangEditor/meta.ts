@@ -6,7 +6,7 @@ import { WidgetMeta } from '../../widgets-context'
 
 export default {
   iri: dash('TextFieldWithLangEditor'),
-  createTerm: () => factory.literal('', 'en'),
+  createTerm: ({ activeContentLanguage }) => factory.literal('', activeContentLanguage),
   score: (data?: Grapoi, propertyShape?: Grapoi) => {
     const term = data?.terms[0]
 

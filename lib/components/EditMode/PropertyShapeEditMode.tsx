@@ -4,6 +4,7 @@ import { Grapoi } from 'grapoi'
 import ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { useContext, useEffect } from 'react'
 import IconPlus from '~icons/iconoir/plus'
+import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
@@ -15,7 +16,7 @@ import { useLanguageFilteredItems } from '../../helpers/useLanguageFilteredItems
 import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
-import { createAddObject } from './createAddObject'
+import { useCreateAddObject } from './useCreateAddObject'
 
 type PropertyShapeEditModeProps = {
   property: Grapoi
@@ -30,6 +31,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const { property, nodeDataPointer, errors, path } = props
   const { editors } = useContext(widgetsContext)
   const { jsonLdContext, data: dataset } = useContext(mainContext)
+  const { activeContentLanguage } = useContext(languageContext)
   const { validate } = useContext(validationContext)
 
   const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
@@ -42,10 +44,10 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
     validate()
   }
 
-  const addObject = createAddObject(editors, property, items, nodeDataPointer, setItems)
+  const addObject = useCreateAddObject(editors, property, items, nodeDataPointer, setItems)
 
   useEffect(() => {
-    if (items.ptrs.length === 0) addObject()
+    if (items.ptrs.length === 0) addObject({ activeContentLanguage })
   }, [])
 
   const maxCount = property.out(sh('maxCount')).value
@@ -107,7 +109,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
         ) : null}
 
         {items.ptrs.length < maxCount ? (
-          <button className="button icon secondary add-object" onClick={() => addObject()}>
+          <button className="button icon secondary add-object" onClick={() => addObject({ activeContentLanguage })}>
             <IconPlus />
           </button>
         ) : null}
