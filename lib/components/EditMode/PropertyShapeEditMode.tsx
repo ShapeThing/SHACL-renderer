@@ -48,7 +48,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
   useEffect(() => {
     if (items.ptrs.length === 0) addObject({ activeContentLanguage })
-  }, [])
+  }, [items])
 
   const maxCount = property.out(sh('maxCount')).value
     ? parseInt(property.out(sh('maxCount')).value.toString())
