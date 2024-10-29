@@ -40,17 +40,34 @@ export const InvalidData = {
   } as ShaclRendererProps
 }
 
-export const Multilingual = {
+export const MultilingualWithTabs = {
   args: {
     mode: 'edit',
     data: new URL('/shapes/multilingual.ttl#data', location.origin),
     shapes: new URL('/shapes/multilingual.ttl#default', location.origin),
+    languageMode: 'tabs',
     allowedLanguages: {
       en: 'English',
-      nl: 'Dutch'
+      nl: 'Dutch',
+      de: 'German'
     }
   } as ShaclRendererProps
 }
+
+export const MultilingualIndividual = {
+  args: {
+    mode: 'edit',
+    data: new URL('/shapes/multilingual.ttl#data2', location.origin),
+    shapes: new URL('/shapes/multilingual.ttl#default', location.origin),
+    languageMode: 'individual',
+    allowedLanguages: {
+      en: 'English',
+      nl: 'Dutch',
+      de: 'German'
+    }
+  } as ShaclRendererProps
+}
+
 // export const FormShacl = {
 //   args: {
 //     mode: 'edit',

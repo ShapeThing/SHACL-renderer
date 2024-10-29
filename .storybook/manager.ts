@@ -10,7 +10,6 @@ const theme = create({
 
 addons.setConfig({
   theme,
-
   navSize: 300,
   bottomPanelHeight: 300,
   rightPanelWidth: 300,

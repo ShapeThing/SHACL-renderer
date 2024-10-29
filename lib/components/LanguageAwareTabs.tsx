@@ -19,18 +19,20 @@ export default function LanguageAwareTabs({ children }: Props) {
     children
   ) : (
     <>
-      <div className="languages">
-        {Object.entries(localAllowedLanguages).map(([languageCode, label]) => (
-          <button
-            onClick={() => {
-              setActiveContentLanguage(languageCode)
-            }}
-            className={`language-button ${activeContentLanguage === languageCode ? 'active' : ''}`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      {Object.keys(localAllowedLanguages).length ? (
+        <div className="languages">
+          {Object.entries(localAllowedLanguages).map(([languageCode, label]) => (
+            <button
+              onClick={() => {
+                setActiveContentLanguage(languageCode)
+              }}
+              className={`language-button ${activeContentLanguage === languageCode ? 'active' : ''}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      ) : null}
       {children}
     </>
   )

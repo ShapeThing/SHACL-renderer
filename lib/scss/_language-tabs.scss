@@ -1,5 +1,29 @@
 .language-button {
-    &.active {
-        background-color: green;
+    padding: 8px;
+    flex: 1 1 auto;
+    border-top-left-radius: var(--input-radius);
+    border-top-right-radius: var(--input-radius);
+    transition: box-shadow var(--easing) var(--speed);
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--gray);
+    position: relative;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 12px 16px;
+    background-color: white;
+    margin-bottom: -1px;
+
+    &:not(.active):hover {
+        background-color: var(--gray-light);
     }
+
+    &.active {
+        border: 1px solid var(--gray);
+        border-bottom-color: white;
+        z-index: 2;
+    }
+}
+
+.languages {
+    border-bottom: 1px solid var(--gray);
 }
