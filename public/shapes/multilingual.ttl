@@ -21,6 +21,3 @@
 
 <#data>
  schema:name "French"@fr, "English"@en, "Dutch"@nl .
-
- <#data2>
- schema:name "French"@fr, "English"@en, "Dutch"@nl .

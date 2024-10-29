@@ -1,6 +1,6 @@
 import { ShaclRendererProps } from '../components/ShaclRenderer'
 
-export const createCidFromProps = ({ data, shapes, mode, subject }: ShaclRendererProps) => {
+export const createCidFromProps = ({ data, shapes, mode, subject, languageMode }: ShaclRendererProps) => {
   const properties: string[] = []
 
   if (typeof data === 'string' || data instanceof URL) properties.push(data.toString())
@@ -10,6 +10,7 @@ export const createCidFromProps = ({ data, shapes, mode, subject }: ShaclRendere
   else if (typeof shapes === 'object') properties.push([...shapes]?.[0]?.subject.value ?? '')
 
   properties.push(mode)
+  properties.push(languageMode ?? '')
   properties.push(subject?.value ?? '')
 
   return JSON.stringify(properties)

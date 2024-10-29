@@ -57,7 +57,7 @@ export const MultilingualWithTabs = {
 export const MultilingualIndividual = {
   args: {
     mode: 'edit',
-    data: new URL('/shapes/multilingual.ttl#data2', location.origin),
+    data: new URL('/shapes/multilingual.ttl#data', location.origin),
     shapes: new URL('/shapes/multilingual.ttl#default', location.origin),
     languageMode: 'individual',
     allowedLanguages: {
