@@ -18,6 +18,7 @@ export type MainContextInput = {
   subject?: NamedNode | BlankNode
   targetClass?: NamedNode
   languages?: Record<string, string>
+  context?: Record<string, string>
 } & Settings
 
 export type Settings = {

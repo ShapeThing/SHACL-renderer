@@ -23,7 +23,7 @@ export default function PropertyShapeDataMode(props: PropertyShapeInnerProps) {
 
     return widgetItem ? (
       /** @ts-ignore */
-      <item isMultiple={isMultiple ? 'true' : 'false'} predicate={predicate}>
+      <item dataType={item.term.datatype?.value} isMultiple={isMultiple ? 'true' : 'false'} predicate={predicate}>
         {result}
         {/* @ts-ignore */}
       </item>
