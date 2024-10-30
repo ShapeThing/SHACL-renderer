@@ -20,8 +20,8 @@ type Props = {
 }
 
 export default function LanguageProvider({ children }: Props) {
-  const { data, languages: languagesSetting } = useContext(mainContext)
-  const usedLanguageCodes = getUsedLanguageCodes(data)
+  const { languages: languagesSetting, shapePointer, dataPointer } = useContext(mainContext)
+  const usedLanguageCodes = getUsedLanguageCodes(shapePointer, dataPointer)
   const [languages, setLanguages] = useState<Record<string, string>>(languagesSetting)
   const [activeContentLanguage, setActiveContentLanguage] = useState(usedLanguageCodes[0])
 
