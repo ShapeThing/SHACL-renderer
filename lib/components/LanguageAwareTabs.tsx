@@ -32,7 +32,13 @@ export default function LanguageAwareTabs({ children }: Props) {
               className={`language-button ${activeContentLanguage === languageCode ? 'active' : ''}`}
             >
               {label}
-              <span onClick={event => event.preventDefault()} className="remove-language">
+              <span
+                onClick={event => {
+                  event.preventDefault()
+                  throw new Error('Not yet implemented')
+                }}
+                className="remove-language"
+              >
                 <IconRemove />
               </span>
             </button>
@@ -44,6 +50,7 @@ export default function LanguageAwareTabs({ children }: Props) {
                 setIsCreatingLanguage(false)
                 if (language) {
                   setLanguages({ ...languages, [language.code]: language.label })
+                  setActiveContentLanguage(language.code)
                 }
               }}
             />

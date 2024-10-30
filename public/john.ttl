@@ -23,6 +23,7 @@
   schema:knows <http://dbpedia.org/resource/Søren_Kierkegaard> ;
 
   schema:address [
+    a schema:PostalAddress ;
     schema:streetAddress "Wagramer Strasse 5" ;
     schema:postalCode "1220" ;
     schema:addressRegion "Wien" ;

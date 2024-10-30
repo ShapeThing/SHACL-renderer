@@ -1,0 +1,16 @@
+import { Grapoi } from 'grapoi'
+import { sh, stsr, xsd } from '../../../core/namespaces'
+import { WidgetMeta } from '../../widgets-context'
+
+export default {
+  iri: stsr('LiteralTransformer'),
+  score: (data?: Grapoi, propertyShape?: Grapoi) => {
+    if (data && data.terms && data.terms[0]?.termType === 'Literal') {
+      return 1
+    }
+
+    if (propertyShape && xsd('string').equals(propertyShape.out(sh('datatype')).term)) {
+      return 1
+    }
+  }
+} satisfies WidgetMeta

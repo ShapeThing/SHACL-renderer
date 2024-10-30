@@ -13,7 +13,7 @@ type Props = {
  */
 export default function LanguageSelector({ value, onChange }: Props) {
   const { languageMode } = useContext(mainContext)
-  const { languages, setLanguages } = useContext(languageContext)
+  const { languages, setLanguages, setActiveContentLanguage } = useContext(languageContext)
 
   const localAllowedLanguages = { ...languages }
   if (!(value in localAllowedLanguages)) localAllowedLanguages[value] = value
@@ -44,8 +44,9 @@ export default function LanguageSelector({ value, onChange }: Props) {
           callback={(language?: { label: string; code: string }) => {
             setIsCreatingLanguage(false)
             if (language) {
-              setLanguages({ ...languages, [language.code]: language.label })
               onChange(language.code)
+              setLanguages({ ...languages, [language.code]: language.label })
+              setActiveContentLanguage(language.code)
             }
           }}
         />

@@ -1,5 +1,5 @@
 import { WidgetProps } from '../../widgets-context'
 
-export default function LiteralTransformer({ term }: WidgetProps) {
+export default function LiteralViewer({ term }: WidgetProps) {
   return <>{term.value}</>
 }

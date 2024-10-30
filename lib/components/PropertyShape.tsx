@@ -7,6 +7,7 @@ import parsePath from 'shacl-engine/lib/parsePath'
 import { Settings, mainContext } from '../core/main-context'
 import { dash, sh, stf, stsr } from '../core/namespaces'
 import { validationContext } from '../core/validation-context'
+import PropertyShapeDataMode from './DataMode/PropertyShapeDataMode'
 import PropertyShapeEditMode from './EditMode/PropertyShapeEditMode'
 import PropertyShapeFacetMode from './FacetMode/PropertyShapeFacetMode'
 import PropertyShapeInlineEditMode from './InlineEditMode/PropertyShapeInlineEditMode'
@@ -31,6 +32,7 @@ const modes: Record<Settings['mode'], ReactComponentLike> = {
   edit: PropertyShapeEditMode,
   view: PropertyShapeViewMode,
   facet: PropertyShapeFacetMode,
+  data: PropertyShapeDataMode,
   'inline-edit': PropertyShapeInlineEditMode
 }
 
@@ -38,7 +40,8 @@ const modePredicates = {
   edit: dash('editor'),
   view: dash('viewer'),
   facet: stf('facet'),
-  'inline-edit': dash('editor')
+  'inline-edit': dash('editor'),
+  data: stsr('data')
 }
 
 export default function PropertyShape(props: PropertyShapeProps) {

@@ -11,8 +11,6 @@ export default {
   score: (data?: Grapoi, propertyShape?: Grapoi) => {
     const term = data?.terms[0]
 
-    console.log(term)
-
     if (
       term &&
       (term.value || (term as TouchableTerm).touched === false) &&

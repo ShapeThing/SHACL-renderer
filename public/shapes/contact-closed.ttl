@@ -156,6 +156,7 @@ Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
 <#addressShape>
     a sh:NodeShape ;
     sh:targetClass schema:PostalAddress ;
+    sh:closed true ;
 
     sh:property [
         sh:name "Street"@en ;

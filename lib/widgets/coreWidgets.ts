@@ -9,11 +9,13 @@ export const coreWidgets: {
   viewers: WidgetItem[]
   facets: WidgetItem[]
   lists: WidgetItem[]
+  transformers: WidgetItem[]
 } = {
   editors: [],
   viewers: [],
   facets: [],
-  lists: []
+  lists: [],
+  transformers: []
 }
 
 for (const [path, coreWidgetMeta] of Object.entries(coreWidgetMetaItems)) {

@@ -98,7 +98,10 @@ export default function NodeShape() {
     ...propertiesWithoutNodeShapes
   ]
 
-  return (
+  return mode === 'data' ? (
+    /** @ts-ignore */
+    <node>{elements}</node>
+  ) : (
     <div className="node" data-mode={mode} data-term={shapePointer.term.value}>
       {elements}
     </div>
