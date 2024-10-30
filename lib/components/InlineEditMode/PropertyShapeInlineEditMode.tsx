@@ -65,7 +65,7 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
       )}
 
       {items.ptrs.length < maxCount ? (
-        <button onClick={() => addObject({ activeContentLanguage })}>
+        <button className="inline-button" onClick={() => addObject({ activeContentLanguage })}>
           <IconPlus />
         </button>
       ) : null}

@@ -35,6 +35,13 @@
 
   [data-mode='inline-edit'] & {
     display: inline-flex;
+    padding: 0;
+    background-color: transparent;
+
+    .input {
+      padding-block: 3px;
+      margin-block: -3px;
+    }
   }
 
   >.button {

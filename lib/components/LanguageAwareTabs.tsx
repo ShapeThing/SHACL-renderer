@@ -1,4 +1,5 @@
 import { ReactNode, useContext, useState } from 'react'
+import IconRemove from '~icons/iconoir/xmark'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
 import AddLanguage from './AddLanguage'
@@ -27,12 +28,13 @@ export default function LanguageAwareTabs({ children }: Props) {
         <div className="languages">
           {Object.entries(localAllowedLanguages).map(([languageCode, label]) => (
             <button
-              onClick={() => {
-                setActiveContentLanguage(languageCode)
-              }}
+              onClick={() => setActiveContentLanguage(languageCode)}
               className={`language-button ${activeContentLanguage === languageCode ? 'active' : ''}`}
             >
               {label}
+              <span onClick={event => event.preventDefault()} className="remove-language">
+                <IconRemove />
+              </span>
             </button>
           ))}
 
@@ -47,7 +49,7 @@ export default function LanguageAwareTabs({ children }: Props) {
             />
           ) : null}
 
-          <button className="add-language" onClick={() => setIsCreatingLanguage(true)}>
+          <button className="add-language button secondary" onClick={() => setIsCreatingLanguage(true)}>
             Add language
           </button>
         </div>

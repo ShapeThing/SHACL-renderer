@@ -32,14 +32,14 @@ export default function PropertyObjectInlineEditMode(props: PropertyObjectInline
   return mode === 'edit' ? (
     <Fragment>
       <PropertyObjectEditMode {...props} />
-      <button onClick={() => setMode('view')}>
+      <button className="inline-button" onClick={() => setMode('view')}>
         <IconCheck />
       </button>
     </Fragment>
   ) : (
     <Fragment>
       <viewerWidgetItem.Component {...props} term={data.term} />
-      <button onClick={() => setMode(mode === 'view' ? 'edit' : 'view')}>
+      <button className="inline-button" onClick={() => setMode(mode === 'view' ? 'edit' : 'view')}>
         <IconEditPencil />
       </button>
     </Fragment>

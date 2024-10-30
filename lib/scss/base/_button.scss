@@ -7,6 +7,7 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--input-radius);
+  padding: 10px;
   transition: background-color var(--easing) var(--speed), color var(--easing) var(--speed);
 
   svg {
@@ -22,6 +23,7 @@
   &.primary {
     color: white;
     background-color: var(--primary);
+    border: 1px solid var(--primary);
 
     path[stroke='currentColor'] {
       stroke: white;
@@ -31,6 +33,7 @@
   &.secondary {
     color: white;
     background-color: var(--secondary);
+    border: 1px solid var(--secondary);
 
     path[stroke='currentColor'] {
       stroke: white;
@@ -46,6 +49,8 @@
     &.primary,
     &.secondary {
       background-color: white;
+      border: 1px solid var(--primary);
+      color: var(--primary);
     }
   }
 
@@ -53,4 +58,10 @@
     padding: 0;
     aspect-ratio: 1;
   }
+}
+
+.inline-button {
+  border: none;
+  background: none;
+  cursor: pointer;
 }

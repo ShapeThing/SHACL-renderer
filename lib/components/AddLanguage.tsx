@@ -15,6 +15,7 @@ export default function AddLanguage({ callback }: Props) {
 
         <div className="editor">
           <input
+            required
             type="text"
             className="input"
             value={languageLabel}
@@ -27,6 +28,7 @@ export default function AddLanguage({ callback }: Props) {
         <div className="editor">
           <input
             type="text"
+            required
             className="input"
             value={languageCode}
             onChange={event => setLanguageCode(event.target.value)}
@@ -43,7 +45,7 @@ export default function AddLanguage({ callback }: Props) {
           >
             Cancel
           </a>
-          <button>Create</button>
+          <button className="primary button">Create</button>
         </div>
       </form>
     </dialog>
