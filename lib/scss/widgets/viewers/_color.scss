@@ -1,0 +1,9 @@
+.color-block {
+    background-color: var(--color);
+    display: inline-block;
+    margin-bottom: -4px;
+    width: 22px;
+    margin-inline-end: 6px;
+    aspect-ratio: 1;
+    border-radius: var(--input-radius);
+}

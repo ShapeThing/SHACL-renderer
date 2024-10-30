@@ -10,6 +10,7 @@ export const getUsedLanguageCodes = (shapePointer: Grapoi, dataPointer: Grapoi) 
   for (const property of properties) {
     const path = parsePath(property.out(sh('path')))
     quads.push(...dataPointer.executeAll(path).quads())
+    // TODO should we add support for nested graphs?
   }
 
   return [
