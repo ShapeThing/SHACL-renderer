@@ -14,15 +14,21 @@ export default function PropertyShapeDataMode(props: PropertyShapeInnerProps) {
   if (path[0].predicates.length !== 1) return
 
   const predicate = path[0].predicates[0].value
+  const isMultiple = property.out(sh('maxCount')).value !== '1'
 
-  return data.map((item: any) => {
+  const results = data.map((item: any) => {
     const widgetItem = scoreWidgets(transformers, data, property, dash('viewer'))
     if (!widgetItem) return
     const result = <widgetItem.Component {...props} key={item.term.value} data={item} term={item.term} />
 
     return widgetItem ? (
       /** @ts-ignore */
-      <item predicate={predicate}>{result}</item>
+      <item isMultiple={isMultiple ? 'true' : 'false'} predicate={predicate}>
+        {result}
+        {/* @ts-ignore */}
+      </item>
     ) : null
   })
+
+  return isMultiple ? results : results[0]
 }
