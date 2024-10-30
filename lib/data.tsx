@@ -40,7 +40,6 @@ export default async function data(
   const result = await renderToStringAsync(<ShaclRenderer {...input} mode="data" />)
   const parser = new DOMParser()
   const parsed = parser.parseFromString(result, 'application/xml')
-  console.log(result)
   const mergedContext = new JsonLdContextNormalized({
     ...context.jsonLdContext.getContextRaw(),
     ...additionalJsonLdContext
