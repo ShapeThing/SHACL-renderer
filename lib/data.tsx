@@ -1,15 +1,15 @@
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import { renderToStringAsync } from 'preact-render-to-string'
-import ShaclRenderer, { ShaclRendererProps } from './components/ShaclRenderer'
+import ShaclRenderer, { rdf, ShaclRendererProps, xsd } from './components/ShaclRenderer'
 import { initContext } from './core/main-context'
 
 const cast = (value: any, datatype?: string | null) => {
   if (!value || !datatype) return value
-  if (datatype === 'http://www.w3.org/2001/XMLSchema#boolean') return value === 'true'
-  if (datatype === 'http://www.w3.org/2001/XMLSchema#date') return new Date(value)
-  if (datatype === 'http://www.w3.org/2001/XMLSchema#integer') return parseInt(value)
-  if (datatype === 'http://www.w3.org/2001/XMLSchema#string') return value
-  if (datatype === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString') return value
+  if (datatype === xsd('boolean').value) return value === 'true'
+  if (datatype === xsd('date').value) return new Date(value)
+  if (datatype === xsd('integer').value) return parseInt(value)
+  if (datatype === xsd('string').value) return value
+  if (datatype === rdf('langString').value) return value
   return value
 }
 
