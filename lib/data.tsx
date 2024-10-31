@@ -13,9 +13,9 @@ const cast = (value: any, datatype?: string | null) => {
   return value
 }
 
-const xmlItemToObject = (node: Element, context: JsonLdContextNormalized): any => {
+const xmlItemToObject = (node: Element, context: JsonLdContextNormalized): object => {
   const predicates = new Set([...node.children].map(child => child.getAttribute('predicate')!))
-  const entries: [string, any][] = []
+  const entries: [string, object | string | Date][] = []
 
   for (const predicate of predicates.values()) {
     const compactedPredicate = context.compactIri(predicate, true)
@@ -37,9 +37,8 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized): any =
 }
 
 export default async function data(input: ShaclRendererProps) {
-  /** @ts-ignore */
   const context = await initContext(input)
-  const result = await renderToStringAsync(<ShaclRenderer {...(input as any)} mode="data" />)
+  const result = await renderToStringAsync(<ShaclRenderer {...input} mode="data" />)
   const parser = new DOMParser()
   const parsed = parser.parseFromString(result, 'application/xml')
   const mergedContext = new JsonLdContextNormalized({

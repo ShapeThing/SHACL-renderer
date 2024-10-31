@@ -4,7 +4,7 @@ import { ShaclRendererProps } from './components/ShaclRenderer'
 import data from './data'
 
 function RenderData(props: ShaclRendererProps) {
-  const [json, setJson] = useState()
+  const [json, setJson] = useState<object>()
 
   useEffect(() => {
     data(props).then(setJson)

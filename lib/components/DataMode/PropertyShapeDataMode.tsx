@@ -5,6 +5,15 @@ import { scoreWidgets } from '../../core/scoreWidgets'
 import { widgetsContext } from '../../widgets/widgets-context'
 import { PropertyShapeInnerProps } from '../PropertyShape'
 
+declare global {
+  namespace React.JSX {
+    interface IntrinsicElements {
+      node: any
+      item: any
+    }
+  }
+}
+
 export default function PropertyShapeDataMode(props: PropertyShapeInnerProps) {
   const { nodeDataPointer, property } = props
   const { transformers } = useContext(widgetsContext)
@@ -22,10 +31,8 @@ export default function PropertyShapeDataMode(props: PropertyShapeInnerProps) {
     const result = <widgetItem.Component {...props} key={item.term.value} data={item} term={item.term} />
 
     return widgetItem ? (
-      /** @ts-ignore */
       <item dataType={item.term.datatype?.value} isMultiple={isMultiple ? 'true' : 'false'} predicate={predicate}>
         {result}
-        {/* @ts-ignore */}
       </item>
     ) : null
   })
