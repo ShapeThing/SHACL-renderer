@@ -2,6 +2,7 @@
   "name": "@shapething/shacl-renderer",
   "version": "0.0.1",
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "dev": "storybook dev -p 6006",
     "build": "tsc && vite build",
