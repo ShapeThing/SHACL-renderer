@@ -1,23 +1,23 @@
-@import './base/typography';
-@import './base/input';
-@import './base/button';
-@import './base/label';
+@use 'base/typography';
+@use 'base/input';
+@use 'base/button';
+@use 'base/label';
 
-@import './widgets/editors/editors';
-@import './widgets/facets/facets';
-@import './widgets/facets/count';
+@use 'widgets/editors/editors';
+@use 'widgets/facets/facets';
+@use 'widgets/facets/count';
 
-@import './widgets/group';
-@import './widgets/property';
-@import './widgets/node';
-@import './widgets/iri-preview';
-@import './widgets/editors/autocomplete';
-@import './widgets/editors/iconify';
-@import './widgets/editors/boolean-select';
+@use 'widgets/group';
+@use 'widgets/property';
+@use 'widgets/node';
+@use 'widgets/iri-preview';
+@use 'widgets/editors/autocomplete';
+@use 'widgets/editors/iconify';
+@use 'widgets/editors/boolean-select';
 
-@import './widgets/viewers/color';
+@use 'widgets/viewers/color';
 
-@import './language-tabs';
+@use 'language-tabs';
 
 :root {
   --input-radius: 4px;

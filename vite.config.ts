@@ -1,5 +1,6 @@
 import preact from '@preact/preset-vite'
 import { defineConfig } from 'vite'
+import { dependencies } from './package.json'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,15 +9,19 @@ export default defineConfig({
     lib: {
       entry: './lib/index.tsx',
       name: 'ShaclRenderer',
+      formats: ['es'],
       fileName: 'shacl-renderer'
     },
-    target: 'ES2022',
+    target: 'esnext',
     rollupOptions: {
-      external: ['react'],
+      external: Object.keys(dependencies),
       output: {
-        exports: 'named'
+        exports: 'named',
+        sourcemapExcludeSources: true
       }
-    }
+    },
+    sourcemap: true,
+    minify: false
   },
   css: {
     preprocessorOptions: {
