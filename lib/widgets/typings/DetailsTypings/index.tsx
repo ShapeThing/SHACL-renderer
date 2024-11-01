@@ -31,11 +31,11 @@ export default function DetailsTypings({ data, property, facetSearchData }: Widg
   const dataType = property.out(sh('datatype')).value
 
   return (
-    <item
-      dataType={dataType}
-      isRequired={isRequired ? 'true' : 'false'}
-      isMultiple={isMultiple ? 'true' : 'false'}
-      predicate={predicate}
+    <div
+      data-datatype={dataType}
+      data-isrequired={isRequired ? 'true' : 'false'}
+      data-ismultiple={isMultiple ? 'true' : 'false'}
+      data-predicate={predicate}
     >
       <MainContextProvider
         context={{
@@ -48,6 +48,6 @@ export default function DetailsTypings({ data, property, facetSearchData }: Widg
       >
         <NodeShape />
       </MainContextProvider>
-    </item>
+    </div>
   )
 }

@@ -1,5 +1,5 @@
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
-import { renderToStringAsync } from 'preact-render-to-string'
+import { createRoot } from 'react-dom/client'
 import ShaclRenderer, { rdf, ShaclRendererProps, xsd } from './components/ShaclRenderer'
 import { initContext } from './core/main-context'
 
@@ -12,23 +12,23 @@ const cast = (datatype: string) => {
 }
 
 const xmlItemToObject = (node: Element, context: JsonLdContextNormalized, spacing: number): string => {
-  const predicates = new Set([...node.children].map(child => child.getAttribute('predicate')!))
+  const predicates = new Set([...node.children].map(child => child.getAttribute('data-predicate')!))
   const typings: string[] = []
 
   for (const predicate of predicates.values().filter(Boolean)) {
     const compactedPredicate = context.compactIri(predicate, true)
-    const child = [...node.children].find(child => child.getAttribute('predicate') === predicate)!
+    const child = [...node.children].find(child => child.getAttribute('data-predicate') === predicate)!
     let subType = undefined
 
     const subNode = child.children?.[0]
-    if (subNode?.nodeName === 'node') {
+    if (subNode?.nodeName === 'main') {
       const subTypeProperties = xmlItemToObject(subNode, context, spacing + 1)
       subType = `{\n${subTypeProperties}\n${' '.repeat(spacing * 2)}}`
     }
 
-    const dataType = cast(child.getAttribute('dataType')!) ?? 'string'
-    const isMultiple = child.getAttribute('isMultiple') === 'true'
-    const isRequired = child.getAttribute('isRequired') === 'true'
+    const dataType = cast(child.getAttribute('data-datatype')!) ?? 'string'
+    const isMultiple = child.getAttribute('data-ismultiple') === 'true'
+    const isRequired = child.getAttribute('data-isrequired') === 'true'
 
     const property = compactedPredicate.includes('.') ? `'${compactedPredicate}'` : compactedPredicate
 
@@ -44,7 +44,25 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized, spacin
 
 export default async function type(input: ShaclRendererProps) {
   const context = await initContext(input)
-  const result = await renderToStringAsync(<ShaclRenderer {...input} mode="type" />)
+
+  const element = document.createElement('div')
+  const root = createRoot(element)
+  root.render(<ShaclRenderer {...input} mode="type" />)
+  document.body.appendChild(element)
+
+  const promise: Promise<string> = new Promise(resolve => {
+    const checkOutput = () => {
+      setTimeout(() => {
+        if (element.innerHTML) resolve(element.innerHTML)
+        else checkOutput()
+      }, 10)
+    }
+
+    checkOutput()
+  })
+
+  const result = await promise
+  element.remove()
   const parser = new DOMParser()
   const parsed = parser.parseFromString(result, 'application/xml')
   const mergedContext = new JsonLdContextNormalized({
@@ -52,5 +70,5 @@ export default async function type(input: ShaclRendererProps) {
     ...(input.context ?? {})
   })
   const node = parsed.children[0]
-  return `export type ${node.getAttribute('name')} = {\n${xmlItemToObject(node, mergedContext, 1)}\n}`
+  return `export type ${node.getAttribute('data-name')} = {\n${xmlItemToObject(node, mergedContext, 1)}\n}`
 }

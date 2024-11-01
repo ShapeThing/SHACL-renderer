@@ -31,9 +31,14 @@ export default function PropertyShapeDataMode(props: PropertyShapeInnerProps) {
     const result = <widgetItem.Component {...props} key={item.term.value} data={item} term={item.term} />
 
     return widgetItem ? (
-      <item dataType={item.term.datatype?.value} isMultiple={isMultiple ? 'true' : 'false'} predicate={predicate}>
+      <div
+        key={item.term.value}
+        data-datatype={item.term.datatype?.value}
+        data-ismultiple={isMultiple ? 'true' : 'false'}
+        data-predicate={predicate}
+      >
         {result}
-      </item>
+      </div>
     ) : null
   })
 

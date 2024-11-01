@@ -1,5 +1,5 @@
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
-import { renderToStringAsync } from 'preact-render-to-string'
+import { createRoot } from 'react-dom/client'
 import ShaclRenderer, { rdf, ShaclRendererProps, xsd } from './components/ShaclRenderer'
 import { initContext } from './core/main-context'
 
@@ -14,22 +14,22 @@ const cast = (value: any, datatype?: string | null) => {
 }
 
 const xmlItemToObject = (node: Element, context: JsonLdContextNormalized): object => {
-  const predicates = new Set([...node.children].map(child => child.getAttribute('predicate')!))
+  const predicates = new Set([...node.children].map(child => child.getAttribute('data-predicate')!))
   const entries: [string, object | string | Date][] = []
 
   for (const predicate of predicates.values()) {
     const compactedPredicate = context.compactIri(predicate, true)
-    const rawValues = [...node.children].filter(child => child.getAttribute('predicate') === predicate)
+    const rawValues = [...node.children].filter(child => child.getAttribute('data-predicate') === predicate)
     const values = rawValues.map(child => {
-      if (child.children?.[0]?.nodeName === 'node') {
+      if (child.children?.[0]?.nodeName === 'main') {
         return xmlItemToObject(child.children?.[0], context)
       } else {
-        const dataType = child.getAttribute('dataType')
+        const dataType = child.getAttribute('data-dataType')
         return cast(child.innerHTML, dataType)
       }
     })
 
-    const isMultiple = rawValues[0].getAttribute('isMultiple') === 'true'
+    const isMultiple = rawValues[0].getAttribute('data-ismultiple') === 'true'
     entries.push([compactedPredicate, isMultiple ? values : values[0]])
   }
 
@@ -38,8 +38,24 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized): objec
 
 export default async function data(input: ShaclRendererProps) {
   const context = await initContext(input)
-  const result = await renderToStringAsync(<ShaclRenderer {...input} mode="data" />)
-  console.log(result)
+  const element = document.createElement('div')
+  const root = createRoot(element)
+  root.render(<ShaclRenderer {...input} mode="data" />)
+  document.body.appendChild(element)
+
+  const promise: Promise<string> = new Promise(resolve => {
+    const checkOutput = () => {
+      setTimeout(() => {
+        if (element.innerHTML) resolve(element.innerHTML)
+        else checkOutput()
+      }, 10)
+    }
+
+    checkOutput()
+  })
+
+  const result = await promise
+  element.remove()
   const parser = new DOMParser()
   const parsed = parser.parseFromString(result, 'application/xml')
   const mergedContext = new JsonLdContextNormalized({

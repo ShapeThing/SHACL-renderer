@@ -10,11 +10,11 @@ export default function GenericTypings({ property }: WidgetProps) {
   const dataType = property.out(sh('datatype')).value
 
   return (
-    <item
-      dataType={dataType}
-      isRequired={isRequired ? 'true' : 'false'}
-      isMultiple={isMultiple ? 'true' : 'false'}
-      predicate={predicate}
-    ></item>
+    <div
+      data-datatype={dataType}
+      data-isrequired={isRequired ? 'true' : 'false'}
+      data-ismultiple={isMultiple ? 'true' : 'false'}
+      data-predicate={predicate}
+    ></div>
   )
 }
