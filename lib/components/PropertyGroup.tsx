@@ -21,6 +21,7 @@ export default function PropertyGroup({
 
   const propertiesAsElements = properties.map(property => (
     <PropertyShape
+      key={property.term.value}
       dataset={dataset}
       facetSearchDataPointer={facetSearchDataPointer}
       nodeDataPointer={nodeDataPointer}

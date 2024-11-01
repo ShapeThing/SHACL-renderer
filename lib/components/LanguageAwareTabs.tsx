@@ -28,6 +28,7 @@ export default function LanguageAwareTabs({ children }: Props) {
         <div className="languages">
           {Object.entries(localAllowedLanguages).map(([languageCode, label]) => (
             <button
+              key={languageCode}
               onClick={() => setActiveContentLanguage(languageCode)}
               className={`language-button ${activeContentLanguage === languageCode ? 'active' : ''}`}
             >

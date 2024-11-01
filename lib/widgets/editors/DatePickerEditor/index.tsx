@@ -8,7 +8,7 @@ export default function DatePickerEditor({ term, setTerm }: WidgetProps) {
       className="input"
       type="date"
       value={term.value}
-      onBlur={event => setTerm(factory.literal(event.target.value, xsd('date')))}
+      onChange={event => setTerm(factory.literal(event.target.value, xsd('date')))}
     />
   )
 }

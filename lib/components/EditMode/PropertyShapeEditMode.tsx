@@ -80,6 +80,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
           return (
             <PropertyObjectEditMode
               {...props}
+              key={item.term.value}
               data={item}
               items={items}
               errors={errorMessages}

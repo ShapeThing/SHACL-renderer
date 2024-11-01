@@ -5,12 +5,16 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "main": "./dist/shacl-renderer.js"
+      "default": "./dist/shacl-renderer.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./style.scss": {
+      "default": "./lib/scss/style.scss"
     }
   },
   "scripts": {
     "dev": "storybook dev -p 6006",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && tsc --emitDeclarationOnly",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "postinstall": "patch-package",
@@ -43,7 +47,6 @@
     "preact-render-to-string": "^6.5.11",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
-    "react-custom-element-wrapper": "^1.0.0",
     "react-dom": "^18.3.1",
     "react-json-view": "^1.21.3",
     "react-syntax-highlighter": "^15.6.1",
@@ -53,15 +56,14 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.2",
-    "@preact/preset-vite": "^2.9.1",
     "@rdfjs/types": "^1.1.2",
     "@storybook/addon-essentials": "^8.4.1",
     "@storybook/addon-interactions": "^8.4.1",
     "@storybook/addon-links": "^8.4.1",
     "@storybook/blocks": "^8.4.1",
     "@storybook/manager-api": "^8.4.1",
-    "@storybook/preact": "^8.4.1",
-    "@storybook/preact-vite": "^8.4.1",
+    "@storybook/react": "^8.4.1",
+    "@storybook/react-vite": "^8.4.1",
     "@storybook/test": "^8.4.1",
     "@storybook/theming": "^8.4.1",
     "@types/lodash-es": "^4.17.12",

@@ -125,7 +125,11 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
               ? searchInstances.map((searchInstance: Grapoi) => {
                   const image = getImage(searchInstance)
                   return (
-                    <div className="iri-preview search-result" onClick={() => apply(searchInstance.term)}>
+                    <div
+                      key={searchInstance.term.value}
+                      className="iri-preview search-result"
+                      onClick={() => apply(searchInstance.term)}
+                    >
                       {image ? <Image className="image" url={image} size={32} /> : null}
                       <span className="label">{searchInstance?.out(labels).value ?? term.value}</span>
                     </div>

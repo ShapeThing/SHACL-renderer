@@ -10,7 +10,7 @@ export default function BooleanSelectEditor({ term, setTerm }: WidgetProps) {
       type="checkbox"
       className="input"
       checked={currentValue}
-      onBlur={event => setTerm(factory.literal(event.target.checked ? 'true' : 'false', xsd('boolean')))}
+      onChange={event => setTerm(factory.literal(event.target.checked ? 'true' : 'false', xsd('boolean')))}
     />
   )
 }

@@ -8,7 +8,7 @@ export default function ColorEditor({ term, setTerm }: WidgetProps) {
       className="input"
       type="color"
       value={term.value}
-      onBlur={event => setTerm(factory.literal(event.target.value, stsr('color')))}
+      onChange={event => setTerm(factory.literal(event.target.value, stsr('color')))}
     />
   )
 }

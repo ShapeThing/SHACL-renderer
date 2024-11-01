@@ -1,5 +1,5 @@
 import { Grapoi } from 'grapoi'
-import { ReactNode, useContext } from 'react'
+import { Fragment, ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdfs, sh } from '../core/namespaces'
 
@@ -36,10 +36,10 @@ export default function PropertyElement({
       {mode === 'edit' && descriptionLines?.length ? (
         <p className="field-description">
           {descriptionLines.map(line => (
-            <>
+            <Fragment key={line}>
               {line}
               <br />
-            </>
+            </Fragment>
           ))}
         </p>
       ) : null}

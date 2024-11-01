@@ -42,6 +42,7 @@ export default function NodeShape() {
       return [
         parseInt(group.out(sh('order')).value as string) ?? 0,
         <PropertyGroup
+          key={group.term.value}
           facetSearchDataPointer={facetSearchDataPointer}
           nodeDataPointer={dataPointer}
           group={group}
@@ -59,6 +60,7 @@ export default function NodeShape() {
       parseInt(property.out(sh('order')).value as string) ?? 0,
       <PropertyShape
         dataset={dataset}
+        key={property.term.value}
         facetSearchDataPointer={facetSearchDataPointer}
         nodeDataPointer={dataPointer}
         property={property}
@@ -85,14 +87,15 @@ export default function NodeShape() {
         ]
         for (const quad of quads) dataset.add(quad)
 
-        const propertyPointer = grapoi({ dataset, factory, term: propertyIri })
+        const property = grapoi({ dataset, factory, term: propertyIri })
 
         return (
           <PropertyShape
             dataset={dataset}
+            key={property.term.value}
             facetSearchDataPointer={facetSearchDataPointer}
             nodeDataPointer={dataPointer}
-            property={propertyPointer}
+            property={property}
           />
         )
       })

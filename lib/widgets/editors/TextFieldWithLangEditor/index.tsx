@@ -12,7 +12,7 @@ export default function TextFieldEditor({ term, setTerm }: WidgetProps) {
       <input
         className="input"
         value={term.value}
-        onBlur={event => setTerm(factory.literal(event.target.value, language))}
+        onChange={event => setTerm(factory.literal(event.target.value, language))}
       />
       <LanguageSelector onChange={newLanguage => setTerm(factory.literal(term.value, newLanguage))} value={language} />
     </>
