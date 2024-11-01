@@ -1,5 +1,5 @@
-import { Quad } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
+import type { Quad } from '@rdfjs/types'
+import type { Grapoi } from 'grapoi'
 
 export const outAll = (pointer: Grapoi) => {
   const quads: Quad[] = []

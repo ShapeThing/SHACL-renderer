@@ -2,11 +2,11 @@ import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import grapoi from 'grapoi'
 import { useContext } from 'react'
-import parsePath from 'shacl-engine/lib/parsePath'
 import { sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import parsePath from '../../helpers/parsePath'
 import { widgetsContext } from '../../widgets/widgets-context'
-import { PropertyShapeInnerProps } from '../PropertyShape'
+import type { PropertyShapeInnerProps } from '../PropertyShape'
 
 declare global {
   namespace React.JSX {

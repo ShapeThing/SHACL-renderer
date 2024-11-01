@@ -1,7 +1,7 @@
-import { Literal } from '@rdfjs/types'
+import type { Literal } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
-import parsePath from 'shacl-engine/lib/parsePath'
 import { sh } from '../core/namespaces'
+import parsePath from './parsePath'
 
 export const getUsedLanguageCodes = (shapePointer: Grapoi, dataPointer: Grapoi) => {
   const properties = shapePointer.out(sh('property'))

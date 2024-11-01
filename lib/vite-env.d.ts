@@ -1,6 +1,5 @@
 /// <reference types="vite/client" />
 
-declare module 'shacl-engine/lib/parsePath'
 declare module 'shacl-engine'
 
 declare module 'd2l-fetch'

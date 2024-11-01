@@ -1,11 +1,11 @@
 import { useContext } from 'react'
-import parsePath from 'shacl-engine/lib/parsePath'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import parsePath from '../../helpers/parsePath'
 import { wrapWithList } from '../../helpers/wrapWithList'
 import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
-import { PropertyShapeInnerProps } from '../PropertyShape'
+import type { PropertyShapeInnerProps } from '../PropertyShape'
 
 export default function PropertyShapeViewMode(props: PropertyShapeInnerProps) {
   const { nodeDataPointer, property } = props

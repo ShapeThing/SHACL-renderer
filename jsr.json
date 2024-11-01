@@ -1,0 +1,9 @@
+{
+  "name": "@shapething/shacl-renderer",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./lib/index.tsx",
+    "./data": "./lib/data.tsx",
+    "./type": "./lib/type.tsx"
+  }
+}

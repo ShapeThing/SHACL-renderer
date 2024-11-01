@@ -1,8 +1,8 @@
+import { Icon } from '@iconify-icon/react'
 import factory from '@rdfjs/data-model'
 import { NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { useContext, useEffect, useRef, useState } from 'react'
-import IconPencil from '~icons/mynaui/pencil'
 import { importShaclNodeFilterData } from '../../../core/importShaclNodeFilterData'
 import { mainContext } from '../../../core/main-context'
 import { rdfs, schema, stsr } from '../../../core/namespaces'
@@ -96,7 +96,8 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
           <a href={term.value} target="_blank" className="label">
             {selectedInstance?.out(labels).value ?? term.value}
           </a>
-          <IconPencil
+          <Icon
+            icon="mynaui:pencil"
             onClick={() => {
               setMode('edit')
               setTimeout(() => searchInput.current?.select())

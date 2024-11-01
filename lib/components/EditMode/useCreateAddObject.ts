@@ -1,15 +1,15 @@
-import { Grapoi } from 'grapoi'
-import parsePath from 'shacl-engine/lib/parsePath'
+import type { Grapoi } from 'grapoi'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import parsePath from '../../helpers/parsePath'
 import { TouchableTerm } from '../../helpers/touchableRdf'
-import { WidgetItem } from '../../widgets/widgets-context'
+import type { WidgetItem } from '../../widgets/widgets-context'
 
 export const useCreateAddObject =
   (editors: WidgetItem[], property: Grapoi, items: Grapoi, parentData: Grapoi, setItems: () => void) =>
   ({ activeContentLanguage }: { activeContentLanguage?: string }) => {
     const path = parsePath(property.out(sh('path')))
-    const lastPathPart = path.at(-1)
+    const lastPathPart = path?.at(-1)
     if (lastPathPart.predicates.length > 1) throw new Error('Alternative property paths are not yet supported')
     const [predicate] = lastPathPart.predicates
 

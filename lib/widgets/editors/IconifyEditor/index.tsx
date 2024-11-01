@@ -1,7 +1,6 @@
 import { Icon } from '@iconify-icon/react'
 import factory from '@rdfjs/data-model'
 import { useEffect, useRef, useState } from 'react'
-import IconPencil from '~icons/mynaui/pencil'
 import { stsr } from '../../../core/namespaces'
 import { WidgetProps } from '../../widgets-context'
 
@@ -35,7 +34,8 @@ export default function IconifyEditor({ term, setTerm, property }: WidgetProps) 
           <div className="iri-preview selected" title={term.value}>
             <Icon className="image" icon={term.value} />
             <span className="label">{term.value}</span>
-            <IconPencil
+            <Icon
+              icon="mynaui:pencil"
               onClick={() => {
                 setMode('edit')
                 setTimeout(() => inputReference.current?.select())

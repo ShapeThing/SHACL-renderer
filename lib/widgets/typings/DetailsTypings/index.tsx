@@ -2,10 +2,10 @@ import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import grapoi, { Grapoi } from 'grapoi'
 import { useContext } from 'react'
-import parsePath from 'shacl-engine/lib/parsePath'
 import NodeShape from '../../../components/NodeShape'
 import { mainContext, MainContextProvider } from '../../../core/main-context'
 import { rdf, sh } from '../../../core/namespaces'
+import parsePath from '../../../helpers/parsePath'
 import { WidgetProps } from './../../widgets-context'
 
 export default function DetailsTypings({ data, property, facetSearchData }: WidgetProps) {

@@ -1,5 +1,5 @@
-import parsePath from 'shacl-engine/lib/parsePath'
 import { sh } from '../../../core/namespaces'
+import parsePath from '../../../helpers/parsePath'
 import { WidgetProps } from '../../widgets-context'
 
 export default function GenericTypings({ property }: WidgetProps) {

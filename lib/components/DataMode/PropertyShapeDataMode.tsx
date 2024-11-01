@@ -1,7 +1,7 @@
 import { useContext } from 'react'
-import parsePath from 'shacl-engine/lib/parsePath'
 import { sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import parsePath from '../../helpers/parsePath'
 import { widgetsContext } from '../../widgets/widgets-context'
 import { PropertyShapeInnerProps } from '../PropertyShape'
 

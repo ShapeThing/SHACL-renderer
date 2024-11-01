@@ -1,4 +1,4 @@
-import { Quad, Term } from '@rdfjs/types'
+import type { Quad, Term } from '@rdfjs/types'
 
 export type TouchableTerm = Term & {
   touched: boolean

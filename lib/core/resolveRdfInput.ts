@@ -1,6 +1,5 @@
 import datasetFactory from '@rdfjs/dataset'
-import DatasetCoreConstructor from '@rdfjs/dataset/DatasetCore'
-import { DatasetCore } from '@rdfjs/types'
+import type { DatasetCore } from '@rdfjs/types'
 import Parser from 'n3/src/N3Parser.js'
 import { cachedFetch } from '../helpers/cachedFetch'
 
@@ -10,9 +9,10 @@ export const resolveRdfInput = async (
   dataset: DatasetCore
   prefixes: Record<string, string>
 }> => {
-  if (input instanceof DatasetCoreConstructor)
+  const dummyDataset = datasetFactory.dataset()
+  if (input?.constructor && input?.constructor === dummyDataset.constructor)
     return {
-      dataset: input,
+      dataset: input as DatasetCore,
       prefixes: {}
     }
 

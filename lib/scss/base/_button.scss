@@ -10,14 +10,9 @@
   padding: 10px;
   transition: background-color var(--easing) var(--speed), color var(--easing) var(--speed);
 
-  svg {
+  iconify-icon {
     font-size: 1.5em;
-  }
-
-  path[stroke='currentColor'] {
-    stroke: var(--secondary);
-    stroke-width: 1px;
-    transition: stroke-width var(--easing) var(--speed), stroke var(--easing) var(--speed);
+    color: var(--secondary);
   }
 
   &.primary {
@@ -25,8 +20,8 @@
     background-color: var(--primary);
     border: 1px solid var(--primary);
 
-    path[stroke='currentColor'] {
-      stroke: white;
+    iconify-icon {
+      color: white;
     }
   }
 
@@ -35,15 +30,15 @@
     background-color: var(--secondary);
     border: 1px solid var(--secondary);
 
-    path[stroke='currentColor'] {
-      stroke: white;
+    iconify-icon {
+      color: white;
     }
+
   }
 
   &:hover {
-    path[stroke='currentColor'] {
-      stroke-width: 1.2px;
-      stroke: var(--primary);
+    iconify-icon {
+      color: var(--primary);
     }
 
     &.primary,

@@ -1,9 +1,9 @@
+import { Icon } from '@iconify-icon/react'
 import factory from '@rdfjs/data-model'
-import { Quad_Object, Term } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
+import type { Quad_Object, Term } from '@rdfjs/types'
+import type { Grapoi } from 'grapoi'
 import ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { useContext, useEffect } from 'react'
-import IconPlus from '~icons/iconoir/plus'
 import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
 import { dash, sh } from '../../core/namespaces'
@@ -110,7 +110,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
         {items.ptrs.length < maxCount ? (
           <button className="button icon secondary add-object" onClick={() => addObject({ activeContentLanguage })}>
-            <IconPlus />
+            <Icon icon="iconoir:plus" />
           </button>
         ) : null}
       </div>

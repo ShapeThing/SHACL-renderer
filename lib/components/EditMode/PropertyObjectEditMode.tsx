@@ -1,7 +1,7 @@
-import { Term } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
+import { Icon } from '@iconify-icon/react'
+import type { Term } from '@rdfjs/types'
+import type { Grapoi } from 'grapoi'
 import { useContext, useState } from 'react'
-import IconTrash from '~icons/mynaui/trash'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { widgetsContext } from '../../widgets/widgets-context'
@@ -47,7 +47,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
       <widgetItem.Component {...props} term={data.term} setTerm={setTerm} />
       {!itemIsRequired || errors?.length ? (
         <button className="button icon remove-object" onClick={() => setIsDeleting(true)}>
-          <IconTrash />
+          <Icon icon="mynaui:trash" />
         </button>
       ) : null}
 

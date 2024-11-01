@@ -1,9 +1,8 @@
-import { Term } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
+import { Icon } from '@iconify-icon/react'
+import type { Term } from '@rdfjs/types'
+import type { Grapoi } from 'grapoi'
 import { useContext, useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'
-import IconCheck from '~icons/iconoir/check'
-import IconEditPencil from '~icons/iconoir/edit-pencil'
 import { dash } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { widgetsContext } from '../../widgets/widgets-context'
@@ -33,14 +32,14 @@ export default function PropertyObjectInlineEditMode(props: PropertyObjectInline
     <Fragment>
       <PropertyObjectEditMode {...props} />
       <button className="inline-button" onClick={() => setMode('view')}>
-        <IconCheck />
+        <Icon icon="iconoir:check" />
       </button>
     </Fragment>
   ) : (
     <Fragment>
       <viewerWidgetItem.Component {...props} term={data.term} />
       <button className="inline-button" onClick={() => setMode(mode === 'view' ? 'edit' : 'view')}>
-        <IconEditPencil />
+        <Icon icon="iconoir:edit-pencil" />
       </button>
     </Fragment>
   )

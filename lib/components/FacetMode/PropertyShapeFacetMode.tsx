@@ -1,12 +1,12 @@
 import { useContext } from 'react'
-import parsePath from 'shacl-engine/lib/parsePath'
 import { mainContext } from '../../core/main-context'
 import { sh, stf } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import parsePath from '../../helpers/parsePath'
 import { setConstraint } from '../../helpers/setConstraint'
 import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
-import { PropertyShapeInnerProps } from '../PropertyShape'
+import type { PropertyShapeInnerProps } from '../PropertyShape'
 
 export default function PropertyShapeFacetMode(props: PropertyShapeInnerProps) {
   const { facetSearchDataPointer } = useContext(mainContext)

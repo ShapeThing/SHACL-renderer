@@ -1,5 +1,5 @@
 import factory from '@rdfjs/data-model'
-import { Term } from '@rdfjs/types'
+import type { Term } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'

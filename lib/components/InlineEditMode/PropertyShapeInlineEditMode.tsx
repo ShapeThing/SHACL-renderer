@@ -1,7 +1,7 @@
+import { Icon } from '@iconify-icon/react'
 import factory from '@rdfjs/data-model'
-import { Quad_Object, Term } from '@rdfjs/types'
+import type { Quad_Object, Term } from '@rdfjs/types'
 import { useContext, useEffect, useState } from 'react'
-import IconPlus from '~icons/iconoir/plus'
 import { languageContext } from '../../core/language-context'
 import { sh } from '../../core/namespaces'
 import { deleteTermAndDescendants } from '../../helpers/deleteTermAndDescendants'
@@ -10,7 +10,7 @@ import { wrapWithList } from '../../helpers/wrapWithList'
 import { widgetsContext } from '../../widgets/widgets-context'
 import { useCreateAddObject } from '../EditMode/useCreateAddObject'
 import PropertyElement from '../PropertyElement'
-import { PropertyShapeInnerProps } from '../PropertyShape'
+import type { PropertyShapeInnerProps } from '../PropertyShape'
 import PropertyObjectInlineEditMode from './PropertyObjectInlineEditMode'
 
 export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerProps) {
@@ -66,7 +66,7 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
 
       {items.ptrs.length < maxCount ? (
         <button className="inline-button" onClick={() => addObject({ activeContentLanguage })}>
-          <IconPlus />
+          <Icon icon="iconoir:plus" />
         </button>
       ) : null}
     </PropertyElement>

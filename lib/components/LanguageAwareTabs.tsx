@@ -1,5 +1,5 @@
+import { Icon } from '@iconify-icon/react'
 import { ReactNode, useContext, useState } from 'react'
-import IconRemove from '~icons/iconoir/xmark'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
 import AddLanguage from './AddLanguage'
@@ -39,7 +39,7 @@ export default function LanguageAwareTabs({ children }: Props) {
                 }}
                 className="remove-language"
               >
-                <IconRemove />
+                <Icon icon="iconoir:xmark" />
               </span>
             </button>
           ))}
