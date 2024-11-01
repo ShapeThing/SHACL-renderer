@@ -5,12 +5,11 @@ import data from './data'
 
 function RenderData(props: ShaclRendererProps) {
   const [json, setJson] = useState<object>()
-
   useEffect(() => {
     data(props).then(setJson)
   }, [])
 
-  return json ? <ReactJson src={json} /> : null
+  return json ? <ReactJson name={false} src={json} /> : null
 }
 
 export default {

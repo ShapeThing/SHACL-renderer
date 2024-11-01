@@ -28,7 +28,7 @@ export default function PropertyGroup({
     />
   ))
 
-  if (mode === 'data') {
+  if (['data', 'type'].includes(mode)) {
     return propertiesAsElements
   }
 

@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import parsePath from 'shacl-engine/lib/parsePath'
-import { dash, sh } from '../../core/namespaces'
+import { sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { widgetsContext } from '../../widgets/widgets-context'
 import { PropertyShapeInnerProps } from '../PropertyShape'
@@ -26,7 +26,7 @@ export default function PropertyShapeDataMode(props: PropertyShapeInnerProps) {
   const isMultiple = property.out(sh('maxCount')).value !== '1'
 
   const results = data.map((item: any) => {
-    const widgetItem = scoreWidgets(transformers, data, property, dash('viewer'))
+    const widgetItem = scoreWidgets(transformers, data, property)
     if (!widgetItem) return
     const result = <widgetItem.Component {...props} key={item.term.value} data={item} term={item.term} />
 

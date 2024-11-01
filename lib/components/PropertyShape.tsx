@@ -11,6 +11,7 @@ import PropertyShapeDataMode from './DataMode/PropertyShapeDataMode'
 import PropertyShapeEditMode from './EditMode/PropertyShapeEditMode'
 import PropertyShapeFacetMode from './FacetMode/PropertyShapeFacetMode'
 import PropertyShapeInlineEditMode from './InlineEditMode/PropertyShapeInlineEditMode'
+import PropertyShapeTypeMode from './TypeMode/PropertyShapeTypeMode'
 import PropertyShapeViewMode from './ViewMode/PropertyShapeViewMode'
 
 type PropertyShapeProps = {
@@ -33,6 +34,7 @@ const modes: Record<Settings['mode'], ReactComponentLike> = {
   view: PropertyShapeViewMode,
   facet: PropertyShapeFacetMode,
   data: PropertyShapeDataMode,
+  type: PropertyShapeTypeMode,
   'inline-edit': PropertyShapeInlineEditMode
 }
 
@@ -41,7 +43,8 @@ const modePredicates = {
   view: dash('viewer'),
   facet: stf('facet'),
   'inline-edit': dash('editor'),
-  data: stsr('data')
+  data: stsr('data'),
+  type: stsr('type')
 }
 
 export default function PropertyShape(props: PropertyShapeProps) {

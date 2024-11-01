@@ -98,7 +98,7 @@ export default function NodeShape() {
     ...propertiesWithoutNodeShapes
   ]
 
-  return mode === 'data' ? (
+  return ['data', 'type'].includes(mode) ? (
     <node>{elements}</node>
   ) : (
     <div className="node" data-mode={mode} data-term={shapePointer.term.value}>
