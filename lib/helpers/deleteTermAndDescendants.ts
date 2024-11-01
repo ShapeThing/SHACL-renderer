@@ -1,5 +1,5 @@
-import { Quad, Term } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
+import type { Quad, Term } from '@rdfjs/types'
+import type { Grapoi } from 'grapoi'
 
 export const deleteTermAndDescendants = (item: Grapoi) => {
   const dataset = item.ptrs[0].dataset

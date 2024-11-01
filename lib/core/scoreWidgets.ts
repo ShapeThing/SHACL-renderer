@@ -1,6 +1,6 @@
-import { NamedNode } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
-import { WidgetItem } from '../widgets/widgets-context'
+import type { NamedNode } from '@rdfjs/types'
+import type { Grapoi } from 'grapoi'
+import type { WidgetItem } from '../widgets/widgets-context'
 import { stsr } from './namespaces'
 
 export const scoreWidgets = (widgets: Array<WidgetItem>, data: Grapoi, property: Grapoi, predicate?: NamedNode) => {

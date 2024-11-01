@@ -1,6 +1,6 @@
 import type { DatasetCore } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
-import isEqual from 'lodash-es/isEqual'
+import { isEqual } from 'lodash-es'
 import { ReactComponentLike } from 'prop-types'
 import { Suspense, useContext } from 'react'
 import { Settings, mainContext } from '../core/main-context'
