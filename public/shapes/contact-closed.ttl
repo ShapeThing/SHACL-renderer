@@ -158,6 +158,8 @@ Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
     sh:targetClass schema:PostalAddress ;
     sh:closed true ;
 
+  	sh:ignoredProperties (rdf:type) ;
+
     sh:property [
         sh:name "Street"@en ;
         sh:group <#street-and-housenumber> ;
