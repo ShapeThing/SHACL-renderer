@@ -1,7 +1,7 @@
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
-import { createRoot } from 'react-dom/client'
 import ShaclRenderer, { rdf, ShaclRendererProps, xsd } from './components/ShaclRenderer'
 import { initContext } from './core/main-context'
+import { renderToAsyncBrowser } from './helpers/renderToStringAsyncBrowser'
 
 const cast = (datatype: string) => {
   if (datatype === xsd('boolean').value) return 'boolean'
@@ -44,25 +44,7 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized, spacin
 
 export default async function type(input: ShaclRendererProps) {
   const context = await initContext(input)
-
-  const element = document.createElement('div')
-  const root = createRoot(element)
-  root.render(<ShaclRenderer {...input} mode="type" />)
-  document.body.appendChild(element)
-
-  const promise: Promise<string> = new Promise(resolve => {
-    const checkOutput = () => {
-      setTimeout(() => {
-        if (element.innerHTML) resolve(element.innerHTML)
-        else checkOutput()
-      }, 10)
-    }
-
-    checkOutput()
-  })
-
-  const result = await promise
-  element.remove()
+  const result = await renderToAsyncBrowser(<ShaclRenderer {...input} mode="type" />)
   const parser = new DOMParser()
   const parsed = parser.parseFromString(result, 'application/xml')
   const mergedContext = new JsonLdContextNormalized({
