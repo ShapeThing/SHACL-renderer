@@ -21,6 +21,7 @@ type WidgetsContext = {
   facets: WidgetItem[]
   lists: WidgetItem[]
   transformers: WidgetItem[]
+  typings: WidgetItem[]
 }
 
 export type WidgetProps = {
@@ -44,7 +45,8 @@ export default function WidgetsContextProvider({
   viewers = [],
   facets = [],
   lists = [],
-  transformers = []
+  transformers = [],
+  typings = []
 }: WidgetsContextProviderProps) {
   return (
     <widgetsContext.Provider
@@ -53,7 +55,8 @@ export default function WidgetsContextProvider({
         viewers,
         facets,
         lists,
-        transformers
+        transformers,
+        typings
       }}
     >
       {children}

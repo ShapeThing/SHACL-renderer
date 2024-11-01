@@ -9,7 +9,14 @@ import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
 
 export default function NodeShape() {
-  const { mode, shapePointer, dataPointer, facetSearchDataPointer, data: dataset } = useContext(mainContext)
+  const {
+    mode,
+    shapePointer,
+    dataPointer,
+    facetSearchDataPointer,
+    data: dataset,
+    targetClass
+  } = useContext(mainContext)
 
   const isClosed = shapePointer.out(sh('closed')).value === 'true'
 
@@ -99,7 +106,7 @@ export default function NodeShape() {
   ]
 
   return ['data', 'type'].includes(mode) ? (
-    <node>{elements}</node>
+    <node name={targetClass?.value.split(/\#|\//g).pop() ?? 'Root'}>{elements}</node>
   ) : (
     <div className="node" data-mode={mode} data-term={shapePointer.term.value}>
       {elements}

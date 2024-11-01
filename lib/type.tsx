@@ -18,17 +18,23 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized, spacin
   for (const predicate of predicates.values().filter(Boolean)) {
     const compactedPredicate = context.compactIri(predicate, true)
     const child = [...node.children].find(child => child.getAttribute('predicate') === predicate)!
-    if (child.children?.[0]?.nodeName === 'node') {
-      return xmlItemToObject(child.children?.[0], context, spacing + 1)
+    let subType = undefined
+
+    const subNode = child.children?.[0]
+    if (subNode?.nodeName === 'node') {
+      const subTypeProperties = xmlItemToObject(subNode, context, spacing + 1)
+      subType = `{\n${subTypeProperties}\n${' '.repeat(spacing * 2)}}`
     }
 
-    const dataType = cast(child.getAttribute('dataType')!)
+    const dataType = cast(child.getAttribute('dataType')!) ?? 'unknown'
     const isMultiple = child.getAttribute('isMultiple') === 'true'
     const isRequired = child.getAttribute('isRequired') === 'true'
 
+    const property = compactedPredicate.includes('.') ? `'${compactedPredicate}'` : compactedPredicate
+
     typings.push(
-      `${' '.repeat(spacing * 2)}${compactedPredicate}${isRequired ? '' : '?'}: ${
-        isMultiple ? `Array<${dataType}>` : dataType
+      `${' '.repeat(spacing * 2)}${property}${isRequired ? '' : '?'}: ${
+        isMultiple ? `Array<${subType ?? dataType}>` : subType ?? dataType
       }`
     )
   }
@@ -45,7 +51,6 @@ export default async function type(input: ShaclRendererProps) {
     ...context.jsonLdContext.getContextRaw(),
     ...(input.context ?? {})
   })
-  return `export type = {
-${xmlItemToObject(parsed.children[0], mergedContext, 1)}
-}`
+  const node = parsed.children[0]
+  return `export type ${node.getAttribute('name')} = {\n${xmlItemToObject(node, mergedContext, 1)}\n}`
 }
