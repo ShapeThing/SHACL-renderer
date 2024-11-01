@@ -5,12 +5,16 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [preact()],
   build: {
+    lib: {
+      entry: './lib/index.tsx',
+      name: 'ShaclRenderer',
+      fileName: 'shacl-renderer'
+    },
     target: 'ES2022',
     rollupOptions: {
+      external: ['react'],
       output: {
-        manualChunks: {
-          comunica: ['@comunica/core']
-        }
+        exports: 'named'
       }
     }
   },
