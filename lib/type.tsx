@@ -26,7 +26,7 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized, spacin
       subType = `{\n${subTypeProperties}\n${' '.repeat(spacing * 2)}}`
     }
 
-    const dataType = cast(child.getAttribute('dataType')!) ?? 'unknown'
+    const dataType = cast(child.getAttribute('dataType')!) ?? 'string'
     const isMultiple = child.getAttribute('isMultiple') === 'true'
     const isRequired = child.getAttribute('isRequired') === 'true'
 

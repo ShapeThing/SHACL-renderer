@@ -17,7 +17,7 @@ export const validationContext = createContext<{ report: ValidationReport | unde
 
 export default function ValidationContextProvider({ children }: { children: ReactNode }) {
   const [report, setReport] = useState<ValidationReport | undefined>(undefined)
-  const { data, shapes, shapePointer, dataPointer } = useContext(mainContext)
+  const { data, shapes, shapePointer, dataPointer, mode } = useContext(mainContext)
   const [validator] = useState(() => new Validator(shapes, { factory }))
 
   const validate = useCallback(
@@ -39,7 +39,8 @@ export default function ValidationContextProvider({ children }: { children: Reac
           const additionalQuads = await importShaclNodeFilterData({
             endpoint,
             focusNode: term.term,
-            shapeQuads
+            shapeQuads,
+            dataset
           })
 
           for (const quad of [...additionalQuads]) dataset.add(quad)
@@ -53,8 +54,8 @@ export default function ValidationContextProvider({ children }: { children: Reac
   )
 
   useEffect(() => {
-    validate()
-  }, [])
+    if (['edit', 'inline-edit'].includes(mode)) validate()
+  }, [mode])
 
   return <validationContext.Provider value={{ report, validate }}>{children}</validationContext.Provider>
 }
