@@ -9,7 +9,9 @@ function RenderData(props: ShaclRendererProps) {
     data(props).then(setJson)
   }, [])
 
-  return json ? <ReactJson name={false} src={json} /> : null
+  return json ? (
+    <ReactJson enableClipboard={false} displayDataTypes={false} displayObjectSize={false} name={false} src={json} />
+  ) : null
 }
 
 export default {

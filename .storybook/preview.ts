@@ -1,5 +1,5 @@
 import '@fontsource/roboto/latin-400.css'
-import type { Preview } from '@storybook/preact'
+import type { Preview } from '@storybook/react'
 import '../lib/scss/style.scss'
 
 const preview: Preview = {

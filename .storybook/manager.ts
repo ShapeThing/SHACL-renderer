@@ -3,14 +3,14 @@ import { create } from '@storybook/theming/create'
 
 const theme = create({
   base: 'light',
-  brandTitle: '@Shapething - SHACL Renderer',
+  brandTitle: `<img src="/logo.svg" />`,
   brandUrl: 'https://shacl-renderer.shapething.com',
   brandTarget: '_self'
 })
 
 addons.setConfig({
   theme,
-  navSize: 300,
+  navSize: 240,
   bottomPanelHeight: 300,
   rightPanelWidth: 300,
   panelPosition: 'bottom',
