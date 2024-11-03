@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 
-// TODO maybe use a debounce on a react 'render' event?
 export const renderToAsyncBrowser = async (children: ReactNode) => {
   const element = document.createElement('div')
   const root = createRoot(element)

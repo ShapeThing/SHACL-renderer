@@ -2,7 +2,7 @@ import { Icon } from '@iconify-icon/react'
 import factory from '@rdfjs/data-model'
 import { NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState, useTransition } from 'react'
 import { importShaclNodeFilterData } from '../../../core/importShaclNodeFilterData'
 import { mainContext } from '../../../core/main-context'
 import { rdfs, schema, stsr } from '../../../core/namespaces'
@@ -37,11 +37,11 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   const searchInput = useRef<HTMLInputElement>(null)
   const searchResults = useRef<HTMLDivElement>(null)
   const image = getImage(selectedInstance)
+  const [_isPending, startTransition] = useTransition()
 
-  const searchHandler = useDebounced(async event => {
-    const search = event.target.value
+  const searchHandler = useDebounced((search: string) => {
+    console.log(search)
     setSearchInstances(undefined)
-    setSearch(search)
     setIsLoading(true)
 
     importShaclNodeFilterData({
@@ -115,7 +115,13 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
           onBlur={tryApply}
           ref={searchInput}
           type="search"
-          onChange={searchHandler}
+          onInput={event => {
+            const search = (event.target as HTMLInputElement).value
+            setSearch(search)
+            startTransition(() => {
+              searchHandler(search)
+            })
+          }}
         />
       ) : null}
       {searchInstances && mode === 'edit' ? (

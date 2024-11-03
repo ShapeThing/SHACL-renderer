@@ -1,10 +1,14 @@
 import { debounce } from 'lodash-es'
-import { useMemo } from 'react'
+import { useCallback, useRef } from 'react'
 
 export function useDebounced<T extends (...args: any) => any>(
   callback: T,
   dependencies: any[] = [],
   time: number = 200
 ) {
-  return useMemo(() => debounce(callback, time), dependencies)
+  const callbackDebounced = useRef(debounce(callback, time))
+  return useCallback((...args: Parameters<T>) => {
+    console.log(args[0])
+    return callbackDebounced.current(...args)
+  }, dependencies)
 }
