@@ -12,7 +12,9 @@ export const renderToAsyncBrowser = async (children: ReactNode) => {
     const checkOutput = () => {
       setTimeout(() => {
         if (element.innerHTML) {
-          setTimeout(() => resolve(element.innerHTML), 100)
+          requestAnimationFrame(() => {
+            resolve(element.innerHTML)
+          })
         } else checkOutput()
       }, 10)
     }
