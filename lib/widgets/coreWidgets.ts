@@ -1,8 +1,26 @@
 import { ComponentType, lazy } from 'react'
 import { WidgetItem, WidgetMeta, WidgetProps } from './widgets-context'
 
-const coreWidgetMetaItems = import.meta.glob('./*/*/meta.ts', { eager: true })
-const coreWidgetComponents = import.meta.glob('./*/*/index.tsx')
+const isNode = typeof import.meta.glob !== 'function'
+
+if (isNode) {
+  /** @ts-ignore */
+  import.meta.glob = async function (pattern: string, options: { eager?: boolean } = {}) {
+    const { glob } = await import('glob')
+    const files = await glob(pattern, { cwd: './lib/widgets' })
+    const modules = files.map(async file => [
+      './' + file,
+      options.eager ? await import('./' + file) : () => import('./' + file)
+    ])
+
+    return Object.fromEntries(await Promise.all(modules))
+  }
+}
+
+let coreWidgetMetaItems = isNode
+  ? await import.meta.glob('./*/*/meta.ts', { eager: true })
+  : import.meta.glob('./*/*/meta.ts', { eager: true })
+let coreWidgetComponents = isNode ? await import.meta.glob('./*/*/index.tsx') : import.meta.glob('./*/*/index.tsx')
 
 export const coreWidgets: {
   editors: WidgetItem[]

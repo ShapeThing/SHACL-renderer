@@ -21,6 +21,10 @@
 
 @use 'language-tabs';
 
+.hidden {
+  display: none;
+}
+
 :root {
   --input-radius: 4px;
   --easing: ease-in-out;

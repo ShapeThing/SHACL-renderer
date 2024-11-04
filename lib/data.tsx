@@ -1,7 +1,13 @@
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
+import renderToString from 'react-render-to-string'
 import ShaclRenderer, { rdf, ShaclRendererProps, xsd } from './components/ShaclRenderer'
 import { initContext } from './core/main-context'
-import { renderToAsyncBrowser } from './helpers/renderToStringAsyncBrowser'
+
+if (!globalThis.DOMParser) {
+  const jsdom = await import('jsdom')
+  const { JSDOM } = jsdom
+  globalThis.DOMParser = new JSDOM().window.DOMParser
+}
 
 const cast = (value: any, datatype?: string | null) => {
   if (!value || !datatype) return value
@@ -38,7 +44,7 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized): objec
 
 export default async function data(input: ShaclRendererProps) {
   const context = await initContext(input)
-  const result = await renderToAsyncBrowser(<ShaclRenderer {...input} mode="data" />)
+  const result = await renderToString(<ShaclRenderer {...input} mode="data" />)
   const parser = new DOMParser()
   const parsed = parser.parseFromString(result, 'application/xml')
   const mergedContext = new JsonLdContextNormalized({

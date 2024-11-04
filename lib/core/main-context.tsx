@@ -109,7 +109,8 @@ const getShapes = async (
   let shapePointers = rootShapePointer.hasOut(rdf('type'), sh('NodeShape'))
   if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
 
-  const localShapeName = shapes?.toString().includes('#') ? shapes?.toString().split('#').pop() : false
+  const localShapeName =
+    shapes instanceof URL && shapes?.toString().includes('#') ? shapes?.toString().split('#').pop() : false
   if (localShapeName)
     shapePointers = shapePointers.filter(pointer => pointer.term.value.split(/\/|\#/g).pop() === localShapeName)
 

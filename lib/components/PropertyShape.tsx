@@ -2,7 +2,7 @@ import type { DatasetCore } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { isEqual } from 'lodash-es'
 import { ReactComponentLike } from 'prop-types'
-import { Suspense, useContext } from 'react'
+import { Suspense, useContext, useEffect } from 'react'
 import { Settings, mainContext } from '../core/main-context'
 import { dash, sh, stf, stsr } from '../core/namespaces'
 import { validationContext } from '../core/validation-context'
@@ -59,6 +59,10 @@ export default function PropertyShape(props: PropertyShapeProps) {
 
   const { report } = useContext(validationContext)
   const errors = report?.results?.filter((result: { path: unknown }) => isEqual(result.path, path)) ?? []
+
+  useEffect(() => {
+    document.dispatchEvent(new CustomEvent('react.render'))
+  })
 
   return PropertyShapeInner ? (
     <Suspense>

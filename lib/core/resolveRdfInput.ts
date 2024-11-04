@@ -28,9 +28,9 @@ export const resolveRdfInput = async (
   }
 
   if (typeof input === 'string') {
-    const parser = new Parser({
-      baseIRI: originalUrl
-    })
+    const FinalParser = Parser.default ? Parser.default : Parser
+    const parser = new FinalParser({ baseIRI: originalUrl })
+
     const quads = await parser.parse(input)
     return {
       dataset: datasetFactory.dataset(quads),
