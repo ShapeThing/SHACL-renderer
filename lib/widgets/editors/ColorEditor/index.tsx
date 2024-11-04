@@ -4,11 +4,16 @@ import { WidgetProps } from '../../widgets-context'
 
 export default function ColorEditor({ term, setTerm }: WidgetProps) {
   return (
-    <input
+    <div
       className="input"
-      type="color"
-      value={term.value}
-      onChange={event => setTerm(factory.literal(event.target.value, stsr('color')))}
-    />
+      /** @ts-ignore */
+      style={{ '--color': term.value }}
+    >
+      <input
+        type="color"
+        value={term.value}
+        onChange={event => setTerm(factory.literal(event.target.value, stsr('color')))}
+      />
+    </div>
   )
 }

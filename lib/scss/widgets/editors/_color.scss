@@ -1,0 +1,28 @@
+.editor.color {
+    .input {
+        padding: 0;
+        background-color: var(--color);
+    }
+
+    input {
+        width: 100%;
+        appearance: none;
+        border: none;
+        background-color: transparent;
+        outline: none;
+        height: 31px;
+
+        &::-moz-color-swatch {
+            border: none;
+        }
+
+        &::-webkit-color-swatch-wrapper {
+            padding: 0;
+            border-radius: 0;
+        }
+
+        &::-webkit-color-swatch {
+            border: none;
+        }
+    }
+}

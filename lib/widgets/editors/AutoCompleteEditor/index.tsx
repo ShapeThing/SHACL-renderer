@@ -89,7 +89,6 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
 
   return (
     <div className={`inner ${isLoading ? 'is-loading' : ''}`}>
-      <span className={`${isLoading ? 'loader' : 'hidden'}`}></span>
       {!isLoading && mode === 'view' ? (
         <div className="iri-preview selected" title={term.value}>
           {image ? <Image className="image" url={image} size={32} /> : null}
@@ -124,6 +123,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
           }}
         />
       ) : null}
+      <span className={`${isLoading ? 'loader' : 'hidden'}`}>Loading...</span>
       {searchInstances && mode === 'edit' ? (
         <div className="search-results-wrapper" ref={searchResults}>
           <div className="search-results">
