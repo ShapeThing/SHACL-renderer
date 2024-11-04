@@ -1,0 +1,16 @@
+.uri {
+    align-items: center;
+    display: inline-flex;
+    gap: 6px;
+
+    .uri-prefix {
+        display: inline-flex;
+        font-size: 11px;
+        letter-spacing: 1px;
+        font-style: italic;
+        padding: 1px 6px;
+        border-radius: var(--input-radius);
+        background-color: var(--gray-light);
+        color: black;
+    }
+}
