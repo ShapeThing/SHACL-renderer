@@ -21,7 +21,7 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized, spacin
   const predicates = new Set([...node.children].map(child => child.getAttribute('data-predicate')!))
   const typings: string[] = []
 
-  for (const predicate of predicates.values().filter(Boolean)) {
+  for (const predicate of [...predicates.values()].filter(Boolean)) {
     const compactedPredicate = context.compactIri(predicate, true)
     const child = [...node.children].find(child => child.getAttribute('data-predicate') === predicate)!
     let subType = undefined
@@ -48,8 +48,8 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized, spacin
   return typings.join('\n')
 }
 
-export default async function type(input: ShaclRendererProps) {
-  const context = await initContext(input)
+export default async function type(input: Omit<ShaclRendererProps, 'mode'>) {
+  const context = await initContext({ ...input, mode: 'type' })
   const result = await renderToString(<ShaclRenderer {...input} mode="type" />)
   const parser = new DOMParser()
   const parsed = parser.parseFromString(result.replaceAll('<!-- -->', ''), 'application/xml')

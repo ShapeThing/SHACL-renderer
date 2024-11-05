@@ -10,7 +10,7 @@ if (isNode) {
     const files = await glob(pattern, { cwd: './lib/widgets' })
     const modules = files.map(async file => [
       './' + file,
-      options.eager ? await import('./' + file) : () => import('./' + file)
+      options.eager ? await import(/* @vite-ignore */ './' + file) : () => import(/* @vite-ignore */ './' + file)
     ])
 
     return Object.fromEntries(await Promise.all(modules))
