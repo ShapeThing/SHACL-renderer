@@ -42,11 +42,11 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized): objec
   return Object.fromEntries(entries)
 }
 
-export default async function data(input: ShaclRendererProps) {
-  const context = await initContext(input)
+export default async function data(input: Omit<ShaclRendererProps, 'mode'>) {
+  const context = await initContext({ ...input, mode: 'data' })
   const result = await renderToString(<ShaclRenderer {...input} mode="data" />)
   const parser = new DOMParser()
-  const parsed = parser.parseFromString(result, 'application/xml')
+  const parsed = parser.parseFromString(result.replaceAll('<!-- -->', ''), 'application/xml')
   const mergedContext = new JsonLdContextNormalized({
     ...context.jsonLdContext.getContextRaw(),
     ...(input.context ?? {})

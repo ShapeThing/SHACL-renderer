@@ -3,6 +3,12 @@ import renderToString from 'react-render-to-string'
 import ShaclRenderer, { rdf, ShaclRendererProps, xsd } from './components/ShaclRenderer'
 import { initContext } from './core/main-context'
 
+if (!globalThis.DOMParser) {
+  const jsdom = await import('jsdom')
+  const { JSDOM } = jsdom
+  globalThis.DOMParser = new JSDOM().window.DOMParser
+}
+
 const cast = (datatype: string) => {
   if (datatype === xsd('boolean').value) return 'boolean'
   if (datatype === xsd('date').value) return 'Date'
@@ -46,7 +52,7 @@ export default async function type(input: ShaclRendererProps) {
   const context = await initContext(input)
   const result = await renderToString(<ShaclRenderer {...input} mode="type" />)
   const parser = new DOMParser()
-  const parsed = parser.parseFromString(result, 'application/xml')
+  const parsed = parser.parseFromString(result.replaceAll('<!-- -->', ''), 'application/xml')
   const mergedContext = new JsonLdContextNormalized({
     ...context.jsonLdContext.getContextRaw(),
     ...(input.context ?? {})
