@@ -1,11 +1,10 @@
 import { ProxyHandlerStatic } from '@comunica/actor-http-proxy'
-import { QueryEngine } from '@comunica/query-sparql'
 import { constructQuery } from '@hydrofoil/shape-to-query'
 import datasetFactory from '@rdfjs/dataset'
 import { DatasetCore, NamedNode } from '@rdfjs/types'
 import clownFace, { GraphPointer } from 'clownface'
 import { Grapoi } from 'grapoi'
-import { Store } from 'n3'
+import { Parser, Store } from 'n3'
 import { constructQueryToSearch } from '../helpers/constructQueryToSearch'
 import { getPurposePredicates } from '../helpers/getPurposePredicates'
 import { nonNullable } from '../helpers/nonNullable'
@@ -43,11 +42,30 @@ export const fetchDataAccordingToProperty = async ({
       ? constructQueryToSearch(dataConstructQuery, searchTerm, labelPredicates, limit)
       : dataConstructQuery
 
-  const queryEngine = new QueryEngine()
   const termNeedsProxy = term?.value ? await needsHttpProxy(term.value) : false
   const store = dataset ? new Store([...dataset]) : undefined
   const sources = [endpoint, endpoint ? undefined : store, endpoint ? undefined : term?.value].filter(nonNullable)
 
+  // If this is a clean SPARQL endpoint.
+  if (endpoint) {
+    const body = new URLSearchParams()
+    body.set('query', query)
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        accept: 'text/turtle'
+      },
+      body
+    })
+
+    const parser = new Parser()
+    return await parser.parse(await response.text())
+  }
+
+  const { QueryEngine } = await import('@comunica/query-sparql')
+  const queryEngine = new QueryEngine()
   const quadsStream = await queryEngine.queryQuads(query, {
     /** @ts-ignore */
     sources,

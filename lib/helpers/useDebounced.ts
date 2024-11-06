@@ -8,7 +8,6 @@ export function useDebounced<T extends (...args: any) => any>(
 ) {
   const callbackDebounced = useRef(debounce(callback, time))
   return useCallback((...args: Parameters<T>) => {
-    console.log(args[0])
     return callbackDebounced.current(...args)
   }, dependencies)
 }
