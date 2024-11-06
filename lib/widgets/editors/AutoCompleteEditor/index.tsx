@@ -1,33 +1,25 @@
 import { Icon } from '@iconify-icon/react'
 import factory from '@rdfjs/data-model'
+import datasetFactory from '@rdfjs/dataset'
 import { NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { useContext, useEffect, useRef, useState, useTransition } from 'react'
-import { importShaclNodeFilterData } from '../../../core/importShaclNodeFilterData'
+import { fetchDataAccordingToProperty } from '../../../core/fetchDataAccordingToProperty'
 import { mainContext } from '../../../core/main-context'
-import { rdfs, schema, stsr } from '../../../core/namespaces'
+import { sh, stsr } from '../../../core/namespaces'
+import { getImageFromPointer } from '../../../helpers/getImageFromPointer'
+import { getPurposePredicates } from '../../../helpers/getPurposePredicates'
 import Image from '../../../helpers/Image'
+import { isValidIri } from '../../../helpers/isValidIri'
 import { outAll } from '../../../helpers/outAll'
 import { useDebounced } from '../../../helpers/useDebounced'
 import { WidgetProps } from '../../widgets-context'
 
-const getImage = (pointer?: Grapoi) => {
-  return pointer
-    ?.out()
-    ?.values.find(value => ['jpg', 'png', 'jpeg', 'gif', 'webm'].some(extension => value.includes(extension)))
-}
-
-const isValidIri = (iri: string) => {
-  try {
-    new URL(iri)
-    return true
-  } catch {}
-}
-
 export default function AutoCompleteEditor({ term, setTerm, property }: WidgetProps) {
   const { data } = useContext(mainContext)
-  const endpoint = property.out(stsr('endpoint')).value
-  const labels = [rdfs('label'), schema('name')]
+  const endpoint: string | undefined = property.out(stsr('endpoint')).value
+
+  const labels = getPurposePredicates(property.out(sh('node')), 'label')
   const [search, setSearch] = useState(term.value)
   const [searchInstances, setSearchInstances] = useState<Grapoi>()
   const [selectedInstance, setSelectedInstance] = useState<Grapoi>()
@@ -36,23 +28,22 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   const shapeQuads = outAll(property.out().distinct().out())
   const searchInput = useRef<HTMLInputElement>(null)
   const searchResults = useRef<HTMLDivElement>(null)
-  const image = getImage(selectedInstance)
+  const image = getImageFromPointer(selectedInstance, property.out(sh('node')))
   const [_isPending, startTransition] = useTransition()
 
   const searchHandler = useDebounced((search: string) => {
-    console.log(search)
     setSearchInstances(undefined)
     setIsLoading(true)
 
-    importShaclNodeFilterData({
-      shapeQuads,
+    fetchDataAccordingToProperty({
+      nodeShape: property,
       endpoint,
       dataset: data,
-      limit: 20,
-      focusNode: isValidIri(search) ? factory.namedNode(search) : undefined,
-      searchTerm: isValidIri(search) ? undefined : search
-    }).then(dataset => {
+      term: isValidIri(search) ? factory.namedNode(search) : undefined,
+      searchTerm: isValidIri(search) ? '' : search
+    }).then(quads => {
       setIsLoading(false)
+      const dataset = datasetFactory.dataset(quads)
       setSearchInstances(grapoi({ dataset, factory }).out().in().distinct())
       setTimeout(() => searchResults.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
     })
@@ -62,14 +53,16 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   useEffect(() => {
     if (!term?.value || !shapeQuads.length) return
     setIsLoading(true)
-    importShaclNodeFilterData({
-      focusNode: term as NamedNode,
-      shapeQuads,
+
+    fetchDataAccordingToProperty({
+      nodeShape: property,
+      term: term as NamedNode,
       endpoint,
       dataset: data
-    }).then(dataset => {
+    }).then(async quads => {
+      const dataset = datasetFactory.dataset(quads)
       setIsLoading(false)
-      setSelectedInstance(grapoi({ dataset, factory }))
+      setSelectedInstance(grapoi({ dataset, factory, term }))
     })
   }, [term])
 
@@ -98,6 +91,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
           <Icon
             icon="mynaui:pencil"
             onClick={() => {
+              searchHandler(term.value)
               setMode('edit')
               setTimeout(() => searchInput.current?.select())
             }}
@@ -111,7 +105,9 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
           autoFocus
           value={search}
           onKeyUp={event => (['Escape', 'Enter'].includes(event.key) ? tryApply(event) : null)}
-          onBlur={tryApply}
+          onBlur={() => {
+            setTimeout(tryApply, 200)
+          }}
           ref={searchInput}
           type="search"
           onInput={event => {
@@ -128,8 +124,8 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
         <div className="search-results-wrapper" ref={searchResults}>
           <div className="search-results">
             {searchInstances.ptrs.length
-              ? searchInstances.map((searchInstance: Grapoi) => {
-                  const image = getImage(searchInstance)
+              ? [...searchInstances].map((searchInstance: Grapoi) => {
+                  const image = getImageFromPointer(searchInstance)
                   return (
                     <div
                       key={searchInstance.term.value}

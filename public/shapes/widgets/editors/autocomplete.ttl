@@ -1,0 +1,44 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
+@prefix stf: <http://ontology.shapething.com/facet#> .
+@prefix dbc: <http://dbpedia.org/resource/Category:> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<#default>
+  a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+  sh:closed true ;
+
+  sh:property [
+    sh:name "Knows"@en ;
+    sh:path schema:knows ;
+    sh:message "You must select something" ;
+    sh:node <#knowsFilter> ;
+  ];
+.
+
+<#knowsFilter>
+      sh:property [
+        sh:path [ sh:alternativePath ( rdfs:label schema:name dcterms:title ) ] ;
+        sh:minCount 1;
+        stsr:purpose stsr:label ;
+        sh:languageIn ( "en" ) ;
+      ] ;
+
+      sh:property [
+        stsr:purpose stsr:image ;
+        sh:path [ sh:alternativePath ( <http://dbpedia.org/ontology/thumbnail> schema:image <http://xmlns.com/foaf/0.1/img> ) ] ;
+      ] ;
+.
+<#data>
+    schema:knows 
+    <http://dbpedia.org/resource/Søren_Kierkegaard>,
+    <https://pleiades.stoa.org/places/570085/>,
+    <https://ruben.verborgh.org/profile/#me>,
+    <https://ruben.verborgh.org/> .

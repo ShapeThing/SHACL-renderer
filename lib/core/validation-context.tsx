@@ -4,7 +4,6 @@ import { debounce } from 'lodash-es'
 import type ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { Validator } from 'shacl-engine'
-import { outAll } from '../helpers/outAll'
 import parsePath from '../helpers/parsePath'
 import { TouchableQuad } from '../helpers/touchableRdf'
 import { mainContext } from './main-context'
@@ -29,21 +28,16 @@ export default function ValidationContextProvider({ children }: { children: Reac
         const endpoint = property.out(stsr('endpoint')).value
 
         if (endpoint) {
-          const shapeQuads = outAll(property.out().distinct().out())
-
-          const importShaclNodeFilterData = (await import('./importShaclNodeFilterData')).importShaclNodeFilterData
+          const fetchDataAccordingToProperty = (await import('./fetchDataAccordingToProperty'))
+            .fetchDataAccordingToProperty
           const path = parsePath(property.out(sh('path')))
-
-          const term = dataPointer.executeAll(path)
-
-          const additionalQuads = await importShaclNodeFilterData({
-            endpoint,
-            focusNode: term.term,
-            shapeQuads,
-            dataset
+          const dataItemPointer = dataPointer.executeAll(path)
+          const additionalQuads = await fetchDataAccordingToProperty({
+            nodeShape: property,
+            term: dataItemPointer.term,
+            endpoint
           })
-
-          for (const quad of [...additionalQuads]) dataset.add(quad)
+          for (const quad of additionalQuads) dataset.add(quad)
         }
       }
 

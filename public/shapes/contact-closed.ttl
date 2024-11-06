@@ -65,11 +65,13 @@ Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
       sh:property [
         sh:path rdfs:label ;
         sh:minCount 1;
+        stsr:purpose stsr:label ;
         sh:languageIn ( "en" ) ;
       ] ;
 
       sh:property [
         sh:path <http://dbpedia.org/ontology/thumbnail> ;
+        stsr:purpose stsr:image ;
       ] ;
 
       sh:property [

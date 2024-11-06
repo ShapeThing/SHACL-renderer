@@ -23,6 +23,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@comunica/query-sparql": "^4.0.2",
     "@comunica/query-sparql-rdfjs-lite": "^4.0.2",
     "@fontsource/roboto": "^5.1.0",
     "@hydrofoil/shape-to-query": "^0.13.1",
@@ -48,6 +49,7 @@
     "preact": "^10.24.3",
     "preact-render-to-string": "^6.5.11",
     "prop-types": "^15.8.1",
+    "rdf-dereference": "^4.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-json-view": "^1.21.3",
