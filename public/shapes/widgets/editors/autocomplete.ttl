@@ -17,6 +17,7 @@
 
   sh:property [
     sh:name "Knows"@en ;
+    sh:description "This reference widget does not have an endpoint registered. Unfortunately some big open data sources do not de-reference well." ;
     sh:path schema:knows ;
     sh:message "You must select something" ;
     sh:node <#knowsFilter> ;
@@ -28,7 +29,6 @@
         sh:path [ sh:alternativePath ( rdfs:label schema:name dcterms:title ) ] ;
         sh:minCount 1;
         stsr:purpose stsr:label ;
-        sh:languageIn ( "en" ) ;
       ] ;
 
       sh:property [
@@ -41,4 +41,6 @@
     <http://dbpedia.org/resource/Søren_Kierkegaard>,
     <https://pleiades.stoa.org/places/570085/>,
     <https://ruben.verborgh.org/profile/#me>,
+    <https://schema.org/birthDate>,
+    <https://openlibrary.org/works/OL1968368W>,
     <https://ruben.verborgh.org/> .

@@ -4,7 +4,7 @@ import { create } from '@storybook/theming/create'
 const theme = create({
   base: 'light',
   brandTitle: `<img src="/logo.svg" />`,
-  brandUrl: 'https://shacl-renderer.shapething.com',
+  brandUrl: '/',
   brandTarget: '_self'
 })
 

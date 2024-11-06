@@ -54,5 +54,5 @@ export const fetchDataAccordingToProperty = async ({
     lenient: true,
     httpProxyHandler: termNeedsProxy ? new ProxyHandlerStatic(`https://corsproxy.io/?`) : undefined
   })
-  return quadsStream.toArray() ?? []
+  return (await quadsStream.toArray()) ?? []
 }

@@ -61,8 +61,8 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
       dataset: data
     }).then(async quads => {
       const dataset = datasetFactory.dataset(quads)
-      setIsLoading(false)
       setSelectedInstance(grapoi({ dataset, factory, term }))
+      setIsLoading(false)
     })
   }, [term])
 
@@ -121,7 +121,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
           }}
         />
       ) : null}
-      <span className={`${isLoading ? 'loader' : 'hidden'}`}>Loading...</span>
+      <span className={`loader ${!isLoading ? 'hidden' : ''}`}>Loading...</span>
       {searchInstances && mode === 'edit' ? (
         <div className="search-results-wrapper" ref={searchResults}>
           <div className="search-results">
