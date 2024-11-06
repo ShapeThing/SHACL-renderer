@@ -28,7 +28,7 @@ export const fetchDataAccordingToProperty = async ({
   endpoint,
   dataset,
   searchTerm,
-  limit = 20
+  limit = 10
 }: Input) => {
   const shapeQuads = outAll(nodeShape.out().distinct().out())
   const shapeDataset = datasetFactory.dataset(shapeQuads)

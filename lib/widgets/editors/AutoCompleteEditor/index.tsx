@@ -77,7 +77,9 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
     try {
       new URL(event.target.value)
       apply(factory.namedNode(event.target.value))
-    } catch {}
+    } catch {
+      apply(term as NamedNode)
+    }
   }
 
   return (
