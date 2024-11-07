@@ -52,6 +52,7 @@
     "rdf-dereference": "^4.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-dropzone": "^14.3.5",
     "react-json-view": "^1.21.3",
     "react-render-to-string": "^2.1.0",
     "react-syntax-highlighter": "^15.6.1",

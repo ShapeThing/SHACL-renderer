@@ -15,6 +15,7 @@
 @use 'widgets/editors/iconify';
 @use 'widgets/editors/boolean-select';
 @use 'widgets/editors/color' as colorEditor;
+@use 'widgets/editors/fileupload';
 
 @use 'widgets/viewers/color';
 @use 'widgets/viewers/uri';

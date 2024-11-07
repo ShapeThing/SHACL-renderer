@@ -35,10 +35,12 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const { validate } = useContext(validationContext)
 
   const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
+  const defaultWidget = scoreWidgets(editors, items, property, dash('editor'))
 
   const setItems = () => {
     const oldTerms = items.terms
     const newItems = nodeDataPointer.executeAll(path)
+    console.log(newItems)
     sortPointersStable(newItems, oldTerms)
     realSetItems(newItems)
     validate()
@@ -54,12 +56,14 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
     ? parseInt(property.out(sh('maxCount')).value.toString())
     : Infinity
 
-  const emptyFallback = !items.ptrs.length ? scoreWidgets(editors, items, property, dash('editor')) : null
+  const emptyFallback = !items.ptrs.length ? defaultWidget : null
+
+  const hideAddButton = defaultWidget?.meta.hideAddButton
 
   return (
     <PropertyElement cssClass={errors?.length ? 'has-error' : ''} property={property}>
       <div className="editors">
-        {items.map((item: Grapoi) => {
+        {items.map((item: Grapoi, index: number) => {
           const itemErrors = errors?.filter((error: any) => error.value?.term.equals(item.term)) ?? []
           const errorMessages = itemErrors.flatMap(error =>
             error.message
@@ -83,7 +87,9 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
               key={item.term.value}
               data={item}
               items={items}
+              index={index}
               errors={errorMessages}
+              rerenderAfterManipulatingPointer={setItems}
               setTerm={(term: Term) => {
                 const [quad] = [...item.quads()]
                 if (quad.object.equals(term)) return
@@ -109,7 +115,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
           />
         ) : null}
 
-        {items.ptrs.length < maxCount ? (
+        {items.ptrs.length < maxCount && !hideAddButton ? (
           <button className="button icon secondary add-object" onClick={() => addObject({ activeContentLanguage })}>
             <Icon icon="iconoir:plus" />
           </button>

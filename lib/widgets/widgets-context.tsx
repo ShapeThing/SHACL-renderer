@@ -12,7 +12,9 @@ export type WidgetItem = {
 export type WidgetMeta = {
   score?: (data: Grapoi, property: Grapoi) => number | undefined
   createTerm?: ({ activeContentLanguage }: { activeContentLanguage?: string }) => Term
+  shouldDisplay?: (term: Term, index: number) => boolean
   iri: NamedNode
+  hideAddButton?: true
   showIfEmpty?: true
 }
 
@@ -33,7 +35,9 @@ export type WidgetProps = {
   facetSearchData: Grapoi
   term: Term
   nodeDataPointer: Grapoi
+  index: number
   setTerm: (term: Term) => void
+  rerenderAfterManipulatingPointer: () => void
 }
 
 export const widgetsContext = createContext<WidgetsContext>(coreWidgets)

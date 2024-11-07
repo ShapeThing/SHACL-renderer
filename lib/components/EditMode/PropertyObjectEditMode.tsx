@@ -13,7 +13,9 @@ type PropertyObjectEditModeProps = {
   items: Grapoi
   errors?: string[]
   deleteTerm: () => void
+  index: number
   setTerm: (term: Term) => void
+  rerenderAfterManipulatingPointer: () => void
 }
 
 export default function PropertyObjectEditMode(props: PropertyObjectEditModeProps) {
@@ -37,7 +39,9 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
 
   const cssType = widgetItem.meta.iri.value.split(/\#|\//g).pop()?.replace('Editor', '').toLocaleLowerCase()
 
-  return (
+  const shouldRender = widgetItem.meta.shouldDisplay ? widgetItem.meta.shouldDisplay(data.term, props.index) : true
+
+  return shouldRender ? (
     <div
       onAnimationEnd={onAnimationEnd}
       className={`editor ${cssType} ${isDeleting ? 'delete-animation' : ''} ${
@@ -53,5 +57,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
 
       {errors?.length ? <span className="errors" dangerouslySetInnerHTML={{ __html: errors.join('\n') }}></span> : null}
     </div>
+  ) : (
+    false
   )
 }

@@ -1,0 +1,32 @@
+.editor.fileupload {
+    .drop-zone {
+        display: flex;
+        padding: 60px 30px;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 20px;
+        border: 2px dashed var(--primary);
+        border-radius: var(--input-radius);
+        position: relative;
+        cursor: pointer;
+
+        &.has-value {
+            margin-bottom: 40px;
+
+            &:after {
+                content: '';
+                display: block;
+                width: calc(100% + 70px);
+                height: 10px;
+                background-color: white;
+                position: absolute;
+                bottom: -40px;
+            }
+        }
+    }
+
+    .drop-zone+.remove-object {
+        display: none;
+    }
+}
