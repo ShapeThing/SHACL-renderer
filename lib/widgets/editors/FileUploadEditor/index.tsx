@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Dropzone from 'react-dropzone'
 import { Fragment } from 'react/jsx-runtime'
 import { dash, sh, stsr } from '../../../core/namespaces'
+import Image from '../../../helpers/Image'
 import parsePath from '../../../helpers/parsePath'
 import { WidgetProps } from '../../widgets-context'
 
@@ -16,6 +17,8 @@ export default function FileUploadEditor({
   nodeDataPointer
 }: WidgetProps) {
   const [mode, setMode] = useState<'view' | 'edit'>(term.value ? 'view' : 'edit')
+  const [isWorking, setIsWorking] = useState(false)
+  const [newFileName, setNewFileName] = useState(term.value)
 
   const uploadFiles = async (files: File[]) => {
     const uploadUrl = property.out(stsr('uploadUrl')).value
@@ -27,7 +30,7 @@ export default function FileUploadEditor({
       formData.append('files', file)
     }
 
-    const response = await fetch(`${uploadUrl}/${prefix}/`, { body: formData, method: 'POST' })
+    const response = await fetch(`${uploadUrl}/${prefix ? `/${prefix}` : ''}`, { body: formData, method: 'POST' })
     const filePaths = await response.json()
     const shPath = parsePath(property.out(sh('path')))
     const predicate = shPath[0].predicates[0]
@@ -53,15 +56,40 @@ export default function FileUploadEditor({
         </Dropzone>
       ) : null}
 
-      {mode === 'edit' && term.value ? (
-        <input className="input" value={term.value} onChange={event => setTerm(factory.literal(event.target.value))} />
-      ) : null}
+      {/* The value for the term */}
+      {term.value ? (
+        <div key={term.value} title={term.value} className="iri-preview search-result">
+          <Image className="image" url={term.value} size={32} />
 
-      {term.value && mode === 'view' ? (
-        <div key={term.value} className="iri-preview search-result">
-          {/* {image ? <Image className="image" url={image} size={32} /> : null} */}
-          <span className="label">{term.value}</span>
-          <Icon icon="mynaui:pencil" onClick={() => setMode('edit')} />
+          {mode === 'edit' ? (
+            <Fragment>
+              <input
+                className="input borderless"
+                value={newFileName}
+                autoFocus
+                onChange={event => setNewFileName(event.target.value)}
+              />
+              <Icon
+                icon="mynaui:check"
+                onClick={() => {
+                  setMode('view')
+                  if (newFileName !== term.value) {
+                    setIsWorking(true)
+
+                    // TODO Fetch, Upload, Delete Old, setTerm.
+                  }
+                }}
+              />
+            </Fragment>
+          ) : (
+            <Fragment>
+              <a className="link" href={term.value} target="_blank">
+                <span className="label">{decodeURI(term.value.split(/\/|\#/g).pop()!)}</span>
+              </a>
+              {isWorking ? <Icon className="spinner" icon="svg-spinners:180-ring" /> : null}
+              {!isWorking ? <Icon icon="mynaui:pencil" onClick={() => setMode('edit')} /> : null}
+            </Fragment>
+          )}
         </div>
       ) : null}
     </Fragment>

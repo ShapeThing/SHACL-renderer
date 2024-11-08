@@ -13,6 +13,13 @@
         cursor: pointer;
     }
 
+    .link {
+        align-items: center;
+        display: flex;
+        flex: 1 1 auto;
+        gap: 1em;
+    }
+
     .label {
         flex: 1 1 auto;
         padding-inline: 8px;

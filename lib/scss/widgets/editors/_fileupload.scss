@@ -29,4 +29,19 @@
     .drop-zone+.remove-object {
         display: none;
     }
+
+    .spinner {
+        margin-left: 1em;
+    }
+
+    --size: 32px;
+
+    .image {
+        max-height: var(--size);
+        max-width: var(--size);
+        object-fit: cover;
+        display: block;
+        width: var(--size);
+        height: var(--size);
+    }
 }

@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 export type ImageProps = {
   url: string | URL
   className?: string
@@ -8,6 +10,8 @@ export type ImageProps = {
 
 export default function Image({ url, width, height, className, size }: ImageProps) {
   const searchParams = new URLSearchParams()
+  const [hasFirstError, setHasFirstError] = useState(false)
+  const [hasSecondError, setHasSecondError] = useState(false)
   searchParams.set('url', url.toString())
   searchParams.set('fit', 'cover')
   searchParams.set('a', 'focal')
@@ -22,9 +26,9 @@ export default function Image({ url, width, height, className, size }: ImageProp
 
   return (
     <img
-      onError={event => (event.target as HTMLImageElement).classList.add('has-error')}
-      className={`${className}`}
-      src={`//wsrv.nl/?${searchParams.toString()}`}
+      onError={() => (!hasFirstError ? setHasFirstError(true) : setHasSecondError(true))}
+      className={`${className} ${hasSecondError ? 'has-error' : ''}`}
+      src={hasFirstError ? url.toString() : `//wsrv.nl/?${searchParams.toString()}&default=${url}`}
     />
   )
 }

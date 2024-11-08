@@ -40,7 +40,6 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const setItems = () => {
     const oldTerms = items.terms
     const newItems = nodeDataPointer.executeAll(path)
-    console.log(newItems)
     sortPointersStable(newItems, oldTerms)
     realSetItems(newItems)
     validate()

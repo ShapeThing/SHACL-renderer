@@ -4,7 +4,7 @@
 importScripts('localforage.min.js')
 
 self.addEventListener('fetch', async function (event) {
-  if (event.request.url.includes('storage-service-worker')) {
+  if (event.request.url.includes('storage-service-worker') && !event.request.url.includes('wsrv.nl')) {
     if (event.request.method === 'POST') {
       return event.respondWith(
         new Promise(async resolve => {
@@ -12,7 +12,7 @@ self.addEventListener('fetch', async function (event) {
           const files = data.getAll('files')
           const cleanedFiles = []
           for (const file of files) {
-            const cleanedFile = event.request.url + '/' + encodeURIComponent(file.name)
+            const cleanedFile = event.request.url + encodeURIComponent(file.name)
             await localforage.setItem(cleanedFile, file)
             cleanedFiles.push(cleanedFile)
           }
