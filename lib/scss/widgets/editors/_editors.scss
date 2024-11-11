@@ -74,3 +74,9 @@
     opacity: 0;
   }
 }
+
+.editor-header {
+  position: relative;
+  display: flex;
+  background-color: rgba(var(--primary-rgb), 0.07);
+}

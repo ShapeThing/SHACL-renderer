@@ -12,9 +12,7 @@ export type WidgetItem = {
 export type WidgetMeta = {
   score?: (data: Grapoi, property: Grapoi) => number | undefined
   createTerm?: ({ activeContentLanguage }: { activeContentLanguage?: string }) => Term
-  shouldDisplay?: (term: Term, index: number) => boolean
   iri: NamedNode
-  hideAddButton?: true
   showIfEmpty?: true
 }
 
@@ -25,6 +23,12 @@ type WidgetsContext = {
   lists: WidgetItem[]
   transformers: WidgetItem[]
   typings: WidgetItem[]
+}
+
+export type AdditionalWidgetConfiguration = {
+  header?: () => ReactNode
+  displayCriteria?: (term: Term, index: number) => boolean
+  deletionCriteria?: (term: Term) => Promise<boolean>
 }
 
 export type WidgetProps = {
@@ -38,6 +42,7 @@ export type WidgetProps = {
   index: number
   setTerm: (term: Term) => void
   rerenderAfterManipulatingPointer: () => void
+  useConfigureWidget: (configuration: AdditionalWidgetConfiguration) => void
 }
 
 export const widgetsContext = createContext<WidgetsContext>(coreWidgets)

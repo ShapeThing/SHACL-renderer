@@ -57,8 +57,6 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
   const emptyFallback = !items.ptrs.length ? defaultWidget : null
 
-  const hideAddButton = defaultWidget?.meta.hideAddButton
-
   return (
     <PropertyElement cssClass={errors?.length ? 'has-error' : ''} property={property}>
       <div className="editors">
@@ -114,7 +112,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
           />
         ) : null}
 
-        {items.ptrs.length < maxCount && !hideAddButton ? (
+        {items.ptrs.length < maxCount ? (
           <button className="button icon secondary add-object" onClick={() => addObject({ activeContentLanguage })}>
             <Icon icon="iconoir:plus" />
           </button>
