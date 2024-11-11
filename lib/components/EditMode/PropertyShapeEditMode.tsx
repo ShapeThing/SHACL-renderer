@@ -116,16 +116,29 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
           errors={errorMessages}
           rerenderAfterManipulatingPointer={setItems}
           setTerm={(term: Term) => {
-            const [quad] = [...item.quads()]
-            if (quad.object.equals(term)) return
-            dataset.delete(quad)
-            dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
+            if (isList) {
+              const pointer = nodeDataPointer.executeAll([path[0]])
+              replaceList(
+                items.map((innerItem: Grapoi) => {
+                  if (innerItem.term.equals(item.term)) return term
+                  return innerItem.term
+                }),
+                pointer
+              )
+              const newItems = nodeDataPointer.executeAll(path)
+              realSetItems(newItems)
+              validate()
+            } else {
+              const [quad] = [...item.quads()]
+              if (quad.object.equals(term)) return
+              dataset.delete(quad)
+              dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
+            }
             setItems()
           }}
           deleteTerm={() => {
             if (isList) {
               const pointer = nodeDataPointer.executeAll([path[0]])
-
               replaceList(
                 items.map((item: Grapoi) => item.term).filter((innerTerm: Term) => !innerTerm.equals(item.term)),
                 pointer

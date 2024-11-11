@@ -70,6 +70,10 @@
     cursor: grab;
     align-items: center;
   }
+
+  &.sortable-ghost {
+    background-color: rgba(var(--primary-rgb), .5);
+  }
 }
 
 @keyframes delete {
