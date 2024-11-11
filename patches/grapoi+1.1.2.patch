@@ -1,7 +1,16 @@
 diff --git a/node_modules/grapoi/types/Grapoi.d.ts b/node_modules/grapoi/types/Grapoi.d.ts
-index d21c73f..ddfa078 100644
+index d21c73f..1ae598d 100644
 --- a/node_modules/grapoi/types/Grapoi.d.ts
 +++ b/node_modules/grapoi/types/Grapoi.d.ts
+@@ -53,7 +53,7 @@ declare class Grapoi extends PathList {
+      * @param {Grapoi|Grapoi[]|Term|Term[]} predicates Predicates of the lists
+      * @returns {Grapoi} this
+      */
+-    deleteList(predicates: Grapoi | Grapoi[] | Term | Term[]): this;
++    deleteList(predicates?: Grapoi | Grapoi[] | Term | Term[]): this;
+     /**
+      * Delete quad(s) with the current terms as the subject.
+      * @param {Grapoi|Grapoi[]|Term|Term[]} predicates Predicates of the quads
 @@ -81,14 +81,14 @@ declare class Grapoi extends PathList {
       * @param {Grapoi|Grapoi[]|Term|Term[]} [subjects] Subjects of the quads
       * @returns {Grapoi} Instance with pointers of the traversed target terms

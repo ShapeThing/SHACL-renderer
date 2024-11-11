@@ -23,6 +23,15 @@ export const EditWithShape = {
   } as ShaclRendererProps
 }
 
+export const SortableData = {
+  args: {
+    mode: 'edit',
+    data: new URL('/shapes/ordered-list.ttl#data', location.origin),
+    shapes: new URL('/shapes/ordered-list.ttl#shape', location.origin),
+    targetClass: schema('Person')
+  } as ShaclRendererProps
+}
+
 export const EditWithoutShape = {
   args: {
     mode: 'edit',

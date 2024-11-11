@@ -63,6 +63,13 @@
   &.has-error {
     background-color: rgba(var(--danger-rgb), 0.1);
   }
+
+  .sort-handle {
+    display: flex;
+    justify-content: center;
+    cursor: grab;
+    align-items: center;
+  }
 }
 
 @keyframes delete {

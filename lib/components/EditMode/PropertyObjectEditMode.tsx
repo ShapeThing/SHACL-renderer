@@ -13,6 +13,7 @@ type PropertyObjectEditModeProps = {
   items: Grapoi
   errors?: string[]
   deleteTerm: () => void
+  isList: boolean
   index: number
   setTerm: (term: Term) => void
   rerenderAfterManipulatingPointer: () => void
@@ -52,6 +53,11 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
             errors?.length ? 'has-error' : ''
           }`.trim()}
         >
+          {props.isList ? (
+            <div className="sort-handle">
+              <Icon icon="mdi:drag" />
+            </div>
+          ) : null}
           <widgetItem.Component
             {...props}
             term={data.term}

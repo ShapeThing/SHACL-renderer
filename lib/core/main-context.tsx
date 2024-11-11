@@ -107,7 +107,11 @@ const getShapes = async (
       }
   const rootShapePointer = grapoi({ dataset: resolvedShapes, factory })
   let shapePointers = rootShapePointer.hasOut(rdf('type'), sh('NodeShape'))
-  if (givenTargetClass) shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
+  if (givenTargetClass) {
+    shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
+    if (![...shapePointers].length)
+      throw new Error(`No shape found for the specified target class ${givenTargetClass.value}`)
+  }
 
   const localShapeName =
     shapes instanceof URL && shapes?.toString().includes('#') ? shapes?.toString().split('#').pop() : false
@@ -118,6 +122,8 @@ const getShapes = async (
     ? shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!
     : [...shapePointers].at(0)!
   const targetClass: NamedNode = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
+
+  if (!shapePointer) throw new Error('No shape pointer')
 
   return {
     shapePointer,

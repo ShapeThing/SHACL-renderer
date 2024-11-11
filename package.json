@@ -55,8 +55,10 @@
     "react-dropzone": "^14.3.5",
     "react-json-view": "^1.21.3",
     "react-render-to-string": "^2.1.0",
+    "react-sortablejs": "^6.1.4",
     "react-syntax-highlighter": "^15.6.1",
     "shacl-engine": "^1.0.1",
+    "sortablejs": "^1.15.3",
     "swr": "^2.2.5"
   },
   "devDependencies": {
@@ -83,6 +85,7 @@
     "@types/react": "npm:types-react@rc",
     "@types/react-dom": "npm:types-react-dom@rc",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/sortablejs": "^1.15.8",
     "@typescript-eslint/eslint-plugin": "^8.13.0",
     "@typescript-eslint/parser": "^8.13.0",
     "@vitejs/plugin-react": "^4.3.3",

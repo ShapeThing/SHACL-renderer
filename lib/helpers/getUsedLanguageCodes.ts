@@ -4,7 +4,7 @@ import { sh } from '../core/namespaces'
 import parsePath from './parsePath'
 
 export const getUsedLanguageCodes = (shapePointer: Grapoi, dataPointer: Grapoi) => {
-  const properties = shapePointer.out(sh('property'))
+  const properties = shapePointer?.out(sh('property')) ?? []
 
   const quads = []
   for (const property of properties) {

@@ -1,0 +1,36 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
+@prefix stf: <http://ontology.shapething.com/facet#> .
+@prefix dbc: <http://dbpedia.org/resource/Category:> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# https://archive.topquadrant.com/constraints-on-rdflists-using-shacl/
+
+<#shape>
+	a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+  sh:closed true ;
+
+  sh:property [
+    sh:name "Knows"@en ;
+    sh:description "When the sh:path property is exactly: `( YOUR_PREDICATE [ sh:zeroOrMorePath rdf:rest ] rdf:first )`. A sortable list is used." ;
+    sh:path ( schema:knows [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+  ];
+    .
+
+<#data>
+    a schema:Person ;
+    schema:knows (
+    <http://dbpedia.org/resource/Søren_Kierkegaard>
+    <https://pleiades.stoa.org/places/570085/>
+    <https://ruben.verborgh.org/profile/#me>
+    <https://ruben.verborgh.org/> 
+    <https://schema.org/birthDate>
+    <https://openlibrary.org/works/OL1968368W>
+    ) .
