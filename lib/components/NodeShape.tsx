@@ -68,14 +68,14 @@ export default function NodeShape() {
     ]
   })
 
-  const predicatesWithoutNodeShapes = new Map(
+  const predicatesWithoutPropertyShapes = new Map(
     [...dataPointer.out().quads()]
       .filter(quad => !usedPredicates.has(quad.predicate.value))
       .map(quad => [quad.predicate.value, quad.predicate])
   )
 
-  const propertiesWithoutNodeShapes: ReactNode[] = !isClosed
-    ? [...predicatesWithoutNodeShapes.values()].map(predicate => {
+  const propertiesWithoutPropertyShapes: ReactNode[] = !isClosed
+    ? [...predicatesWithoutPropertyShapes.values()].map(predicate => {
         const dataset = shapePointer.ptrs[0].dataset
 
         const propertyIri = factory.namedNode(`int:${predicate.value}`)
@@ -105,7 +105,7 @@ export default function NodeShape() {
     ...[...sortablePropertyWithGroups, ...sortablePropertyWithoutGroups]
       .sort((a, b) => a[0] - b[0])
       .map(([_order, element]) => element),
-    ...propertiesWithoutNodeShapes
+    ...propertiesWithoutPropertyShapes
   ]
 
   return ['data', 'type'].includes(mode) ? (

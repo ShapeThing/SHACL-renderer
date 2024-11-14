@@ -10,7 +10,7 @@ import { rdf, rdfs, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
 
 export type MainContextInput = {
-  shapes: URL | DatasetCore | string
+  shapes?: URL | DatasetCore | string
   shapeSubject?: URL | string
   data?: URL | DatasetCore | string
   languageMode?: 'tabs' | 'individual'
@@ -122,7 +122,7 @@ const getShapeIrisByChildShapeIri = (childIri: NamedNode, shapes: Grapoi, shapeI
  * Fetches the shape part, can return a generic shape if none was given
  */
 const getShapes = async (
-  shapes: URL | DatasetCore | string,
+  shapes?: URL | DatasetCore | string,
   givenTargetClass?: NamedNode,
   shapeSubject?: URL | string
 ) => {
