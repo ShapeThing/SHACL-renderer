@@ -29,10 +29,6 @@ export default function PropertyGroup({
     />
   ))
 
-  if (['data', 'type'].includes(mode)) {
-    return propertiesAsElements
-  }
-
   return (
     <div className={`group ${localName}`} data-term={group.term.value}>
       {propertiesAsElements}

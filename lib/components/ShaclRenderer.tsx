@@ -28,7 +28,7 @@ function ShaclRendererInner(props: ShaclRendererProps) {
       <ValidationContextProvider>
         <div data-mode={context.mode} className="shacl-renderer">
           <LanguageAwareTabs>
-            {showShapePicker && !['data', 'type'].includes(context.mode) ? <ShapePicker /> : null}
+            {showShapePicker ? <ShapePicker /> : null}
             <NodeShape {...context} key="root" />
           </LanguageAwareTabs>
         </div>

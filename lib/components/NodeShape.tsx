@@ -108,9 +108,7 @@ export default function NodeShape() {
     ...propertiesWithoutPropertyShapes
   ]
 
-  return ['data', 'type'].includes(mode) ? (
-    <main data-name={targetClass?.value.split(/\#|\//g).pop() ?? 'Root'}>{elements}</main>
-  ) : (
+  return (
     <div className="node" data-term={shapePointer.values}>
       {elements}
     </div>
