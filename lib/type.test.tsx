@@ -18,8 +18,10 @@ test('type output', async () => {
   favoriteColor?: string
   isHuman?: boolean
   icon?: Array<string>
-  child?: Array<string>
+  knows?: Array<string>
+  selfReference?: Array<string>
   birthDate?: Date
+  child?: Array<string>
   address?: {
     streetAddress: string
     postalCode: string

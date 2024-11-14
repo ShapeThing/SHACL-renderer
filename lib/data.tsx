@@ -10,12 +10,6 @@ import { scoreWidgets } from './core/scoreWidgets'
 import parsePath from './helpers/parsePath'
 import { coreWidgets } from './widgets/coreWidgets'
 
-if (!globalThis.DOMParser) {
-  const jsdom = await import('jsdom')
-  const { JSDOM } = jsdom
-  globalThis.DOMParser = new JSDOM().window.DOMParser
-}
-
 const cast = (value: Term) => {
   const datatype = (value as Literal).datatype
   if (!value || !datatype) return value.value

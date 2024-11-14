@@ -1,62 +1,101 @@
+import factory from '@rdfjs/data-model'
+import datasetFactory from '@rdfjs/dataset'
+import { NamedNode } from '@rdfjs/types'
+import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
-import renderToString from 'react-render-to-string'
-import ShaclRenderer, { rdf, ShaclRendererProps, xsd } from './components/ShaclRenderer'
+import type { ShaclRendererProps } from './components/ShaclRenderer'
 import { initContext } from './core/main-context'
+import { dash, prefixes, rdf, sh, xsd } from './core/namespaces'
+import { scoreWidgets } from './core/scoreWidgets'
+import parsePath from './helpers/parsePath'
+import { coreWidgets } from './widgets/coreWidgets'
 
-if (!globalThis.DOMParser) {
-  const jsdom = await import('jsdom')
-  const { JSDOM } = jsdom
-  globalThis.DOMParser = new JSDOM().window.DOMParser
+const cast = (datatype: NamedNode) => {
+  if (datatype.equals(xsd('boolean'))) return 'boolean'
+  if (datatype.equals(xsd('date'))) return 'Date'
+  if (datatype.equals(xsd('integer'))) return 'number'
+  if (datatype.equals(xsd('string'))) return 'string'
+  if (datatype.equals(rdf('langString'))) return 'string'
+  return 'string'
 }
 
-const cast = (datatype: string) => {
-  if (datatype === xsd('boolean').value) return 'boolean'
-  if (datatype === xsd('date').value) return 'Date'
-  if (datatype === xsd('integer').value) return 'number'
-  if (datatype === xsd('string').value) return 'string'
-  if (datatype === rdf('langString').value) return 'string'
+const nodeShape = (
+  shapePointer: Grapoi,
+  context: JsonLdContextNormalized,
+  widgets: typeof coreWidgets,
+  spacing: number = 2
+) => {
+  const properties: [number, any][] = [...shapePointer.out(sh('property'))].map((property: Grapoi) => [
+    parseFloat(property.out(sh('order')).value ?? '0'),
+    propertyShape(property, context, widgets, spacing)
+  ])
+
+  return properties
+    .sort((a, b) => a[0] - b[0])
+    .map(item => item[1])
+    .filter(Boolean)
+    .join('\n')
 }
 
-const xmlItemToObject = (node: Element, context: JsonLdContextNormalized, spacing: number): string => {
-  const predicates = new Set([...node.children].map(child => child.getAttribute('data-predicate')!))
-  const typings: string[] = []
+const propertyShape = (
+  propertyPointer: Grapoi,
+  context: JsonLdContextNormalized,
+  widgets: typeof coreWidgets,
+  spacing: number = 2
+): string => {
+  const path = parsePath(propertyPointer.out(sh('path')))
 
-  for (const predicate of [...predicates.values()].filter(Boolean)) {
-    const compactedPredicate = context.compactIri(predicate, true)
-    const child = [...node.children].find(child => child.getAttribute('data-predicate') === predicate)!
-    let subType = undefined
+  // For now we can only deal with simple paths.
+  if (path[0].predicates.length !== 1) return ''
 
-    const subNode = child.children?.[0]
-    if (subNode?.nodeName === 'main') {
-      const subTypeProperties = xmlItemToObject(subNode, context, spacing + 1)
-      subType = `{\n${subTypeProperties}\n${' '.repeat(spacing * 2)}}`
+  const predicate = path[0].predicates[0]
+  const compactedPredicate = context.compactIri(predicate.value, true)
+
+  /** @ts-ignore */
+  const widget = scoreWidgets(widgets['editors'], undefined, propertyPointer)
+  const mustRenderNode = widget?.meta.iri?.equals(dash('DetailsEditor'))
+  let subType = undefined
+
+  if (mustRenderNode) {
+    const node = propertyPointer.out(sh('node')).term
+    let nodeShapePointer: Grapoi
+
+    if (!node) {
+      const dataset = datasetFactory.dataset([
+        factory.quad(factory.namedNode(propertyPointer.term.value), rdf('type'), sh('NodeShape'))
+      ])
+      nodeShapePointer = grapoi({ dataset, factory, term: factory.namedNode(propertyPointer.term.value) })
+    } else {
+      nodeShapePointer = propertyPointer.node(node)
     }
 
-    const dataType = cast(child.getAttribute('data-datatype')!) ?? 'string'
-    const isMultiple = child.getAttribute('data-ismultiple') === 'true'
-    const isRequired = child.getAttribute('data-isrequired') === 'true'
-
-    const property = compactedPredicate.includes('.') ? `'${compactedPredicate}'` : compactedPredicate
-
-    typings.push(
-      `${' '.repeat(spacing * 2)}${property}${isRequired ? '' : '?'}: ${
-        isMultiple ? `Array<${subType ?? dataType}>` : subType ?? dataType
-      }`
-    )
+    subType = `{\n${nodeShape(nodeShapePointer, context, widgets, spacing + 1)}\n${' '.repeat(spacing * 2)}}`
   }
 
-  return typings.join('\n')
+  const isMultiple = propertyPointer.out(sh('maxCount')).value !== '1'
+  const dataType = cast(propertyPointer.out(sh('datatype')).term ?? xsd('string'))
+  const isRequired =
+    propertyPointer.out(sh('minCount')).value && parseInt(propertyPointer.out(sh('minCount')).value) > 0
+  const property = compactedPredicate.includes('.') ? `'${compactedPredicate}'` : compactedPredicate
+
+  return `${' '.repeat(spacing * 2)}${property}${isRequired ? '' : '?'}: ${
+    isMultiple ? `Array<${subType ?? dataType}>` : subType ?? dataType
+  }`
 }
 
 export default async function type(input: Omit<ShaclRendererProps, 'mode'>) {
-  const context = await initContext({ ...input, mode: 'type' })
-  const result = await renderToString(<ShaclRenderer {...input} mode="type" />)
-  const parser = new DOMParser()
-  const parsed = parser.parseFromString(result.replaceAll('<!-- -->', ''), 'application/xml')
+  const { jsonLdContext, shapePointer, targetClass } = await initContext({ ...input, mode: 'data' })
+  const widgets = coreWidgets
   const mergedContext = new JsonLdContextNormalized({
-    ...context.jsonLdContext.getContextRaw(),
+    ...prefixes,
+    ...jsonLdContext.getContextRaw(),
     ...(input.context ?? {})
   })
-  const node = parsed.children[0]
-  return `export type ${node.getAttribute('data-name')} = {\n${xmlItemToObject(node, mergedContext, 1)}\n}`
+
+  return `export type ${targetClass?.value.split(/\/|\#/g).pop()} = {\n${nodeShape(
+    shapePointer,
+    mergedContext,
+    widgets,
+    1
+  )}\n}`
 }
