@@ -1,0 +1,56 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
+@prefix stf: <http://ontology.shapething.com/facet#> .
+@prefix ex: <http://example.com/> .
+
+<#car>
+  a sh:NodeShape ;
+  sh:targetClass ex:Car ;
+  rdfs:label "Car form" ;
+
+  sh:property [
+    sh:name "Model"@en ;
+    sh:path schema:name ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:datatype xsd:string ;
+  ];
+
+  sh:property [
+    sh:name "Number of doors"@en ;
+    sh:path schema:doors ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:datatype xsd:integer ;
+  ];
+
+ .
+
+
+<#bike>
+  a sh:NodeShape ;
+  sh:targetClass ex:Bike ;
+  rdfs:label "Bike form" ;
+
+  sh:property [
+    sh:name "Color"@en ;
+    sh:path schema:color ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:datatype stsr:color ;
+  ];
+
+  sh:property [
+    sh:name "Number of gears"@en ;
+    sh:path schema:gears ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:datatype xsd:integer ;
+  ];
+
+ .

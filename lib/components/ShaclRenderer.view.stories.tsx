@@ -1,4 +1,4 @@
-import ShaclRenderer, { ShaclRendererProps } from './ShaclRenderer'
+import ShaclRenderer, { schema, ShaclRendererProps } from './ShaclRenderer'
 
 export default {
   title: 'SHACL Renderer/View',
@@ -10,6 +10,7 @@ export const withShape = {
   args: {
     mode: 'view',
     data: new URL('/john.ttl', location.origin),
+    targetClass: schema('Person'),
     shapes: new URL('/shapes/contact-closed.ttl', location.origin)
   } as ShaclRendererProps
 }

@@ -32,6 +32,14 @@ export const SortableData = {
   } as ShaclRendererProps
 }
 
+export const MultipleForms = {
+  args: {
+    mode: 'edit',
+    data: new URL('/shapes/multiple-forms.ttl#data', location.origin),
+    shapes: new URL('/shapes/multiple-forms.ttl', location.origin)
+  } as ShaclRendererProps
+}
+
 export const EditWithoutShape = {
   args: {
     mode: 'edit',

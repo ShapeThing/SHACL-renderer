@@ -2,6 +2,7 @@
 @use 'base/input';
 @use 'base/button';
 @use 'base/label';
+@use 'base/select';
 
 @use 'widgets/editors/editors';
 @use 'widgets/facets/facets';
@@ -21,6 +22,7 @@
 @use 'widgets/viewers/uri';
 
 @use 'language-tabs';
+@use 'shape-picker';
 
 :root {
   --input-radius: 4px;

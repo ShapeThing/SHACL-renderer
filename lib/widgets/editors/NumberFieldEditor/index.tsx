@@ -8,7 +8,6 @@ export default function NumberFieldEditor({ term, setTerm }: WidgetProps) {
       className="input"
       type="number"
       value={term.value}
-      autoFocus
       onChange={event => setTerm(factory.literal(event.target.value, xsd('decimal')))}
     />
   )

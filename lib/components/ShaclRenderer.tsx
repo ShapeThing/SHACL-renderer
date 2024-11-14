@@ -5,6 +5,7 @@ import { createCidFromProps } from '../helpers/createCidFromProps'
 import { wrapPromise } from '../helpers/wrapPromise'
 import LanguageAwareTabs from './LanguageAwareTabs'
 import NodeShape from './NodeShape'
+import ShapePicker from './ShapePicker'
 export * from '../core/namespaces'
 
 export type ShaclRendererProps = MainContextInput
@@ -18,13 +19,16 @@ function ShaclRendererInner(props: ShaclRendererProps) {
     cache.set(cid, wrapPromise(initContext(props)))
   }
   const context = cache.get(cid).read()
-
+  const showShapePicker = context.shapePointers.terms.length > 1 && !context.targetClass
   return (
     <MainContextProvider context={context}>
       <ValidationContextProvider>
-        <LanguageAwareTabs>
-          <NodeShape {...context} key="root" />
-        </LanguageAwareTabs>
+        <div data-mode={context.mode} className="shacl-renderer">
+          <LanguageAwareTabs>
+            {showShapePicker && !['data', 'type'].includes(context.mode) ? <ShapePicker /> : null}
+            <NodeShape {...context} key="root" />
+          </LanguageAwareTabs>
+        </div>
       </ValidationContextProvider>
     </MainContextProvider>
   )
