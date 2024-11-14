@@ -40,6 +40,13 @@ export const MultipleForms = {
   } as ShaclRendererProps
 }
 
+export const Inheritance = {
+  args: {
+    mode: 'edit',
+    data: new URL('/shapes/inheritance.ttl#data', location.origin),
+    shapes: new URL('/shapes/inheritance.ttl#pet', location.origin)
+  } as ShaclRendererProps
+}
 export const EditWithoutShape = {
   args: {
     mode: 'edit',

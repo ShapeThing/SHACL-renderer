@@ -1,9 +1,9 @@
-[data-mode='edit'] > .group {
+[data-mode='edit'] .node>.group {
   gap: 16px;
   display: flex;
   flex-wrap: wrap;
 
-  > * {
+  >* {
     flex: 1;
   }
 }

@@ -6,7 +6,7 @@ import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import { ReactNode, createContext, useState } from 'react'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import LanguageProvider from './language-context'
-import { rdf, sh } from './namespaces'
+import { rdf, rdfs, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
 
 export type MainContextInput = {
@@ -30,6 +30,7 @@ export type MainContext = {
   data: DatasetCore
   facetSearchData: DatasetCore
   subject: NamedNode | BlankNode
+  shapeSubject: URL | string
   targetClass?: NamedNode
   shapePointer: Grapoi
   shapePointers: Grapoi
@@ -38,7 +39,7 @@ export type MainContext = {
   jsonLdContext: JsonLdContextNormalized
   languageMode: 'tabs' | 'individual'
   languages: Record<string, string>
-  setPointerByIri: (iri: string) => void
+  setShapeSubject: (iri: string) => void
   originalInput: MainContextInput
 } & Settings
 
@@ -48,6 +49,7 @@ export const mainContext = createContext<MainContext>({
   data: datasetFactory.dataset(),
   facetSearchData: datasetFactory.dataset(),
   subject: factory.blankNode(),
+  shapeSubject: '',
   targetClass: undefined,
   shapePointer: undefined as unknown as Grapoi,
   shapePointers: undefined as unknown as Grapoi,
@@ -57,7 +59,7 @@ export const mainContext = createContext<MainContext>({
   jsonLdContext: new JsonLdContextNormalized({}),
   languageMode: 'tabs',
   languages: {},
-  setPointerByIri: (iri: string) => null,
+  setShapeSubject: (iri: string) => null,
   originalInput: null as unknown as MainContextInput
 })
 
@@ -93,6 +95,27 @@ const getData = async (dataInput?: URL | DatasetCore | string, subject?: NamedNo
   }
 }
 
+const getShapeIrisByChildShapeIri = (childIri: NamedNode, shapes: Grapoi, shapeIris: NamedNode[] = []) => {
+  const shape = shapes.node(childIri)
+  const shapeTargetClass = shape.out(sh('targetClass')).term
+  const classDefinition = shape.node(shapeTargetClass)
+  const parentClass = classDefinition.out(rdfs('subClassOf')).term
+  const parentShape = shapes.node(parentClass).in(sh('targetClass'))
+
+  if (shapes.ptrs.length && parentShape.term && classDefinition.ptrs.length && parentClass) {
+    const termIsAlreadyIncluded = shapeIris.find(iri => iri.equals(parentShape.term))
+    if (termIsAlreadyIncluded) {
+      console.error(`The term "${termIsAlreadyIncluded.value}" was found twice in the class hierarchy`)
+      return shapeIris
+    }
+
+    shapeIris.push(parentShape.term)
+    getShapeIrisByChildShapeIri(parentShape.term, shapes, shapeIris)
+  }
+
+  return shapeIris
+}
+
 /**
  * Fetches the shape part, can return a generic shape if none was given
  */
@@ -109,22 +132,36 @@ const getShapes = async (
           factory.quad(factory.namedNode(''), sh('targetClass'), givenTargetClass!)
         ])
       }
-  const rootShapePointer = grapoi({ dataset: resolvedShapes, factory })
-  let shapePointers = rootShapePointer.hasOut(rdf('type'), sh('NodeShape'))
+
+  const shapesPointer = grapoi({ dataset: resolvedShapes, factory })
+  let shapePointers = shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
+
+  // First filter to all the shapes that match with the given target class
   if (givenTargetClass) {
     shapePointers = shapePointers.hasOut(sh('targetClass'), givenTargetClass)
     if (![...shapePointers].length)
       throw new Error(`No shape found for the specified target class ${givenTargetClass.value}`)
   }
 
+  // We allow urls with #[localName]
   const localShapeName =
-    shapes instanceof URL && shapes?.toString().includes('#') ? shapes?.toString().split('#').pop() : false
-  if (localShapeName)
-    shapePointers = shapePointers.filter(pointer => pointer.term.value.split(/\/|\#/g).pop() === localShapeName)
+    (shapes instanceof URL || typeof shapes === 'string') && shapes?.toString().includes('#')
+      ? shapes?.toString().split('#').pop()
+      : false
+  if (!shapeSubject && localShapeName) {
+    shapeSubject = [...shapePointers].find(pointer => pointer.term.value.split(/\/|\#/g).pop() === localShapeName)?.term
+      .value
+  }
 
-  const shapePointer = shapeSubject?.toString()
-    ? shapePointers.filter(pointer => pointer.term.value === shapeSubject?.toString()) ?? [...shapePointers].at(0)!
-    : [...shapePointers].at(0)!
+  // Last resort, we will grab the first shape that we will find.
+  if (!shapeSubject) shapeSubject = shapePointers.terms?.[0]?.value
+
+  // Gather inheritance data
+  const parents = getShapeIrisByChildShapeIri(factory.namedNode(shapeSubject.toString()), shapesPointer)
+  const shapePointer = shapePointers.filter(pointer =>
+    [factory.namedNode(shapeSubject.toString()), ...parents].some(term => term.equals(pointer.term))
+  )
+
   const targetClass: NamedNode | undefined = givenTargetClass
 
   if (!shapePointer) throw new Error('No shape pointer')
@@ -133,7 +170,8 @@ const getShapes = async (
     shapePointer,
     targetClass,
     shapePointers,
-    resolvedShapes
+    resolvedShapes,
+    shapeSubject
   }
 }
 
@@ -149,16 +187,16 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     targetClass: givenTargetClass,
     mode,
     languageMode,
-    shapeSubject,
+    shapeSubject: givenShapeSubject,
     languages,
     ...settings
   } = originalInput
 
   let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject)
-  let { shapePointer, resolvedShapes, targetClass, shapePointers } = await getShapes(
+  let { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject } = await getShapes(
     shapes,
     givenTargetClass,
-    shapeSubject
+    givenShapeSubject
   )
 
   // This is only for facets, it contains a dataset that we will filter through.
@@ -186,10 +224,11 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     languageMode: languageMode ?? 'tabs',
     shapePointers,
     facetSearchDataPointer,
+    shapeSubject,
     languages: languages ?? {},
     jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}) }),
     mode,
-    setPointerByIri: (iri: string) => null,
+    setShapeSubject: (iri: string) => null,
     originalInput,
     ...settings
   }
@@ -198,12 +237,12 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
 export function MainContextProvider({ children, context: givenContext }: MainContextProviderProps) {
   const [context, setContext] = useState(givenContext)
 
-  const setPointerByIri = (iri: string) => {
+  const setShapeSubject = (iri: string) => {
     initContext({ ...givenContext.originalInput, shapeSubject: new URL(iri) }).then(setContext)
   }
 
   return context ? (
-    <mainContext.Provider value={{ ...context, setPointerByIri }}>
+    <mainContext.Provider value={{ ...context, setShapeSubject }}>
       <LanguageProvider>{children}</LanguageProvider>
     </mainContext.Provider>
   ) : null

@@ -4,7 +4,7 @@ import { mainContext, Settings } from '../core/main-context'
 import { rdfs, sh } from './ShaclRenderer'
 
 export default function ShapePicker() {
-  const { shapePointers, mode, setPointerByIri } = useContext(mainContext)
+  const { shapePointers, mode, setShapeSubject, shapeSubject } = useContext(mainContext)
 
   type UiModes = Exclude<Settings['mode'], 'type' | 'data'>
 
@@ -21,7 +21,7 @@ export default function ShapePicker() {
     <div className="shape-picker property">
       <label>{modeLabel}</label>
       <div className="editor">
-        <select onChange={event => setPointerByIri(event.target.value)}>
+        <select value={shapeSubject.toString()} onChange={event => setShapeSubject(event.target.value)}>
           {shapePointers.map((shapePointer: Grapoi) => (
             <option key={shapePointer.term.value} value={shapePointer.term.value}>
               {shapePointer.out([sh('name'), rdfs('label')]).values[0] ?? shapePointer.term.value.split(/\/|\#/g).pop()}

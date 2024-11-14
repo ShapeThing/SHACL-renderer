@@ -111,7 +111,7 @@ export default function NodeShape() {
   return ['data', 'type'].includes(mode) ? (
     <main data-name={targetClass?.value.split(/\#|\//g).pop() ?? 'Root'}>{elements}</main>
   ) : (
-    <div className="node" data-term={shapePointer.term.value}>
+    <div className="node" data-term={shapePointer.values}>
       {elements}
     </div>
   )

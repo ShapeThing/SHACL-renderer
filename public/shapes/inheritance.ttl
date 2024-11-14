@@ -1,0 +1,61 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
+@prefix stf: <http://ontology.shapething.com/facet#> .
+@prefix ex: <http://example.com/> .
+
+<#thing>
+  a sh:NodeShape ;
+  sh:targetClass ex:Thing ;
+  rdfs:label "Thing" ;
+
+  sh:property [
+    sh:name "Thing"@en ;
+    sh:path schema:thing ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:order 0;
+    sh:datatype xsd:string ;
+  ];
+
+ .
+
+<#animal>
+  a sh:NodeShape ;
+  sh:targetClass ex:Animal ;
+  rdfs:label "Animal" ;
+
+  sh:property [
+    sh:name "Type"@en ;
+    sh:path schema:type ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:order 1;
+    sh:datatype xsd:string ;
+  ];
+
+ .
+
+
+<#pet>
+  a sh:NodeShape ;
+  sh:targetClass ex:Pet ;
+  rdfs:label "Pet" ;
+
+  sh:property [
+    sh:name "Name"@en ;
+    sh:path schema:name ;
+    sh:datatype xsd:string ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:order 2;
+  ];
+
+ .
+
+ex:Pet rdfs:subClassOf ex:Animal .
+ex:Animal rdfs:subClassOf ex:Thing .
