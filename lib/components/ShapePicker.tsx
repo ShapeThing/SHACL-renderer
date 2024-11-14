@@ -1,10 +1,10 @@
 import { Grapoi } from 'grapoi'
 import { useContext } from 'react'
 import { mainContext, Settings } from '../core/main-context'
-import { rdfs, sh } from './ShaclRenderer'
+import { rdf, rdfs, sh } from './ShaclRenderer'
 
 export default function ShapePicker() {
-  const { shapePointers, mode, setShapeSubject, shapeSubject } = useContext(mainContext)
+  const { shapesPointer, shapePointer, mode, setShapeSubject, shapeSubject } = useContext(mainContext)
 
   type UiModes = Exclude<Settings['mode'], 'type' | 'data'>
 
@@ -17,12 +17,19 @@ export default function ShapePicker() {
 
   const modeLabel = ['data', 'type'].includes(mode) ? '' : modeLabels[mode as keyof typeof modeLabels]
 
+  // TODO not super sure about this. The ShapePicker hides shapes from the picker that are used in the hierarchy.
+  const activeShapeParentTerms = shapePointer.terms.filter(term => !shapeSubject.equals(term))
+  const shapePointers = shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
+  const validShapes = shapePointers.filter(
+    shapePointer => !activeShapeParentTerms.some(term => term.equals(shapePointer.term))
+  )
+
   return (
     <div className="shape-picker property">
       <label>{modeLabel}</label>
       <div className="editor">
-        <select value={shapeSubject.toString()} onChange={event => setShapeSubject(event.target.value)}>
-          {shapePointers.map((shapePointer: Grapoi) => (
+        <select value={shapeSubject.value} onChange={event => setShapeSubject(event.target.value)}>
+          {validShapes.map((shapePointer: Grapoi) => (
             <option key={shapePointer.term.value} value={shapePointer.term.value}>
               {shapePointer.out([sh('name'), rdfs('label')]).values[0] ?? shapePointer.term.value.split(/\/|\#/g).pop()}
             </option>

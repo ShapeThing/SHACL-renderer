@@ -23,7 +23,7 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized): objec
   const predicates = new Set([...node.children].map(child => child.getAttribute('data-predicate')!))
   const entries: [string, object | string | Date][] = []
 
-  for (const predicate of predicates.values()) {
+  for (const predicate of predicates.values().filter(Boolean)) {
     const compactedPredicate = context.compactIri(predicate, true)
     const rawValues = [...node.children].filter(child => child.getAttribute('data-predicate') === predicate)
     const values = rawValues.map(child => {
@@ -44,9 +44,12 @@ const xmlItemToObject = (node: Element, context: JsonLdContextNormalized): objec
 
 export default async function data(input: Omit<ShaclRendererProps, 'mode'>) {
   const context = await initContext({ ...input, mode: 'data' })
-  const result = await renderToString(<ShaclRenderer {...input} mode="data" />)
+  const result = (await renderToString(<ShaclRenderer {...input} mode="data" />))
+    .replaceAll('<!-- -->', '')
+    .replaceAll('<!--$-->', '')
+    .replaceAll('<!--/$-->', '')
   const parser = new DOMParser()
-  const parsed = parser.parseFromString(result.replaceAll('<!-- -->', ''), 'application/xml')
+  const parsed = parser.parseFromString(result, 'application/xml')
   const mergedContext = new JsonLdContextNormalized({
     ...context.jsonLdContext.getContextRaw(),
     ...(input.context ?? {})

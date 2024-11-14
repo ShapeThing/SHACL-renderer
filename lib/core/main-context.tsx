@@ -30,10 +30,11 @@ export type MainContext = {
   data: DatasetCore
   facetSearchData: DatasetCore
   subject: NamedNode | BlankNode
-  shapeSubject: URL | string
+  shapeSubject: NamedNode
   targetClass?: NamedNode
   shapePointer: Grapoi
-  shapePointers: Grapoi
+  shapesPointer: Grapoi
+  activeShapePointers: Grapoi
   dataPointer: Grapoi
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
@@ -49,11 +50,12 @@ export const mainContext = createContext<MainContext>({
   data: datasetFactory.dataset(),
   facetSearchData: datasetFactory.dataset(),
   subject: factory.blankNode(),
-  shapeSubject: '',
+  shapeSubject: factory.namedNode(''),
   targetClass: undefined,
   shapePointer: undefined as unknown as Grapoi,
-  shapePointers: undefined as unknown as Grapoi,
+  activeShapePointers: undefined as unknown as Grapoi,
   dataPointer: undefined as unknown as Grapoi,
+  shapesPointer: undefined as unknown as Grapoi,
   facetSearchDataPointer: undefined as unknown as Grapoi,
   mode: 'edit',
   jsonLdContext: new JsonLdContextNormalized({}),
@@ -168,8 +170,9 @@ const getShapes = async (
 
   return {
     shapePointer,
-    targetClass,
     shapePointers,
+    shapesPointer,
+    targetClass,
     resolvedShapes,
     shapeSubject
   }
@@ -193,7 +196,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
   } = originalInput
 
   let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject)
-  let { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject } = await getShapes(
+  let { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject, shapesPointer } = await getShapes(
     shapes,
     givenTargetClass,
     givenShapeSubject
@@ -222,9 +225,10 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     facetSearchData: facetSearchDataset,
     shapePointer,
     languageMode: languageMode ?? 'tabs',
-    shapePointers,
+    activeShapePointers: shapePointers,
+    shapesPointer,
     facetSearchDataPointer,
-    shapeSubject,
+    shapeSubject: factory.namedNode(shapeSubject.toString()),
     languages: languages ?? {},
     jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}) }),
     mode,
