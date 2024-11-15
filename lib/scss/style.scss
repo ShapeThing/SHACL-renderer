@@ -25,6 +25,11 @@
 @use 'language-tabs';
 @use 'shape-picker';
 
+.shacl-renderer.loading {
+  opacity: 0;
+  pointer-events: none;
+}
+
 :root {
   --input-radius: 4px;
   --easing: ease-in-out;

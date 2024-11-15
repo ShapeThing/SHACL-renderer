@@ -69,7 +69,10 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const addObject = useCreateAddObject(editors, property, items, nodeDataPointer, setItems, isList)
 
   useEffect(() => {
-    if (items.ptrs.length === 0) addObject({ activeContentLanguage })
+    if (items.ptrs.length === 0) {
+      addObject({ activeContentLanguage })
+      document.dispatchEvent(new CustomEvent('react.render'))
+    }
   }, [items])
 
   const maxCount = property.out(sh('maxCount')).value
