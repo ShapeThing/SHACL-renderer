@@ -1,0 +1,11 @@
+.editor.textfieldwithlang {
+    >.inner {
+        flex: 1 1 auto;
+        display: flex;
+        gap: 10px;
+    }
+
+    select {
+        width: 100px;
+    }
+}

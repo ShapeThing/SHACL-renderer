@@ -3,13 +3,13 @@ import type { Term } from '@rdfjs/types'
 import grapoi from 'grapoi'
 import { ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'
-import { rdf, sh } from '../core/namespaces'
+import { rdf, rdfs, sh } from '../core/namespaces'
 import { nonNullable } from '../helpers/nonNullable'
 import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
 
 export default function NodeShape() {
-  const { shapePointer, dataPointer, facetSearchDataPointer, data: dataset } = useContext(mainContext)
+  const { shapePointer, mode, dataPointer, facetSearchDataPointer, data: dataset } = useContext(mainContext)
 
   const isClosed = shapePointer.out(sh('closed')).value === 'true'
 
@@ -101,8 +101,11 @@ export default function NodeShape() {
     ...propertiesWithoutPropertyShapes
   ]
 
+  const description = shapePointer.out([sh('description'), rdfs('comment')]).values[0]
+
   return (
     <div className="node" data-term={shapePointer.values}>
+      {description && ['edit'].includes(mode) ? <div>{description}</div> : null}
       {elements}
     </div>
   )

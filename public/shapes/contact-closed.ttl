@@ -12,6 +12,7 @@
   a sh:NodeShape ;
   sh:targetClass schema:Person ;
   sh:closed true ;
+  sh:description "This form shows various fields. Notice that some fields are singular and others can have multiple values." ;
 
   sh:property [
     sh:name "Given name"@en ;

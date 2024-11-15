@@ -15,6 +15,7 @@
 
   sh:property [
     sh:name "Thing"@en ;
+    sh:description "A field from ex:Thing" ;
     sh:path schema:thing ;
     sh:minCount 1;
     sh:maxCount 1;
@@ -27,11 +28,13 @@
 <#animal>
   a sh:NodeShape ;
   sh:targetClass ex:Animal ;
+
   rdfs:label "Animal" ;
 
   sh:property [
     sh:name "Type"@en ;
     sh:path schema:type ;
+    sh:description "A field from ex:Animal" ;
     sh:minCount 1;
     sh:maxCount 1;
     sh:order 1;
@@ -45,10 +48,12 @@
   a sh:NodeShape ;
   sh:targetClass ex:Pet ;
   rdfs:label "Pet" ;
+  rdfs:comment "This shows the usage of inheritance. It uses the predicate rdfs:subClassOf to discover that classes inherit each other." ;
 
   sh:property [
     sh:name "Name"@en ;
     sh:path schema:name ;
+    sh:description "A field from ex:Pet" ;
     sh:datatype xsd:string ;
     sh:minCount 1;
     sh:maxCount 1;
