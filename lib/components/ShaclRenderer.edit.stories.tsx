@@ -35,7 +35,6 @@ export const SortableData = {
 export const MultipleForms = {
   args: {
     mode: 'edit',
-    data: new URL('/shapes/multiple-forms.ttl#data', location.origin),
     shapes: new URL('/shapes/multiple-forms.ttl', location.origin)
   } as ShaclRendererProps
 }
@@ -43,7 +42,6 @@ export const MultipleForms = {
 export const Inheritance = {
   args: {
     mode: 'edit',
-    data: new URL('/shapes/inheritance.ttl#data', location.origin),
     shapes: new URL('/shapes/inheritance.ttl#pet', location.origin)
   } as ShaclRendererProps
 }

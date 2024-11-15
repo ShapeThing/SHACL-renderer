@@ -17,14 +17,14 @@ export default function ShapePicker() {
 
   const modeLabel = ['data', 'type'].includes(mode) ? '' : modeLabels[mode as keyof typeof modeLabels]
 
-  // TODO not super sure about this. The ShapePicker hides shapes from the picker that are used in the hierarchy.
+  // TODO not super sure about this. The ShapePicker hides shapes that are used in the current hierarchy.
   const activeShapeParentTerms = shapePointer.terms.filter(term => !shapeSubject.equals(term))
   const shapePointers = shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
   const validShapes = shapePointers.filter(
     shapePointer => !activeShapeParentTerms.some(term => term.equals(shapePointer.term))
   )
 
-  return (
+  return validShapes.ptrs.length > 1 ? (
     <div className="shape-picker property">
       <label>{modeLabel}</label>
       <div className="editor">
@@ -37,5 +37,5 @@ export default function ShapePicker() {
         </select>
       </div>
     </div>
-  )
+  ) : null
 }
