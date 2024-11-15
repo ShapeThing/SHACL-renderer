@@ -7,11 +7,9 @@ import { Settings, mainContext } from '../core/main-context'
 import { dash, sh, stf, stsr } from '../core/namespaces'
 import { validationContext } from '../core/validation-context'
 import parsePath from '../helpers/parsePath'
-import PropertyShapeDataMode from './DataMode/PropertyShapeDataMode'
 import PropertyShapeEditMode from './EditMode/PropertyShapeEditMode'
 import PropertyShapeFacetMode from './FacetMode/PropertyShapeFacetMode'
 import PropertyShapeInlineEditMode from './InlineEditMode/PropertyShapeInlineEditMode'
-import PropertyShapeTypeMode from './TypeMode/PropertyShapeTypeMode'
 import PropertyShapeViewMode from './ViewMode/PropertyShapeViewMode'
 
 type PropertyShapeProps = {
@@ -33,8 +31,6 @@ const modes: Record<Settings['mode'], ReactComponentLike> = {
   edit: PropertyShapeEditMode,
   view: PropertyShapeViewMode,
   facet: PropertyShapeFacetMode,
-  data: PropertyShapeDataMode,
-  type: PropertyShapeTypeMode,
   'inline-edit': PropertyShapeInlineEditMode
 }
 
@@ -42,9 +38,7 @@ const modePredicates = {
   edit: dash('editor'),
   view: dash('viewer'),
   facet: stf('facet'),
-  'inline-edit': dash('editor'),
-  data: stsr('data'),
-  type: stsr('type')
+  'inline-edit': dash('editor')
 }
 
 export default function PropertyShape(props: PropertyShapeProps) {

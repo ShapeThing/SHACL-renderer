@@ -9,14 +9,7 @@ import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
 
 export default function NodeShape() {
-  const {
-    mode,
-    shapePointer,
-    dataPointer,
-    facetSearchDataPointer,
-    data: dataset,
-    targetClass
-  } = useContext(mainContext)
+  const { shapePointer, dataPointer, facetSearchDataPointer, data: dataset } = useContext(mainContext)
 
   const isClosed = shapePointer.out(sh('closed')).value === 'true'
 

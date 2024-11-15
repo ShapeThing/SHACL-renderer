@@ -1,5 +1,6 @@
 /**
- * This file is taken from shacl-engine, I could not directly import it as it is not exported and jsr was making it difficult to import it.
+ * This file is taken from shacl-engine, I could not directly import it as it is not exported
+ * and jsr was making it difficult to import it. (I tried to publish at jsr. But that is still not possible)
  */
 import namespace from '@rdfjs/namespace'
 

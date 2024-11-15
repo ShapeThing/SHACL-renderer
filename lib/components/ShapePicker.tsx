@@ -6,9 +6,7 @@ import { rdf, rdfs, sh } from './ShaclRenderer'
 export default function ShapePicker() {
   const { shapesPointer, shapePointer, mode, setShapeSubject, shapeSubject } = useContext(mainContext)
 
-  type UiModes = Exclude<Settings['mode'], 'type' | 'data'>
-
-  const modeLabels: Record<UiModes, string> = {
+  const modeLabels: Record<Settings['mode'], string> = {
     edit: 'Select a form',
     facet: 'Select facets',
     'inline-edit': 'Select a form',

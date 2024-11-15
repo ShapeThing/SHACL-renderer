@@ -16,11 +16,14 @@ type PropertyObjectInlineEditModeProps = {
   initialMode?: 'view' | 'edit'
   setTerm: (term: Term) => void
   deleteTerm: () => void
+  isList: boolean
+  index: number
+  rerenderAfterManipulatingPointer: () => void
 }
 
 export default function PropertyObjectInlineEditMode(props: PropertyObjectInlineEditModeProps) {
   const { data, property } = props
-  const [mode, setMode] = useState<'view' | 'edit'>(props.initialMode ?? 'view')
+  const [localMode, setLocalMode] = useState<'view' | 'edit'>(props.initialMode ?? 'view')
   const { viewers, editors } = useContext(widgetsContext)
 
   const viewerWidgetItem = scoreWidgets(viewers, data, property, dash('viewer'))
@@ -28,17 +31,17 @@ export default function PropertyObjectInlineEditMode(props: PropertyObjectInline
 
   if (!viewerWidgetItem || !editorWidgetItem) return null
 
-  return mode === 'edit' ? (
+  return localMode === 'edit' ? (
     <Fragment>
       <PropertyObjectEditMode {...props} />
-      <button className="inline-button" onClick={() => setMode('view')}>
+      <button className="inline-button" onClick={() => setLocalMode('view')}>
         <Icon icon="iconoir:check" />
       </button>
     </Fragment>
   ) : (
     <Fragment>
       <viewerWidgetItem.Component {...props} term={data.term} />
-      <button className="inline-button" onClick={() => setMode(mode === 'view' ? 'edit' : 'view')}>
+      <button className="inline-button" onClick={() => setLocalMode(localMode === 'view' ? 'edit' : 'view')}>
         <Icon icon="iconoir:edit-pencil" />
       </button>
     </Fragment>

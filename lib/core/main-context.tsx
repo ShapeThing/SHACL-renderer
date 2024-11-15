@@ -22,7 +22,7 @@ export type MainContextInput = {
 } & Settings
 
 export type Settings = {
-  mode: 'edit' | 'facet' | 'view' | 'inline-edit' | 'data' | 'type'
+  mode: 'edit' | 'facet' | 'view' | 'inline-edit'
 }
 
 export type MainContext = {
@@ -61,7 +61,7 @@ export const mainContext = createContext<MainContext>({
   jsonLdContext: new JsonLdContextNormalized({}),
   languageMode: 'tabs',
   languages: {},
-  setShapeSubject: (iri: string) => null,
+  setShapeSubject: (_iri: string) => null,
   originalInput: null as unknown as MainContextInput
 })
 
@@ -232,7 +232,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     languages: languages ?? {},
     jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}) }),
     mode,
-    setShapeSubject: (iri: string) => null,
+    setShapeSubject: (_iri: string) => null,
     originalInput,
     ...settings
   }

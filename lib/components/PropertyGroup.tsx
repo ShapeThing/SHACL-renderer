@@ -17,7 +17,7 @@ export default function PropertyGroup({
   facetSearchDataPointer
 }: PropertyGroupProps) {
   const localName = group.term.value.split(/\/|#/g).pop()
-  const { data: dataset, mode } = useContext(mainContext)
+  const { data: dataset } = useContext(mainContext)
 
   const propertiesAsElements = properties.map(property => (
     <PropertyShape

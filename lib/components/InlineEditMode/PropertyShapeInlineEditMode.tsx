@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react'
 import { languageContext } from '../../core/language-context'
 import { sh } from '../../core/namespaces'
 import { deleteTermAndDescendants } from '../../helpers/deleteTermAndDescendants'
+import { isOrderedList } from '../../helpers/isOrderedList'
 import { sortPointersStable } from '../../helpers/sortPointersStable'
 import { wrapWithList } from '../../helpers/wrapWithList'
 import { widgetsContext } from '../../widgets/widgets-context'
@@ -19,6 +20,7 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
 
   const [items, realSetItems] = useState(() => nodeDataPointer.executeAll(path))
   const { activeContentLanguage } = useContext(languageContext)
+  const isList = isOrderedList(path)
 
   const setItems = () => {
     const oldTerms = items.terms
@@ -40,9 +42,12 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
   return (
     <PropertyElement showColon property={property}>
       {wrapWithList(
-        items.map((item: any) => (
+        items.map((item: any, index: number) => (
           <PropertyObjectInlineEditMode
             {...props}
+            isList={isList}
+            index={index}
+            rerenderAfterManipulatingPointer={setItems}
             setTerm={(term: Term) => {
               const dataset = item.ptrs[0].dataset
               const [quad] = [...item.quads()]

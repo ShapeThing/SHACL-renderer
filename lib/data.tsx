@@ -111,7 +111,7 @@ const propertyShape = (
 }
 
 export default async function data(input: Omit<ShaclRendererProps, 'mode'>) {
-  const { jsonLdContext, shapePointer, dataPointer } = await initContext({ ...input, mode: 'data' })
+  const { jsonLdContext, shapePointer, dataPointer } = await initContext({ ...input, mode: 'edit' })
   const widgets = coreWidgets
   const mergedContext = new JsonLdContextNormalized({
     ...prefixes,
