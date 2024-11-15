@@ -21,6 +21,8 @@ const registerServiceWorker = async () => {
   }
 }
 
+await document.fonts.ready
+
 registerServiceWorker()
 
 const preview: Preview = {
