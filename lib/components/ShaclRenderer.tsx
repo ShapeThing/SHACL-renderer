@@ -1,5 +1,4 @@
-import debounce from 'lodash-es/debounce'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense } from 'react'
 import { MainContext, MainContextInput, MainContextProvider, initContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import ValidationContextProvider from '../core/validation-context'
@@ -38,19 +37,8 @@ function ShaclRendererInner(props: ShaclRendererProps) {
 }
 
 export default function ShaclRenderer(props: ShaclRendererProps) {
-  const mainRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    document.addEventListener(
-      'react.render',
-      debounce(() => {
-        mainRef.current?.classList.remove('loading')
-      }, 10)
-    )
-  }, [])
-
   return (
-    <div ref={mainRef} data-mode={props.mode} className="shacl-renderer loading">
+    <div data-mode={props.mode} className="shacl-renderer">
       <Suspense>
         <ShaclRendererInner {...props} />
       </Suspense>

@@ -13,18 +13,18 @@ export default function PropertyShapeViewMode(props: PropertyShapeInnerProps) {
   const path = parsePath(property.out(sh('path')))
   const data = nodeDataPointer.executeAll(path)
 
-  return (
+  return data.ptrs.length ? (
     <PropertyElement showColon property={property}>
       {wrapWithList(
         data.map((item: any) => {
           const widgetItem = scoreWidgets(viewers, data, property, dash('viewer'))
 
-          return widgetItem ? (
+          return widgetItem && item.term.value ? (
             <widgetItem.Component {...props} key={item.term.value} data={item} term={item.term} />
           ) : null
         }),
         property
       )}
     </PropertyElement>
-  )
+  ) : null
 }

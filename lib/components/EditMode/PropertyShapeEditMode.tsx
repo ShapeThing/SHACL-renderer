@@ -108,7 +108,8 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
       return (
         <PropertyObjectEditMode
           {...props}
-          key={item.term.value}
+          // Use the property so that we have proper Component caching
+          key={property.term.value + ':' + index}
           data={item}
           items={items}
           isList={isList}
