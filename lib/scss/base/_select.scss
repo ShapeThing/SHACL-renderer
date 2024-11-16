@@ -4,6 +4,7 @@ select {
     padding: 8px 12px;
     border-radius: var(--input-radius);
     transition: box-shadow var(--easing) var(--speed);
-    width: 100%;
+    width: 90%;
+    flex: 1 1 auto;
     cursor: pointer;
 }

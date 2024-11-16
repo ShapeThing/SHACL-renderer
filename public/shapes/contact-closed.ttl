@@ -22,7 +22,11 @@
     sh:maxCount 5;
     sh:datatype xsd:string ;
   ];
-  
+  sh:property [
+    sh:name "Gender"@en ;
+    sh:in ( "Male" "Female" ) ;
+    sh:path schema:gender ;
+  ];
   sh:property [
     sh:name "Family name"@en ;
     sh:group <#name> ;

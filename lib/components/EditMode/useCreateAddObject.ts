@@ -12,7 +12,7 @@ export const useCreateAddObject =
     property: Grapoi,
     items: Grapoi,
     parentData: Grapoi,
-    setItems: () => void,
+    setItems?: () => void,
     isList: boolean = false
   ) =>
   ({ activeContentLanguage }: { activeContentLanguage?: string }) => {
@@ -34,5 +34,5 @@ export const useCreateAddObject =
       parentData.addOut(predicate, emptyTerm)
     }
 
-    setItems()
+    if (setItems) setItems()
   }
