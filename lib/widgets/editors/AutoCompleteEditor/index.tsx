@@ -12,7 +12,7 @@ import { getImageFromPointer } from '../../../helpers/getImageFromPointer'
 import { getPurposePredicates } from '../../../helpers/getPurposePredicates'
 import { isValidIri } from '../../../helpers/isValidIri'
 import { outAll } from '../../../helpers/outAll'
-import { useDebounced } from '../../../helpers/useDebounced'
+import { useDebounced } from '../../../hooks/useDebounced'
 import { WidgetProps } from '../../widgets-context'
 
 export default function AutoCompleteEditor({ term, setTerm, property }: WidgetProps) {
