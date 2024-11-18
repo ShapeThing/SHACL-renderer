@@ -7,7 +7,12 @@ import tseslint from 'typescript-eslint'
 export default [
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
-    ignores: ['lib/scss']
+    ignores: ['lib/scss'],
+    settings: {
+      react: {
+        version: 'detect'
+      }
+    }
   },
   { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
