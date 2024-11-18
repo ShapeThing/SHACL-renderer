@@ -1,3 +1,4 @@
+import { Literal } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { useContext, useEffect, useState } from 'react'
 import { languageContext } from '../core/language-context'
@@ -10,8 +11,8 @@ export const useLanguageFilteredItems = (fetcher: () => Grapoi) => {
   const filter = (pointer: Grapoi) =>
     pointer.filter(item => {
       if (languageMode === 'individual') return true
-      if (!(item.term as any)?.language) return true
-      return (item.term as any)?.language === activeContentLanguage
+      if (!(item.term as Literal)?.language) return true
+      return (item.term as Literal)?.language === activeContentLanguage
     })
   const [items, setItems] = useState(filter(fetcher()))
 

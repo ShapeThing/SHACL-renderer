@@ -15,7 +15,7 @@
   "scripts": {
     "dev": "storybook dev -p 6006",
     "build": "tsc && vite build && tsc --emitDeclarationOnly",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint lib/**/*.ts --report-unused-disable-directives --max-warnings 0 --fix",
     "preview": "vite preview",
     "postinstall": "patch-package",
     "inspect": "npx vite-bundle-visualizer -o stats.html",
@@ -25,6 +25,9 @@
   "dependencies": {
     "@comunica/query-sparql": "^4.0.2",
     "@comunica/query-sparql-rdfjs-lite": "^4.0.2",
+    "@editorjs/editorjs": "^2.30.7",
+    "@editorjs/header": "^2.8.8",
+    "@editorjs/list": "^2.0.0",
     "@fontsource/roboto": "^5.1.0",
     "@hydrofoil/shape-to-query": "^0.13.1",
     "@iconify-icon/react": "^2.1.0",
@@ -42,6 +45,7 @@
     "d2l-fetch-simple-cache": "^2.1.2",
     "glob": "^11.0.0",
     "grapoi": "github:danielbeeke/grapoi",
+    "jsonld": "^8.3.2",
     "jsonld-context-parser": "^3.0.0",
     "lodash-es": "^4.17.21",
     "multi-range-slider-react": "^2.0.7",
@@ -63,6 +67,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.2",
+    "@eslint/js": "^9.15.0",
     "@rdfjs/types": "^1.1.2",
     "@storybook/addon-essentials": "^8.4.2",
     "@storybook/addon-interactions": "^8.4.2",
@@ -87,28 +92,21 @@
     "@types/react-dom": "npm:types-react-dom@rc",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/sortablejs": "^1.15.8",
-    "@typescript-eslint/eslint-plugin": "^8.13.0",
-    "@typescript-eslint/parser": "^8.13.0",
     "@vitejs/plugin-react": "^4.3.3",
-    "eslint": "^9.14.0",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.14",
-    "eslint-plugin-storybook": "^0.11.0",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react": "^7.37.2",
+    "globals": "^15.12.0",
     "jsdom": "^25.0.1",
     "patch-package": "^8.0.0",
     "sass": "^1.80.6",
     "storybook": "^8.4.2",
     "storybook-addon-swc": "^1.2.0",
     "typescript": "^5.6.3",
+    "typescript-eslint": "^8.15.0",
     "vite": "^5.4.10",
     "vite-dts": "^1.0.4",
     "vite-plugin-dts": "^4.3.0",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vitest": "^2.1.4"
-  },
-  "eslintConfig": {
-    "extends": [
-      "plugin:storybook/recommended"
-    ]
   }
 }

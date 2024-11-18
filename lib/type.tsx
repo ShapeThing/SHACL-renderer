@@ -51,7 +51,6 @@ const propertyShape = (
   const predicate = path[0].predicates[0]
   const compactedPredicate = context.compactIri(predicate.value, true)
 
-  /** @ts-ignore */
   const widget = scoreWidgets(widgets['editors'], undefined, propertyPointer)
   const mustRenderNode = widget?.meta.iri?.equals(dash('DetailsEditor'))
   let subType = undefined

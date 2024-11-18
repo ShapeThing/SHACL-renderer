@@ -4,7 +4,7 @@ import { WidgetItem, WidgetMeta, WidgetProps } from './widgets-context'
 const isNode = typeof import.meta.glob !== 'function'
 
 if (isNode && import.meta.env.DEV) {
-  /** @ts-ignore */
+  /** @ts-expect-error Too lazy to type this correctly */
   import.meta.glob = async function (pattern: string, options: { eager?: boolean } = {}) {
     const { glob } = await import('glob')
     const files = await glob(pattern, { cwd: './lib/widgets' })
@@ -17,10 +17,10 @@ if (isNode && import.meta.env.DEV) {
   }
 }
 
-let coreWidgetMetaItems = isNode
+const coreWidgetMetaItems = isNode
   ? await import.meta.glob('./*/*/meta.ts', { eager: true })
   : import.meta.glob('./*/*/meta.ts', { eager: true })
-let coreWidgetComponents = isNode ? await import.meta.glob('./*/*/index.tsx') : import.meta.glob('./*/*/index.tsx')
+const coreWidgetComponents = isNode ? await import.meta.glob('./*/*/index.tsx') : import.meta.glob('./*/*/index.tsx')
 
 export const coreWidgets: {
   editors: WidgetItem[]
@@ -48,7 +48,7 @@ for (const [path, coreWidgetMeta] of Object.entries(coreWidgetMetaItems)) {
   const widgetFetcher = componentItem![1] as () => Promise<{ default: ComponentType<Partial<WidgetProps>> }>
 
   coreWidgets[type as keyof typeof coreWidgets].push({
-    meta: (coreWidgetMeta as any).default as WidgetMeta,
+    meta: (coreWidgetMeta as { default: WidgetMeta }).default,
     Component: lazy(widgetFetcher)
   })
 }

@@ -1,0 +1,21 @@
+.editor.jseditor {
+    padding-inline: 28px;
+
+    >div:first-child {
+        flex: 1 1 auto;
+        position: relative;
+        background-color: white;
+        border: 1px solid var(--secondary);
+        padding-inline: 20px;
+        flex: 1 1 auto;
+        border-radius: var(--input-radius);
+        transition: box-shadow var(--easing) var(--speed);
+
+        &:focus {
+            outline: none;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.4);
+        }
+
+    }
+}

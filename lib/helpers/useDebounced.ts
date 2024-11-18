@@ -1,9 +1,9 @@
 import { debounce } from 'lodash-es'
 import { useCallback, useRef } from 'react'
 
-export function useDebounced<T extends (...args: any) => any>(
+export function useDebounced<T extends (...args: unknown[]) => Promise<T>>(
   callback: T,
-  dependencies: any[] = [],
+  dependencies: unknown[] = [],
   time: number = 200
 ) {
   const callbackDebounced = useRef(debounce(callback, time))

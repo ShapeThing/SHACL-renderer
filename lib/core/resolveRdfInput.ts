@@ -34,7 +34,6 @@ export const resolveRdfInput = async (
     const quads = await parser.parse(input)
     return {
       dataset: datasetFactory.dataset(quads),
-      /** @ts-ignore I am a little bit lazy, we can also do a callback but this is easier */
       prefixes: parser._prefixes
     }
   }

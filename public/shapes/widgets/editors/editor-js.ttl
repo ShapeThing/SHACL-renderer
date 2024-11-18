@@ -1,0 +1,56 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
+@prefix stf: <http://ontology.shapething.com/facet#> .
+@prefix ed: <https://editorjs.io/> .
+
+<#data>
+  a schema:Blog ;
+  schema:body [
+    a ed:OutputData ;
+    ed:blocks ([
+      ed:id "9d61vUfGCT" ;
+      ed:type "paragraph" ;
+      ed:data [
+        ed:text "Lorem"
+      ] ;
+    ] [
+      ed:id "pK4nbVeBqp" ;
+      ed:type "paragraph" ;
+      ed:data [
+        ed:text "Ipsum"
+      ] ;
+    ]) ;
+  ] ;
+.
+
+<#default>
+  a sh:NodeShape ;
+  sh:targetClass schema:Blog ;
+  sh:closed true ;
+
+  sh:property [
+    sh:name "Body"@en ;
+    sh:path schema:body ;
+    sh:node [
+      sh:property [
+        sh:path rdf:type ;
+        sh:hasValue ed:OutputData ;
+      ];
+
+      sh:property [
+        sh:path ed:time ;
+        sh:datatype xsd:number ;
+      ];
+
+      sh:property [
+        sh:path ed:version ;
+        sh:datatype xsd:string ;
+      ];
+    ] ;
+   ];
+.

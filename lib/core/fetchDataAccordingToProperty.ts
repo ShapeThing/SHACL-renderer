@@ -67,7 +67,7 @@ export const fetchDataAccordingToProperty = async ({
   const { QueryEngine } = await import('@comunica/query-sparql')
   const queryEngine = new QueryEngine()
   const quadsStream = await queryEngine.queryQuads(query, {
-    /** @ts-ignore */
+    /** @ts-expect-error the types of Comunica do not match */
     sources,
     lenient: true,
     httpProxyHandler: termNeedsProxy ? new ProxyHandlerStatic(`https://corsproxy.io/?`) : undefined

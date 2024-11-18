@@ -3,6 +3,7 @@
  * and jsr was making it difficult to import it. (I tried to publish at jsr. But that is still not possible)
  */
 import namespace from '@rdfjs/namespace'
+import { Grapoi } from 'grapoi'
 
 const owl = namespace('http://www.w3.org/2002/07/owl#')
 const rdf = namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
@@ -13,7 +14,7 @@ const xsd = namespace('http://www.w3.org/2001/XMLSchema#')
 
 const ns = { owl, rdf, rdfs, sh, shn, xsd }
 
-function parseStep(ptr: any) {
+function parseStep(ptr: Grapoi) {
   if (ptr.term.termType !== 'BlankNode') {
     return {
       quantifier: 'one',
@@ -30,6 +31,7 @@ function parseStep(ptr: any) {
       quantifier: 'one',
       start: 'subject',
       end: 'object',
+      /** @ts-expect-error The typing does not match */
       predicates: [...alternativePtr.list()].map(ptr => ptr.term)
     }
   }
@@ -79,7 +81,7 @@ function parseStep(ptr: any) {
   }
 }
 
-function parsePath(ptr: any): any {
+function parsePath(ptr: Grapoi) {
   if (ptr.terms.length === 0) {
     return null
   }
