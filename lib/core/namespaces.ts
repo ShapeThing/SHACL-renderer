@@ -11,6 +11,7 @@ export const xsd = namespace('http://www.w3.org/2001/XMLSchema#')
 export const stsr = namespace('http://ontology.shapething.com/shacl-renderer#')
 export const stf = namespace('http://ontology.shapething.com/facet#')
 export const ed = namespace('https://editorjs.io/')
+export const owl = namespace('http://www.w3.org/2002/07/owl#')
 
 export const prefixes = Object.fromEntries(
   Object.entries({
@@ -24,6 +25,7 @@ export const prefixes = Object.fromEntries(
     xsd,
     stsr,
     stf,
-    ed
+    ed,
+    owl
   }).map(([alias, namespace]) => [alias, namespace('').value])
 )

@@ -7,11 +7,17 @@
 @prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
 @prefix stf: <http://ontology.shapething.com/facet#> .
 @prefix ed: <https://editorjs.io/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 
 <#data>
   a schema:Blog ;
-  schema:body [
+  schema:body <#editorjsItem> ;
+.
+
+<#editorjsItem> 
     a ed:OutputData ;
+    ed:time 1234 ;
+    ed:version "13" ;
     ed:blocks ([
       ed:id "9d61vUfGCT" ;
       ed:type "paragraph" ;
@@ -25,32 +31,17 @@
         ed:text "Ipsum"
       ] ;
     ]) ;
-  ] ;
 .
 
-<#default>
+<#shape>
   a sh:NodeShape ;
   sh:targetClass schema:Blog ;
   sh:closed true ;
+  owl:imports <../../editorjs-output.ttl> ;
 
   sh:property [
     sh:name "Body"@en ;
     sh:path schema:body ;
-    sh:node [
-      sh:property [
-        sh:path rdf:type ;
-        sh:hasValue ed:OutputData ;
-      ];
-
-      sh:property [
-        sh:path ed:time ;
-        sh:datatype xsd:number ;
-      ];
-
-      sh:property [
-        sh:path ed:version ;
-        sh:datatype xsd:string ;
-      ];
-    ] ;
+    sh:node <../../editorjs-output.ttl> ;
    ];
 .

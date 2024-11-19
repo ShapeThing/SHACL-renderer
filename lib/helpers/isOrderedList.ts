@@ -1,7 +1,7 @@
 import { NamedNode } from '@rdfjs/types'
 import { rdf } from '../core/namespaces'
 
-export const isOrderedList = (path?: { quantifier: string; predicates: NamedNode[] }[]) => {
+export const isOrderedList = (path: { quantifier: string; predicates: NamedNode[] }[]) => {
   return (
     path &&
     path.length === 3 &&

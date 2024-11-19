@@ -1,7 +1,8 @@
 import { write } from '@jeswr/pretty-turtle'
+import factory from '@rdfjs/data-model'
 import fs from 'fs'
 import { expect, test } from 'vitest'
-import { prefixes } from '../../core/namespaces'
+import { ed, prefixes } from '../../core/namespaces'
 import { dataToRdf, rdfToData } from './data'
 
 test('data output with shape', async () => {
@@ -69,7 +70,41 @@ test('data output without shape', async () => {
   })
 })
 
-test.only('rdf output with shape', async () => {
+test.only('editor.js data output with shape', async () => {
+  const data = fs.readFileSync('./public/shapes/widgets/editors/editor-js.ttl', 'utf8')
+  const shapes = fs.readFileSync('./lib/widgets/editors/EditorJsEditor/subshape.ttl', 'utf8')
+
+  const output = await rdfToData({
+    data,
+    shapes,
+    context: { '@vocab': ed().value },
+    subject: factory.namedNode('#editorjs')
+  })
+
+  expect(output).toStrictEqual({
+    'rdf:type': ed('OutputData').value,
+    blocks: [
+      {
+        data: {
+          text: 'Lorem'
+        },
+        id: '9d61vUfGCT',
+        type: 'paragraph'
+      },
+      {
+        data: {
+          text: 'Ipsum'
+        },
+        id: 'pK4nbVeBqp',
+        type: 'paragraph'
+      }
+    ],
+    time: 1234,
+    version: '13'
+  })
+})
+
+test('rdf output with shape', async () => {
   const shape = fs.readFileSync('./public/shapes/contact-closed.ttl', 'utf8')
 
   const output = await dataToRdf({

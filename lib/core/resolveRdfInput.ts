@@ -1,10 +1,12 @@
 import datasetFactory from '@rdfjs/dataset'
-import type { DatasetCore } from '@rdfjs/types'
+import type { DatasetCore, Quad } from '@rdfjs/types'
 import Parser from 'n3/src/N3Parser.js'
 import { cachedFetch } from '../helpers/cachedFetch'
+import { owl } from './namespaces'
 
 export const resolveRdfInput = async (
-  input: URL | DatasetCore | string
+  input: URL | DatasetCore | string,
+  baseIri?: string
 ): Promise<{
   dataset: DatasetCore
   prefixes: Record<string, string>
@@ -31,7 +33,17 @@ export const resolveRdfInput = async (
     const FinalParser = Parser.default ? Parser.default : Parser
     const parser = new FinalParser({ baseIRI: originalUrl })
 
-    const quads = await parser.parse(input)
+    const quads: Quad[] = await parser.parse(input)
+
+    const owlImports = quads
+      .filter(quad => quad.predicate.equals(owl('imports')))
+      .map(quad => new URL(quad.object.value))
+
+    for (const owlImport of owlImports) {
+      const importedData = await resolveRdfInput(owlImport)
+      quads.push(...[...importedData.dataset])
+    }
+
     return {
       dataset: datasetFactory.dataset(quads),
       prefixes: parser._prefixes

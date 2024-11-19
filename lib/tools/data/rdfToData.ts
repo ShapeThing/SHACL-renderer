@@ -7,6 +7,7 @@ import type { ShaclRendererProps } from '../../components/ShaclRenderer'
 import { initContext } from '../../core/main-context'
 import { dash, prefixes, rdf, sh, xsd } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import { isOrderedList } from '../../helpers/isOrderedList'
 import parsePath from '../../helpers/parsePath'
 import { coreWidgets } from '../../widgets/coreWidgets'
 
@@ -61,6 +62,7 @@ const nodeShape = (
     : []
 
   const allProperties = [...propertiesWithoutPropertyShapes, ...normalProperties]
+    .filter(item => item[1])
     .sort((a, b) => b[0] - a[0])
     .map(item => item[1])
 
@@ -73,18 +75,25 @@ const propertyShape = (
   context: JsonLdContextNormalized,
   widgets: typeof coreWidgets
 ): object => {
-  const path = parsePath(propertyPointer.out(sh('path')))
-  const items = dataPointer.executeAll(path)
+  let path = parsePath(propertyPointer.out(sh('path'))) as any
+
+  const isList = isOrderedList(path)
+  if (isList) path = [path[0]]
 
   // For now we can only deal with simple paths.
   if (path?.[0]?.predicates.length !== 1) return {}
 
-  const predicate = path[0].predicates[0]
+  const items = dataPointer.executeAll(path)
+
+  const predicate = path?.[0]?.predicates[0]!
   const compactedPredicate = context.compactIri(predicate.value, true)
 
-  const values = items.map((item: Grapoi) => {
-    const widget = scoreWidgets(widgets['editors'], item, propertyPointer)
+  const materializedItems = isList ? [...items.list()] : items
+
+  const values = materializedItems.map((item: Grapoi) => {
+    const widget = scoreWidgets(widgets['editors'], item, propertyPointer, dash('editor'))
     const mustRenderNode = widget?.meta.iri?.equals(dash('DetailsEditor'))
+
     if (mustRenderNode) {
       const node = propertyPointer.out(sh('node')).term
       let nodeShapePointer: Grapoi
@@ -98,7 +107,8 @@ const propertyShape = (
         nodeShapePointer = propertyPointer.node(node)
       }
 
-      return nodeShape(nodeShapePointer, item, context, widgets)
+      const subItem = nodeShape(nodeShapePointer, item, context, widgets)
+      return subItem
     } else {
       return cast(item.term)
     }

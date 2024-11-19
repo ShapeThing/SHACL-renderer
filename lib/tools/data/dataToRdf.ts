@@ -59,6 +59,8 @@ const propertyShape = (
   const widget = scoreWidgets(widgets['editors'], undefined, propertyPointer, dash('editor'))
   if (!widget?.meta.createTerm) return
   const activeContentLanguage = Object.keys(mainContext.languages).length ? Object.keys(mainContext.languages)[0] : 'en'
+  const mustRenderNode = widget?.meta.iri?.equals(dash('DetailsEditor'))
+  console.log(mustRenderNode)
 
   const datatype = propertyPointer.out(sh('datatype')).term
 

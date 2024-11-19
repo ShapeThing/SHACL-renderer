@@ -1,7 +1,7 @@
 import { Grapoi } from 'grapoi'
 import { useContext } from 'react'
 import { mainContext, Settings } from '../core/main-context'
-import { rdf, rdfs, sh } from './ShaclRenderer'
+import { rdf, rdfs, sh, stsr } from './ShaclRenderer'
 
 export default function ShapePicker() {
   const { shapesPointer, shapePointer, mode, setShapeSubject, shapeSubject } = useContext(mainContext)
@@ -18,9 +18,9 @@ export default function ShapePicker() {
   // TODO not super sure about this. The ShapePicker hides shapes that are used in the current hierarchy.
   const activeShapeParentTerms = shapePointer.terms.filter(term => !shapeSubject.equals(term))
   const shapePointers = shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
-  const validShapes = shapePointers.filter(
-    shapePointer => !activeShapeParentTerms.some(term => term.equals(shapePointer.term))
-  )
+  const validShapes = shapePointers
+    .filter(shapePointer => !activeShapeParentTerms.some(term => term.equals(shapePointer.term)))
+    .filter(shapePointer => !!shapePointer.out(rdf('type'), stsr('ChildShape')).value)
 
   return validShapes.ptrs.length > 1 ? (
     <div className="shape-picker property">
