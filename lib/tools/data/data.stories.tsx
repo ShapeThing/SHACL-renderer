@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import ReactJson from 'react-json-view'
-import { ShaclRendererProps } from './components/ShaclRenderer'
-import data from './data'
+import { ShaclRendererProps } from '../../components/ShaclRenderer'
+import { rdfToData } from './data'
 
 function RenderData(props: ShaclRendererProps) {
   const [json, setJson] = useState<object>()
   useEffect(() => {
-    data(props).then(setJson)
+    rdfToData(props).then(setJson)
   }, [])
 
   return json ? (

@@ -1,12 +1,12 @@
 import fs from 'fs'
 import { expect, test } from 'vitest'
-import { schema } from './core/namespaces'
-import typeOf from './type'
+import { schema } from '../../core/namespaces'
+import { toType } from './type'
 
 test('type output', async () => {
   const shape = fs.readFileSync('./public/shapes/contact-closed.ttl', 'utf8')
 
-  const typeOutput = await typeOf({
+  const typeOutput = await toType({
     shapes: shape,
     targetClass: schema('Person'),
     context: { '@vocab': 'https://schema.org/' }

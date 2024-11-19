@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react'
-import SyntaxHighlighter from 'react-syntax-highlighter'
-import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/docco'
-import { schema, ShaclRendererProps } from './components/ShaclRenderer'
-import typing from './type'
+import { schema, ShaclRendererProps } from '../../components/ShaclRenderer'
+import { toType } from './type'
 
 function RenderData(props: ShaclRendererProps) {
   const [type, setType] = useState<string>()
   useEffect(() => {
-    typing(props).then(setType)
+    toType(props).then(setType)
   }, [])
-  return type ? (
-    <SyntaxHighlighter language="typescript" style={docco}>
-      {type}
-    </SyntaxHighlighter>
-  ) : null
+  return (
+    <code>
+      <pre>{type}</pre>
+    </code>
+  )
 }
 
 export default {

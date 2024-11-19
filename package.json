@@ -90,7 +90,6 @@
     "@types/rdfjs__namespace": "^2.0.10",
     "@types/react": "npm:types-react@rc",
     "@types/react-dom": "npm:types-react-dom@rc",
-    "@types/react-syntax-highlighter": "^15.5.13",
     "@types/sortablejs": "^1.15.8",
     "@vitejs/plugin-react": "^4.3.3",
     "eslint": "^9.15.0",

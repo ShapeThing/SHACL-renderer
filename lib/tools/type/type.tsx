@@ -3,12 +3,12 @@ import datasetFactory from '@rdfjs/dataset'
 import { NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
-import type { ShaclRendererProps } from './components/ShaclRenderer'
-import { initContext } from './core/main-context'
-import { dash, prefixes, rdf, sh, xsd } from './core/namespaces'
-import { scoreWidgets } from './core/scoreWidgets'
-import parsePath from './helpers/parsePath'
-import { coreWidgets } from './widgets/coreWidgets'
+import type { ShaclRendererProps } from '../../components/ShaclRenderer'
+import { initContext } from '../../core/main-context'
+import { dash, prefixes, rdf, sh, xsd } from '../../core/namespaces'
+import { scoreWidgets } from '../../core/scoreWidgets'
+import parsePath from '../../helpers/parsePath'
+import { coreWidgets } from '../../widgets/coreWidgets'
 
 const cast = (datatype: NamedNode) => {
   if (datatype.equals(xsd('boolean'))) return 'boolean'
@@ -46,7 +46,7 @@ const propertyShape = (
   const path = parsePath(propertyPointer.out(sh('path')))
 
   // For now we can only deal with simple paths.
-  if (path[0].predicates.length !== 1) return ''
+  if (path?.[0]?.predicates.length !== 1) return ''
 
   const predicate = path[0].predicates[0]
   const compactedPredicate = context.compactIri(predicate.value, true)
@@ -82,8 +82,8 @@ const propertyShape = (
   }`
 }
 
-export default async function type(input: Omit<ShaclRendererProps, 'mode'>) {
-  const { jsonLdContext, shapePointer, targetClass } = await initContext({ ...input, mode: 'data' })
+export async function toType(input: Omit<ShaclRendererProps, 'mode'>) {
+  const { jsonLdContext, shapePointer, targetClass } = await initContext({ ...input, mode: 'edit' })
   const widgets = coreWidgets
   const mergedContext = new JsonLdContextNormalized({
     ...prefixes,

@@ -1,12 +1,13 @@
+import { write } from '@jeswr/pretty-turtle'
 import fs from 'fs'
 import { expect, test } from 'vitest'
-import data from './data'
+import { dataToRdf, rdfToData } from './data'
 
 test('data output with shape', async () => {
   const john = fs.readFileSync('./public/john.ttl', 'utf8')
   const shape = fs.readFileSync('./public/shapes/contact-closed.ttl', 'utf8')
 
-  const output = await data({
+  const output = await rdfToData({
     data: john,
     shapes: shape,
     context: { '@vocab': 'https://schema.org/' }
@@ -35,7 +36,7 @@ test('data output with shape', async () => {
 test('data output without shape', async () => {
   const john = fs.readFileSync('./public/john.ttl', 'utf8')
 
-  const output = await data({
+  const output = await rdfToData({
     data: john,
     context: { '@vocab': 'https://schema.org/' }
   })
@@ -65,4 +66,23 @@ test('data output without shape', async () => {
       }
     ]
   })
+})
+
+test.only('rdf output with shape', async () => {
+  const shape = fs.readFileSync('./public/shapes/contact-closed.ttl', 'utf8')
+
+  const output = await dataToRdf({
+    data: { givenName: 'John', familyName: 'Doe' },
+    shapes: shape,
+    context: { '@vocab': 'https://schema.org/' }
+  })
+
+  const serializedOutput = await write(output)
+
+  expect(
+    serializedOutput,
+    ` <https://schema.org/givenName> "John" ;
+  <https://schema.org/familyName> "Doe" .
+`
+  )
 })

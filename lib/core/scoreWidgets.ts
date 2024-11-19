@@ -15,10 +15,10 @@ export const scoreWidgets = (widgets: Array<WidgetItem>, data?: Grapoi, property
 
   const widgetMatches = widgets
     .map(widgetItem => {
-      const score = widgetItem.meta.score && data && property ? widgetItem.meta.score(data, property) : -1
-      return { widgetItem, score: score === undefined ? -1 : score }
+      const score = widgetItem.meta.score ? widgetItem.meta.score(data, property) : 0
+      return { widgetItem, score: score === undefined ? 0 : score }
     })
     .sort((a, b) => b.score - a.score)
 
-  return widgetMatches.filter(({ score }) => score > -1)[0]?.widgetItem
+  return widgetMatches.filter(({ score }) => score > 0)[0]?.widgetItem
 }
