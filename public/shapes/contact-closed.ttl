@@ -25,6 +25,7 @@
   sh:property [
     sh:name "Gender"@en ;
     sh:in ( "Male" "Female" ) ;
+    sh:maxCount 1;
     sh:path schema:gender ;
   ];
   sh:property [

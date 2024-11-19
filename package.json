@@ -43,6 +43,7 @@
     "d2l-fetch": "^2.6.0",
     "d2l-fetch-dedupe": "^2.1.0",
     "d2l-fetch-simple-cache": "^2.1.2",
+    "dedent": "^1.5.3",
     "glob": "^11.0.0",
     "grapoi": "github:danielbeeke/grapoi",
     "jsonld": "^8.3.2",

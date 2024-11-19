@@ -1,6 +1,7 @@
 import { write } from '@jeswr/pretty-turtle'
 import fs from 'fs'
 import { expect, test } from 'vitest'
+import { prefixes } from '../../core/namespaces'
 import { dataToRdf, rdfToData } from './data'
 
 test('data output with shape', async () => {
@@ -72,17 +73,16 @@ test.only('rdf output with shape', async () => {
   const shape = fs.readFileSync('./public/shapes/contact-closed.ttl', 'utf8')
 
   const output = await dataToRdf({
-    data: { givenName: 'John', familyName: 'Doe' },
+    data: { givenName: 'John', familyName: 'Doe', birthDate: new Date('1947-01-14T00:00:00.000Z') },
     shapes: shape,
     context: { '@vocab': 'https://schema.org/' }
   })
 
-  const serializedOutput = await write(output)
+  const serializedOutput = await write(output, { prefixes })
+  expect(serializedOutput).toBe(`@prefix schema: <https://schema.org/> .
 
-  expect(
-    serializedOutput,
-    ` <https://schema.org/givenName> "John" ;
-  <https://schema.org/familyName> "Doe" .
-`
-  )
+ schema:givenName "John" ;
+  schema:familyName "Doe" ;
+  schema:birthDate "1947-01-14"^^<http://www.w3.org/2001/XMLSchema#date> .
+`)
 })

@@ -14,6 +14,7 @@ test('type output', async () => {
 
   expect(typeOutput).toStrictEqual(`export type Person = {
   givenName: Array<string>
+  gender?: string
   familyName: string
   favoriteColor?: string
   isHuman?: boolean

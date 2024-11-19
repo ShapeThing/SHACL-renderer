@@ -5,7 +5,7 @@ import { WidgetMeta } from '../../widgets-context'
 
 export default {
   iri: dash('DatePickerEditor'),
-  createTerm: () => factory.literal(''),
+  createTerm: () => factory.literal('', xsd('date')),
   score: (data?: Grapoi, propertyShape?: Grapoi) => {
     if (
       data &&
