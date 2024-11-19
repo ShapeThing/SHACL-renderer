@@ -87,7 +87,6 @@ const propertyShape = (
 
   const predicate = path?.[0]?.predicates[0]!
   const compactedPredicate = context.compactIri(predicate.value, true)
-
   const materializedItems = isList ? [...items.list()] : items
 
   const values = materializedItems.map((item: Grapoi) => {
@@ -113,6 +112,9 @@ const propertyShape = (
       return cast(item.term)
     }
   })
+
+  if (!values.length) return {}
+
   const multiple = propertyPointer.out(sh('maxCount')).value !== '1'
 
   return {

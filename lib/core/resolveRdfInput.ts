@@ -5,8 +5,7 @@ import { cachedFetch } from '../helpers/cachedFetch'
 import { owl } from './namespaces'
 
 export const resolveRdfInput = async (
-  input: URL | DatasetCore | string,
-  baseIri?: string
+  input: URL | DatasetCore | string
 ): Promise<{
   dataset: DatasetCore
   prefixes: Record<string, string>
@@ -20,13 +19,19 @@ export const resolveRdfInput = async (
 
   let originalUrl: string | undefined = undefined
   if (input instanceof URL) {
-    const response = await cachedFetch(input)
-
-    if (!['text/turtle'].includes(response.headers.get('content-type').split(';')[0] ?? ''))
-      throw new Error('Unexpected mime type')
-
     originalUrl = input.toString()
-    input = await response.text()
+
+    if (input.protocol === 'file:') {
+      const fs = await import('fs/promises')
+      input = await fs.readFile(input.pathname, 'utf8')
+    } else {
+      const response = await cachedFetch(input)
+
+      if (!['text/turtle'].includes(response.headers.get('content-type').split(';')[0] ?? ''))
+        throw new Error('Unexpected mime type')
+
+      input = await response.text()
+    }
   }
 
   if (typeof input === 'string') {
@@ -35,12 +40,14 @@ export const resolveRdfInput = async (
 
     const quads: Quad[] = await parser.parse(input)
 
-    const owlImports = quads
-      .filter(quad => quad.predicate.equals(owl('imports')))
-      .map(quad => new URL(quad.object.value))
+    const owlImports = quads.filter(quad => quad.predicate.equals(owl('imports'))).map(quad => quad.object)
 
     for (const owlImport of owlImports) {
-      const importedData = await resolveRdfInput(owlImport)
+      const isNode = import.meta?.url?.startsWith(`file://`)
+      const url = isNode
+        ? new URL(owlImport.value, `file://${process.cwd()}`)
+        : new URL(owlImport.value, location.toString())
+      const importedData = await resolveRdfInput(url)
       quads.push(...[...importedData.dataset])
     }
 

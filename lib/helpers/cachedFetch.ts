@@ -12,6 +12,8 @@ d2LFetch.use({ name: 'simple-cache', fn: fetchSimpleCache })
 d2LFetch.use({ name: 'dedupe', fn: fetchDedupe })
 
 export const cachedFetch = (input: RequestInfo | URL, init?: RequestInit | undefined) => {
+  const isNode = import.meta?.url?.startsWith(`file://`)
+  if (isNode) return fetch(input, init)
   if (input instanceof URL) input = input.toString()
   return d2LFetch.fetch(input, init)
 }

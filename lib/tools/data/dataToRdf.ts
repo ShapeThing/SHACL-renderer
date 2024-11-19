@@ -1,5 +1,5 @@
 import factory from '@rdfjs/data-model'
-import { DatasetCore, NamedNode } from '@rdfjs/types'
+import { DatasetCore, NamedNode, Quad } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import { Quad_Object } from 'n3'
@@ -29,10 +29,11 @@ const nodeShape = (
   shapePointer: Grapoi,
   context: JsonLdContextNormalized,
   widgets: typeof coreWidgets,
-  data: any
+  data: any,
+  parent?: string
 ) => {
   return [...shapePointer.out(sh('property'))]
-    .map((property: Grapoi) => propertyShape(mainContext, property, context, widgets, data))
+    .map((property: Grapoi) => propertyShape(mainContext, property, context, widgets, data, parent))
     .filter(nonNullable)
     .flat()
 }
@@ -42,34 +43,47 @@ const propertyShape = (
   propertyPointer: Grapoi,
   context: JsonLdContextNormalized,
   widgets: typeof coreWidgets,
-  data: any
-) => {
+  data: any,
+  parent?: string
+): Quad[] => {
   const path = parsePath(propertyPointer.out(sh('path')))
 
   // For now we can only deal with simple paths.
-  if (path?.[0]?.predicates.length !== 1) return
+  if (path?.[0]?.predicates.length !== 1) return []
 
   const predicate = path[0].predicates[0]
   const compactedPredicate = context.compactIri(predicate.value, true)
 
-  if (!data[compactedPredicate]) return
+  if (!data[compactedPredicate]) return []
 
   const values = Array.isArray(data[compactedPredicate]) ? data[compactedPredicate] : [data[compactedPredicate]]
 
   const widget = scoreWidgets(widgets['editors'], undefined, propertyPointer, dash('editor'))
-  if (!widget?.meta.createTerm) return
+  if (!widget?.meta.createTerm) return []
   const activeContentLanguage = Object.keys(mainContext.languages).length ? Object.keys(mainContext.languages)[0] : 'en'
   const mustRenderNode = widget?.meta.iri?.equals(dash('DetailsEditor'))
-  console.log(mustRenderNode)
-
   const datatype = propertyPointer.out(sh('datatype')).term
 
-  return values.map(value => {
-    const term = widget.meta.createTerm!({ activeContentLanguage })
-    if (term.termType === 'Literal') term.datatype = datatype
-    term.value = term.termType === 'Literal' && datatype ? cast(value, datatype) : value
-    return factory.quad(factory.namedNode(''), predicate, term as Quad_Object)
-  })
+  return values
+    .map((value, index) => {
+      if (mustRenderNode) {
+        const childNodes = nodeShape(
+          mainContext,
+          propertyPointer.out(sh('node')),
+          context,
+          widgets,
+          value,
+          index.toString()
+        )
+        return childNodes
+      } else {
+        const term = widget.meta.createTerm!({ activeContentLanguage })
+        if (term.termType === 'Literal') term.datatype = datatype
+        term.value = term.termType === 'Literal' && datatype ? cast(value, datatype) : value
+        return [factory.quad(factory.namedNode(parent ?? 'oops'), predicate, term as Quad_Object)]
+      }
+    })
+    .flat()
 }
 
 export async function dataToRdf({

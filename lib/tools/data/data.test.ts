@@ -1,9 +1,10 @@
 import { write } from '@jeswr/pretty-turtle'
-import factory from '@rdfjs/data-model'
 import fs from 'fs'
 import { expect, test } from 'vitest'
 import { ed, prefixes } from '../../core/namespaces'
 import { dataToRdf, rdfToData } from './data'
+
+const baseUrl = `file://${process.cwd()}/`
 
 test('data output with shape', async () => {
   const john = fs.readFileSync('./public/john.ttl', 'utf8')
@@ -58,7 +59,6 @@ test('data output without shape', async () => {
     knows: ['http://dbpedia.org/resource/Søren_Kierkegaard'],
     address: [
       {
-        address: [],
         'rdf:type': ['https://schema.org/PostalAddress'],
         streetAddress: ['Wagramer Strasse 5'],
         postalCode: ['1220'],
@@ -70,15 +70,11 @@ test('data output without shape', async () => {
   })
 })
 
-test.only('editor.js data output with shape', async () => {
-  const data = fs.readFileSync('./public/shapes/widgets/editors/editor-js.ttl', 'utf8')
-  const shapes = fs.readFileSync('./lib/widgets/editors/EditorJsEditor/subshape.ttl', 'utf8')
-
+test('editor.js data output with shape', async () => {
   const output = await rdfToData({
-    data,
-    shapes,
-    context: { '@vocab': ed().value },
-    subject: factory.namedNode('#editorjs')
+    data: new URL(`./public/shapes/widgets/editors/editor-js.ttl#editorjsItem`, baseUrl),
+    shapes: new URL('./public/shapes/editorjs-output.ttl', baseUrl),
+    context: { '@vocab': ed().value }
   })
 
   expect(output).toStrictEqual({
@@ -104,20 +100,49 @@ test.only('editor.js data output with shape', async () => {
   })
 })
 
-test('rdf output with shape', async () => {
-  const shape = fs.readFileSync('./public/shapes/contact-closed.ttl', 'utf8')
+test.only('rdf output with shape', async () => {
+  const shape = fs.readFileSync('./public/shapes/editorjs-output.ttl', 'utf8')
+
+  const data = {
+    time: 1732052896004,
+    blocks: [
+      {
+        id: '9d61vUfGCT',
+        type: 'paragraph',
+        data: {
+          text: 'Lorem'
+        }
+      },
+      {
+        id: 'pK4nbVeBqp',
+        type: 'paragraph',
+        data: {
+          text: 'Ipsum'
+        }
+      },
+      {
+        id: '8xA8tKBIw9',
+        type: 'paragraph',
+        data: {
+          text: 'asda'
+        }
+      }
+    ],
+    version: '2.30.7'
+  }
 
   const output = await dataToRdf({
-    data: { givenName: 'John', familyName: 'Doe', birthDate: new Date('1947-01-14T00:00:00.000Z') },
+    data,
     shapes: shape,
-    context: { '@vocab': 'https://schema.org/' }
+    context: { '@vocab': ed().value }
   })
 
-  const serializedOutput = await write(output, { prefixes })
-  expect(serializedOutput).toBe(`@prefix schema: <https://schema.org/> .
+  console.table(
+    output
+      .map(quad => [quad.subject.value, quad.predicate.value, quad.object.value])
+      .sort((a, b) => a[0].localeCompare(b[0]))
+  )
 
- schema:givenName "John" ;
-  schema:familyName "Doe" ;
-  schema:birthDate "1947-01-14"^^<http://www.w3.org/2001/XMLSchema#date> .
-`)
+  const serializedOutput = await write(output, { prefixes })
+  expect(serializedOutput).toBe(``)
 })
