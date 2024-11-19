@@ -16,17 +16,16 @@ const editorJsOutputDataToRdf = async (outputData: OutputData) => {
     shapes: new URL('/shapes/editorjs-output.ttl', location.toString()),
     context: { '@vocab': ed().value }
   })
+
+  console.log(quads)
 }
 
-const rdfToEditorJsOutputData = async (pointer: Grapoi) => {
-  const quads = outAll(pointer.distinct().out())
-  const data = await rdfToData({
-    data: datasetFactory.dataset(quads),
+const rdfToEditorJsOutputData = async (pointer: Grapoi) =>
+  rdfToData({
+    data: datasetFactory.dataset(outAll(pointer.distinct().out())),
     shapes: new URL('/shapes/editorjs-output.ttl', location.toString()),
     context: { '@vocab': ed().value }
   })
-  return data
-}
 
 export default function EditorJsEditor({ term, setTerm, data: dataPointer }: WidgetProps) {
   const id = useId()

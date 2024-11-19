@@ -1,12 +1,11 @@
 import factory from '@rdfjs/data-model'
-import { DatasetCore, NamedNode, Quad } from '@rdfjs/types'
+import { BlankNode, DatasetCore, NamedNode, Quad, Quad_Object } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
-import { Quad_Object } from 'n3'
-import { initContext, MainContext } from '../../core/main-context'
+import { initContext } from '../../core/main-context'
 import { dash, prefixes, rdf, sh, xsd } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
-import { nonNullable } from '../../helpers/nonNullable'
+import { isOrderedList } from '../../helpers/isOrderedList'
 import parsePath from '../../helpers/parsePath'
 import { coreWidgets } from '../../widgets/coreWidgets'
 
@@ -24,75 +23,13 @@ const cast = (value: any, datatype: NamedNode) => {
   return value
 }
 
-const nodeShape = (
-  mainContext: MainContext,
-  shapePointer: Grapoi,
-  context: JsonLdContextNormalized,
-  widgets: typeof coreWidgets,
-  data: any,
-  parent?: string
-) => {
-  return [...shapePointer.out(sh('property'))]
-    .map((property: Grapoi) => propertyShape(mainContext, property, context, widgets, data, parent))
-    .filter(nonNullable)
-    .flat()
-}
-
-const propertyShape = (
-  mainContext: MainContext,
-  propertyPointer: Grapoi,
-  context: JsonLdContextNormalized,
-  widgets: typeof coreWidgets,
-  data: any,
-  parent?: string
-): Quad[] => {
-  const path = parsePath(propertyPointer.out(sh('path')))
-
-  // For now we can only deal with simple paths.
-  if (path?.[0]?.predicates.length !== 1) return []
-
-  const predicate = path[0].predicates[0]
-  const compactedPredicate = context.compactIri(predicate.value, true)
-
-  if (!data[compactedPredicate]) return []
-
-  const values = Array.isArray(data[compactedPredicate]) ? data[compactedPredicate] : [data[compactedPredicate]]
-
-  const widget = scoreWidgets(widgets['editors'], undefined, propertyPointer, dash('editor'))
-  if (!widget?.meta.createTerm) return []
-  const activeContentLanguage = Object.keys(mainContext.languages).length ? Object.keys(mainContext.languages)[0] : 'en'
-  const mustRenderNode = widget?.meta.iri?.equals(dash('DetailsEditor'))
-  const datatype = propertyPointer.out(sh('datatype')).term
-
-  return values
-    .map((value, index) => {
-      if (mustRenderNode) {
-        const childNodes = nodeShape(
-          mainContext,
-          propertyPointer.out(sh('node')),
-          context,
-          widgets,
-          value,
-          index.toString()
-        )
-        return childNodes
-      } else {
-        const term = widget.meta.createTerm!({ activeContentLanguage })
-        if (term.termType === 'Literal') term.datatype = datatype
-        term.value = term.termType === 'Literal' && datatype ? cast(value, datatype) : value
-        return [factory.quad(factory.namedNode(parent ?? 'oops'), predicate, term as Quad_Object)]
-      }
-    })
-    .flat()
-}
-
 export async function dataToRdf({
   data,
   shapes,
   shapeSubject,
-  context
+  context: givenContext
 }: {
-  data: unknown
+  data: any
   shapes: URL | DatasetCore | string
   shapeSubject?: URL | string
   context?: Record<string, string>
@@ -100,16 +37,72 @@ export async function dataToRdf({
   const mainContext = await initContext({
     shapes,
     shapeSubject,
-    context,
+    context: givenContext,
     mode: 'edit'
   })
   const { jsonLdContext, shapePointer } = mainContext
   const widgets = coreWidgets
-  const mergedContext = new JsonLdContextNormalized({
+  const context = new JsonLdContextNormalized({
     ...prefixes,
     ...jsonLdContext.getContextRaw(),
-    ...(context ?? {})
+    ...(givenContext ?? {})
   })
+  const activeContentLanguage = Object.keys(mainContext.languages).length ? Object.keys(mainContext.languages)[0] : 'en'
 
-  return nodeShape(mainContext, shapePointer, mergedContext, widgets, data)
+  const subject = factory.namedNode('#')
+
+  return nodeShape(shapePointer, context, data, widgets, subject, activeContentLanguage)
+}
+
+const nodeShape = (
+  shapePointer: Grapoi,
+  context: JsonLdContextNormalized,
+  data: any,
+  widgets: typeof coreWidgets,
+  subject: NamedNode | BlankNode,
+  activeContentLanguage: string
+) => {
+  const quads: Quad[] = []
+
+  for (const property of [...shapePointer.out(sh('property'))]) {
+    const path = parsePath(property.out(sh('path'))) as any
+
+    const predicate = path[0].predicates[0]
+    const compactedPredicate = context.compactIri(predicate.value, true)
+    if (!data[compactedPredicate]) continue
+
+    const values = Array.isArray(data[compactedPredicate]) ? data[compactedPredicate] : [data[compactedPredicate]]
+
+    const widget = scoreWidgets(widgets['editors'], undefined, property, dash('editor'))
+    const mustRenderNode = widget?.meta.iri?.equals(dash('DetailsEditor'))
+    const isList = isOrderedList(path)
+
+    const datatype = property.out(sh('datatype')).term
+
+    if (!widget) continue
+
+    for (const value of values) {
+      if (!mustRenderNode && !isList) {
+        const term = widget.meta.createTerm!({ activeContentLanguage })
+        if (term.termType === 'Literal') term.datatype = datatype
+        term.value = term.termType === 'Literal' && datatype ? cast(value, datatype) : value
+        quads.push(factory.quad(subject, predicate, term as Quad_Object))
+      } else if (mustRenderNode && isList) {
+        const blankNode = factory.blankNode()
+        const innerQuads = [
+          ...nodeShape(property.out(sh('node')), context, value, widgets, blankNode, activeContentLanguage),
+          factory.quad(subject, predicate, blankNode)
+        ]
+        quads.push(...innerQuads)
+      } else if (mustRenderNode && !isList) {
+        const blankNode = factory.blankNode()
+        const innerQuads = [
+          ...nodeShape(property.out(sh('node')), context, value, widgets, blankNode, activeContentLanguage),
+          factory.quad(subject, predicate, blankNode)
+        ]
+        quads.push(...innerQuads)
+      }
+    }
+  }
+  return quads
 }

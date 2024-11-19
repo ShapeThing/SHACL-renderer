@@ -137,12 +137,28 @@ test.only('rdf output with shape', async () => {
     context: { '@vocab': ed().value }
   })
 
-  console.table(
-    output
-      .map(quad => [quad.subject.value, quad.predicate.value, quad.object.value])
-      .sort((a, b) => a[0].localeCompare(b[0]))
-  )
+  const serializedOutput = await write([...output], { prefixes })
+  expect(serializedOutput).toBe(`@prefix ed: <https://editorjs.io/> .
 
-  const serializedOutput = await write(output, { prefixes })
-  expect(serializedOutput).toBe(``)
+<#> ed:version "2.30.7" ;
+  ed:blocks [
+    ed:id "9d61vUfGCT" ;
+    ed:type "paragraph" ;
+    ed:data [
+      ed:text "Lorem"
+    ]
+  ], [
+    ed:id "pK4nbVeBqp" ;
+    ed:type "paragraph" ;
+    ed:data [
+      ed:text "Ipsum"
+    ]
+  ], [
+    ed:id "8xA8tKBIw9" ;
+    ed:type "paragraph" ;
+    ed:data [
+      ed:text "asda"
+    ]
+  ] .
+`)
 })
