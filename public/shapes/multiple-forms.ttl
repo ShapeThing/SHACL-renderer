@@ -12,7 +12,7 @@
   a sh:NodeShape ;
   sh:targetClass ex:Car ;
   rdfs:label "Car form" ;
-  rdfs:comment "This shows the usage of inheritance. It uses the predicate rdfs:subClassOf to discover that classes inherit each other." ;
+  rdfs:comment "A demonstration of multiple forms." ;
 
   sh:property [
     sh:name "Model"@en ;

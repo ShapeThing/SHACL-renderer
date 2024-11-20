@@ -1,8 +1,7 @@
-import EditorJS, { OutputData } from '@editorjs/editorjs'
+import EditorJS from '@editorjs/editorjs'
 import Header from '@editorjs/header'
 import List from '@editorjs/list'
 import datasetFactory from '@rdfjs/dataset'
-import { Grapoi } from 'grapoi'
 import { useEffect, useId, useRef } from 'react'
 import { ed } from '../../../core/namespaces'
 import { outAll } from '../../../helpers/outAll'
@@ -10,49 +9,44 @@ import { dataToRdf } from '../../../tools/data/dataToRdf'
 import { rdfToData } from '../../../tools/data/rdfToData'
 import { WidgetProps } from '../../widgets-context'
 
-const editorJsOutputDataToRdf = async (outputData: OutputData) => {
-  const quads = await dataToRdf({
-    data: outputData,
-    shapes: new URL('/shapes/editorjs-output.ttl', location.toString()),
-    context: { '@vocab': ed().value }
-  })
-
-  console.log(quads)
+const configuration = {
+  placeholder: 'Add some content...',
+  tools: {
+    header: Header,
+    list: List
+  }
 }
 
-const rdfToEditorJsOutputData = async (pointer: Grapoi) =>
-  rdfToData({
-    data: datasetFactory.dataset(outAll(pointer.distinct().out())),
-    shapes: new URL('/shapes/editorjs-output.ttl', location.toString()),
-    context: { '@vocab': ed().value }
-  })
+const transformationOptions = {
+  shapes: new URL('/shapes/editorjs-output.ttl', location.toString()),
+  context: { '@vocab': ed().value }
+}
 
-export default function EditorJsEditor({ term, setTerm, data: dataPointer }: WidgetProps) {
+export default function EditorJsEditor({ data: dataPointer }: WidgetProps) {
   const id = useId()
   const ref = useRef<HTMLDivElement & { editor: EditorJS }>(null)
 
   useEffect(() => {
-    rdfToEditorJsOutputData(dataPointer).then(previousValue => {
+    ;(async () => {
       if (!ref.current || ref.current.editor) return
+
+      const data = datasetFactory.dataset(outAll(dataPointer.distinct().out()))
+      const savedValue = await rdfToData({ data, ...transformationOptions })
 
       ref.current.editor = new EditorJS({
         holder: id,
-        placeholder: 'Add some content...',
-        data: previousValue,
-        tools: {
-          header: Header,
-          list: List
-        },
-        onChange: (api, event) => {
-          ref.current?.editor
-            .save()
-            .then(editorJsOutputDataToRdf)
-            .catch(error => {
-              console.log('Saving failed: ', error)
-            })
+        data: savedValue,
+        ...configuration,
+        onChange: async (api, event) => {
+          const outputData = await ref.current?.editor.save()
+          const rdf = await dataToRdf({ data: outputData, ...transformationOptions })
+
+          console.log(rdf)
         }
       })
-    })
+    })()
+
+    return () => ref.current?.editor.destroy()
   }, [ref])
 
   return <div id={id} ref={ref}></div>

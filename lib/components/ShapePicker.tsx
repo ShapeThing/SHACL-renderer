@@ -20,7 +20,7 @@ export default function ShapePicker() {
   const shapePointers = shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
   const validShapes = shapePointers
     .filter(shapePointer => !activeShapeParentTerms.some(term => term.equals(shapePointer.term)))
-    .filter(shapePointer => !!shapePointer.out(rdf('type'), stsr('ChildShape')).value)
+    .filter(shapePointer => !shapePointer.out(rdf('type'), stsr('ChildShape')).value)
 
   return validShapes.ptrs.length > 1 ? (
     <div className="shape-picker property">

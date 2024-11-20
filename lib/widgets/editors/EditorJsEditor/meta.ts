@@ -8,7 +8,6 @@ export default {
   createTerm: () => factory.literal(''),
   score: (data?: Grapoi, propertyShape?: Grapoi) => {
     const isEditorJsData = data?.out(rdf('type')).terms.some(term => term.equals(ed('OutputData')))
-
     if (isEditorJsData) return 20
 
     if (propertyShape && ed('OutputData').equals(propertyShape.out(sh('class')).term)) {
