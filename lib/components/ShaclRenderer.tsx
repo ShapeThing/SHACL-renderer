@@ -1,3 +1,4 @@
+import { write } from '@jeswr/pretty-turtle/dist'
 import { Suspense } from 'react'
 import { MainContext, MainContextInput, MainContextProvider, initContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
@@ -30,6 +31,17 @@ function ShaclRendererInner(props: ShaclRendererProps) {
         <LanguageAwareTabs>
           {showShapePicker ? <ShapePicker /> : null}
           <NodeShape {...context} key="root" />
+          <button
+            onClick={async () => {
+              const turtle = await write([...context.dataPointer.ptrs[0].dataset], {
+                prefixes: context.jsonLdContext.getContextRaw()
+              })
+              console.log(turtle)
+            }}
+            className="button primary"
+          >
+            Save
+          </button>
         </LanguageAwareTabs>
       </ValidationContextProvider>
     </MainContextProvider>

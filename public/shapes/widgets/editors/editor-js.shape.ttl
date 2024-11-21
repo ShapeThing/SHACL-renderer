@@ -9,30 +9,6 @@
 @prefix ed: <https://editorjs.io/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-<#data>
-  a schema:Blog ;
-  schema:body <#editorjsItem> ;
-.
-
-<#editorjsItem> 
-    a ed:OutputData ;
-    ed:time 1234 ;
-    ed:version "13" ;
-    ed:blocks ([
-      ed:id "9d61vUfGCT" ;
-      ed:type "paragraph" ;
-      ed:data [
-        ed:text "Lorem"
-      ] ;
-    ] [
-      ed:id "pK4nbVeBqp" ;
-      ed:type "paragraph" ;
-      ed:data [
-        ed:text "Ipsum"
-      ] ;
-    ]) ;
-.
-
 <#shape>
   a sh:NodeShape ;
   sh:targetClass schema:Blog ;

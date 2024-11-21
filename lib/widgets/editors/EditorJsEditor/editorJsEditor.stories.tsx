@@ -9,7 +9,7 @@ export default {
 export const Default = {
   args: {
     mode: 'edit',
-    shapes: new URL('/shapes/widgets/editors/editor-js.ttl#default', location.origin),
-    data: new URL('/shapes/widgets/editors/editor-js.ttl#data', location.origin)
+    shapes: new URL('/shapes/widgets/editors/editor-js.shape.ttl#default', location.origin),
+    data: new URL('/shapes/widgets/editors/editor-js.data.ttl#data', location.origin)
   } as ShaclRendererProps
 }

@@ -2,6 +2,7 @@ import EditorJS from '@editorjs/editorjs'
 import Header from '@editorjs/header'
 import List from '@editorjs/list'
 import datasetFactory from '@rdfjs/dataset'
+import { NamedNode } from '@rdfjs/types'
 import { useEffect, useId, useRef } from 'react'
 import { ed } from '../../../core/namespaces'
 import { outAll } from '../../../helpers/outAll'
@@ -22,9 +23,9 @@ const transformationOptions = {
   context: { '@vocab': ed().value }
 }
 
-export default function EditorJsEditor({ data: dataPointer }: WidgetProps) {
+export default function EditorJsEditor({ data: dataPointer, dataset, setTerm, term }: WidgetProps) {
   const id = useId()
-  const ref = useRef<HTMLDivElement & { editor: EditorJS }>(null)
+  const ref = useRef<HTMLDivElement & { editor?: EditorJS }>(null)
 
   useEffect(() => {
     ;(async () => {
@@ -38,15 +39,22 @@ export default function EditorJsEditor({ data: dataPointer }: WidgetProps) {
         data: savedValue,
         ...configuration,
         onChange: async (api, event) => {
-          const outputData = await ref.current?.editor.save()
-          const rdf = await dataToRdf({ data: outputData, ...transformationOptions })
+          const outputData = await ref.current?.editor!.save()
+          const newQuads = await dataToRdf({ data: outputData, ...transformationOptions, subject: term as NamedNode })
+          const oldQuads = outAll(dataPointer.distinct().out())
 
-          console.log(rdf)
+          for (const quad of oldQuads) dataset.delete(quad)
+          for (const quad of newQuads) dataset.add(quad)
+
+          setTerm(term)
         }
       })
     })()
 
-    return () => ref.current?.editor.destroy()
+    return () => {
+      ref.current?.editor?.destroy()
+      if (ref.current?.editor) delete ref.current.editor
+    }
   }, [ref])
 
   return <div id={id} ref={ref}></div>

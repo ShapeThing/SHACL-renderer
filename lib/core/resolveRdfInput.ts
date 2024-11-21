@@ -5,7 +5,8 @@ import { cachedFetch } from '../helpers/cachedFetch'
 import { owl } from './namespaces'
 
 export const resolveRdfInput = async (
-  input: URL | DatasetCore | string
+  input: URL | DatasetCore | string,
+  allowImports: boolean = false
 ): Promise<{
   dataset: DatasetCore
   prefixes: Record<string, string>
@@ -40,15 +41,17 @@ export const resolveRdfInput = async (
 
     const quads: Quad[] = await parser.parse(input)
 
-    const owlImports = quads.filter(quad => quad.predicate.equals(owl('imports'))).map(quad => quad.object)
+    if (allowImports) {
+      const owlImports = quads.filter(quad => quad.predicate.equals(owl('imports'))).map(quad => quad.object)
 
-    for (const owlImport of owlImports) {
-      const isNode = import.meta?.url?.startsWith(`file://`)
-      const url = isNode
-        ? new URL(owlImport.value, `file://${process.cwd()}`)
-        : new URL(owlImport.value, location.toString())
-      const importedData = await resolveRdfInput(url)
-      quads.push(...[...importedData.dataset])
+      for (const owlImport of owlImports) {
+        const isNode = import.meta?.url?.startsWith(`file://`)
+        const url = isNode
+          ? new URL(owlImport.value, `file://${process.cwd()}`)
+          : new URL(owlImport.value, location.toString())
+        const importedData = await resolveRdfInput(url)
+        quads.push(...[...importedData.dataset])
+      }
     }
 
     return {

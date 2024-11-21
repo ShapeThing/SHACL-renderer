@@ -127,7 +127,7 @@ const getShapes = async (
   shapeSubject?: URL | string
 ) => {
   const { dataset: resolvedShapes } = shapes
-    ? await resolveRdfInput(shapes)
+    ? await resolveRdfInput(shapes, true)
     : {
         dataset: datasetFactory.dataset([
           factory.quad(factory.namedNode(''), rdf('type'), sh('NodeShape')),
@@ -204,7 +204,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
 
   // This is only for facets, it contains a dataset that we will filter through.
   const facetSearchDataset = facetSearchData
-    ? (await resolveRdfInput(facetSearchData)).dataset
+    ? (await resolveRdfInput(facetSearchData, true)).dataset
     : datasetFactory.dataset()
   const facetSearchDataPointer = grapoi({ dataset: facetSearchDataset, factory })
     .hasOut(rdf('type'), targetClass)

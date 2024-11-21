@@ -27,12 +27,14 @@ export async function dataToRdf({
   data,
   shapes,
   shapeSubject,
-  context: givenContext
+  context: givenContext,
+  subject
 }: {
   data: any
   shapes: URL | DatasetCore | string
   shapeSubject?: URL | string
   context?: Record<string, string>
+  subject?: NamedNode | BlankNode
 }) {
   const mainContext = await initContext({
     shapes,
@@ -49,7 +51,7 @@ export async function dataToRdf({
   })
   const activeContentLanguage = Object.keys(mainContext.languages).length ? Object.keys(mainContext.languages)[0] : 'en'
 
-  const subject = factory.namedNode('#')
+  if (!subject) subject = factory.namedNode('#')
 
   return nodeShape(shapePointer, context, data, widgets, subject, activeContentLanguage)
 }
@@ -65,7 +67,7 @@ const nodeShape = (
   const quads: Quad[] = []
 
   for (const property of [...shapePointer.out(sh('property'))]) {
-    const path = parsePath(property.out(sh('path'))) as any
+    let path = parsePath(property.out(sh('path'))) as any
 
     const predicate = path[0].predicates[0]
     const compactedPredicate = context.compactIri(predicate.value, true)
@@ -77,30 +79,42 @@ const nodeShape = (
     const mustRenderNode = widget?.meta.iri?.equals(dash('DetailsEditor'))
     const isList = isOrderedList(path)
 
+    if (isList) path = [path[0]]
+
     const datatype = property.out(sh('datatype')).term
 
     if (!widget) continue
 
-    for (const value of values) {
-      if (!mustRenderNode && !isList) {
-        const term = widget.meta.createTerm!({ activeContentLanguage })
-        if (term.termType === 'Literal') term.datatype = datatype
-        term.value = term.termType === 'Literal' && datatype ? cast(value, datatype) : value
-        quads.push(factory.quad(subject, predicate, term as Quad_Object))
-      } else if (mustRenderNode && isList) {
-        const blankNode = factory.blankNode()
-        const innerQuads = [
-          ...nodeShape(property.out(sh('node')), context, value, widgets, blankNode, activeContentLanguage),
-          factory.quad(subject, predicate, blankNode)
-        ]
-        quads.push(...innerQuads)
-      } else if (mustRenderNode && !isList) {
-        const blankNode = factory.blankNode()
-        const innerQuads = [
-          ...nodeShape(property.out(sh('node')), context, value, widgets, blankNode, activeContentLanguage),
-          factory.quad(subject, predicate, blankNode)
-        ]
-        quads.push(...innerQuads)
+    if (isList) {
+      let list = factory.blankNode()
+      quads.push(factory.quad(subject, predicate, list))
+      for (const [index, value] of values.entries()) {
+        const first = factory.blankNode()
+        quads.push(factory.quad(list, rdf('first'), first))
+        quads.push(...nodeShape(property.out(sh('node')), context, value, widgets, first, activeContentLanguage))
+        const rest = factory.blankNode()
+        if (index === values.length - 1) {
+          quads.push(factory.quad(list, rdf('rest'), rdf('nil')))
+        } else {
+          quads.push(factory.quad(list, rdf('rest'), rest))
+        }
+        list = rest
+      }
+    } else {
+      for (const value of values) {
+        if (!mustRenderNode && !isList) {
+          const term = widget.meta.createTerm!({ activeContentLanguage })
+          if (term.termType === 'Literal') term.datatype = datatype
+          term.value = term.termType === 'Literal' && datatype ? cast(value, datatype) : value
+          quads.push(factory.quad(subject, predicate, term as Quad_Object))
+        } else if (mustRenderNode && !isList) {
+          const blankNode = factory.blankNode()
+          const innerQuads = [
+            ...nodeShape(property.out(sh('node')), context, value, widgets, blankNode, activeContentLanguage),
+            factory.quad(subject, predicate, blankNode)
+          ]
+          quads.push(...innerQuads)
+        }
       }
     }
   }
