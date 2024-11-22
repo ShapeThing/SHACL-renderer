@@ -16,10 +16,7 @@ const cache = new Map()
 
 function ShaclRendererInner(props: ShaclRendererProps) {
   const cid = createCidFromProps(props)
-
-  if (!cache.has(cid)) {
-    cache.set(cid, wrapPromise(initContext(props)))
-  }
+  if (!cache.has(cid)) cache.set(cid, wrapPromise(initContext(props)))
   const context: MainContext = cache.get(cid).read()
 
   const shapePointers = context.shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
@@ -31,17 +28,21 @@ function ShaclRendererInner(props: ShaclRendererProps) {
         <LanguageAwareTabs>
           {showShapePicker ? <ShapePicker /> : null}
           <NodeShape {...context} key="root" />
-          <button
-            onClick={async () => {
-              const turtle = await write([...context.dataPointer.ptrs[0].dataset], {
-                prefixes: context.jsonLdContext.getContextRaw()
-              })
-              console.log(turtle)
-            }}
-            className="button primary"
-          >
-            Save
-          </button>
+          {['edit', 'inline-edit'].includes(context.mode) ? (
+            <div className="actions">
+              <button
+                onClick={async () => {
+                  const turtle = await write([...context.dataPointer.ptrs[0].dataset], {
+                    prefixes: context.jsonLdContext.getContextRaw()
+                  })
+                  console.log(turtle)
+                }}
+                className="button primary"
+              >
+                Save
+              </button>
+            </div>
+          ) : null}
         </LanguageAwareTabs>
       </ValidationContextProvider>
     </MainContextProvider>

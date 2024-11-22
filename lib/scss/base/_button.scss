@@ -62,3 +62,8 @@
   background: none;
   cursor: pointer;
 }
+
+.actions {
+  display: flex;
+  flex-direction: row-reverse;
+}

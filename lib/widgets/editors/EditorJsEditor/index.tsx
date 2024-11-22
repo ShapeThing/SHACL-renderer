@@ -32,7 +32,7 @@ export default function EditorJsEditor({ data: dataPointer, dataset, setTerm, te
       if (!ref.current || ref.current.editor) return
 
       const data = datasetFactory.dataset(outAll(dataPointer.distinct().out()))
-      const savedValue = await rdfToData({ data, ...transformationOptions })
+      const savedValue = data.size ? await rdfToData({ data, ...transformationOptions }) : undefined
 
       ref.current.editor = new EditorJS({
         holder: id,

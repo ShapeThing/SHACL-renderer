@@ -17,6 +17,7 @@
 
   sh:property [
     sh:name "Body"@en ;
+    dash:editor stsr:EditorJsEditor ;
     sh:path schema:body ;
     sh:node <../../editorjs-output.ttl> ;
    ];
