@@ -12,19 +12,6 @@
   schema:icon "line-md:buy-me-a-coffee-twotone"^^<https://iconify.design>, "hugeicons:coffee-beans"^^<https://iconify.design> ;
 .
 
-<#default>
-  a sh:NodeShape ;
-  sh:targetClass schema:Person ;
-  sh:closed true ;
-
-  sh:property [
-    sh:name "Icon"@en ;
-    sh:path schema:icon ;
-    # stsr:collections "fluent-emoji" ;
-    sh:datatype <https://iconify.design> ;
-  ];
-.
-
 <#with-limit>
   a sh:NodeShape ;
   sh:targetClass schema:Person ;

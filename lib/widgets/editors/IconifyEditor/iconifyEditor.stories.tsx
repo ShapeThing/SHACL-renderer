@@ -9,14 +9,14 @@ export default {
 export const Default = {
   args: {
     mode: 'edit',
-    shapes: new URL('/shapes/widgets/editors/iconify.ttl#default', location.origin),
-    data: new URL('/shapes/widgets/editors/iconify.ttl#data', location.origin)
+    shapes: new URL('/shapes/widgets/editors/iconify-default.ttl#default', location.origin),
+    data: new URL('/shapes/widgets/editors/iconify-default.ttl#data', location.origin)
   } as ShaclRendererProps
 }
 
 export const WithLimit = {
   args: {
     mode: 'edit',
-    shapes: new URL('/shapes/widgets/editors/iconify.ttl#with-limit', location.origin)
+    shapes: new URL('/shapes/widgets/editors/iconify-limit.ttl#with-limit', location.origin)
   } as ShaclRendererProps
 }

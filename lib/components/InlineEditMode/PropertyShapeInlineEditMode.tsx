@@ -60,7 +60,6 @@ export default function PropertyShapeInlineEditMode(props: PropertyShapeInnerPro
               deleteTermAndDescendants(item)
               setItems()
             }}
-            initialMode={item.term?.value === '' ? 'edit' : 'view'}
             key={property.term?.value + ':' + index}
             data={item}
             items={items}

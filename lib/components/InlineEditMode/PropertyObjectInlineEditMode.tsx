@@ -13,7 +13,6 @@ type PropertyObjectInlineEditModeProps = {
   data: Grapoi
   items: Grapoi
   facetSearchData: Grapoi
-  initialMode?: 'view' | 'edit'
   setTerm: (term: Term) => void
   deleteTerm: () => void
   isList: boolean
@@ -23,7 +22,7 @@ type PropertyObjectInlineEditModeProps = {
 
 export default function PropertyObjectInlineEditMode(props: PropertyObjectInlineEditModeProps) {
   const { data, property } = props
-  const [localMode, setLocalMode] = useState<'view' | 'edit'>(props.initialMode ?? 'view')
+  const [localMode, setLocalMode] = useState<'view' | 'edit'>('view')
   const { viewers, editors } = useContext(widgetsContext)
 
   const viewerWidgetItem = scoreWidgets(viewers, data, property, dash('viewer'))
