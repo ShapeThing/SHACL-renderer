@@ -2,7 +2,6 @@
   "name": "@shapething/shacl-renderer",
   "version": "0.0.1",
   "type": "module",
-  "license": "MIT",
   "exports": {
     ".": {
       "default": "./dist/shacl-renderer.js",
