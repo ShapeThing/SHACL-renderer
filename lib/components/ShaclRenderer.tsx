@@ -1,9 +1,11 @@
 import { write } from '@jeswr/pretty-turtle/dist'
+import datasetFactory from '@rdfjs/dataset'
 import { Suspense } from 'react'
 import { MainContext, MainContextInput, MainContextProvider, initContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import ValidationContextProvider from '../core/validation-context'
 import { createCidFromProps } from '../helpers/createCidFromProps'
+import { TouchableTerm } from '../helpers/touchableRdf'
 import { wrapPromise } from '../helpers/wrapPromise'
 import LanguageAwareTabs from './LanguageAwareTabs'
 import NodeShape from './NodeShape'
@@ -32,10 +34,20 @@ function ShaclRendererInner(props: ShaclRendererProps) {
             <div className="actions">
               <button
                 onClick={async () => {
-                  const turtle = await write([...context.dataPointer.ptrs[0].dataset], {
-                    prefixes: context.jsonLdContext.getContextRaw()
-                  })
-                  console.log(turtle)
+                  const finalDataset = datasetFactory.dataset(
+                    [...context.data].filter(quad => (quad.object as TouchableTerm).touched !== false)
+                  )
+
+                  if (props.onSubmit) {
+                    props.onSubmit(finalDataset, context.jsonLdContext.getContextRaw())
+                  }
+                  // For now this is helpful for debugging.
+                  else {
+                    const turtle = await write([...finalDataset], {
+                      prefixes: context.jsonLdContext.getContextRaw()
+                    })
+                    console.log(turtle)
+                  }
                 }}
                 className="button primary"
               >

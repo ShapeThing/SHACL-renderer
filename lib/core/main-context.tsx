@@ -20,6 +20,7 @@ export type MainContextInput = {
   targetClass?: NamedNode
   languages?: Record<string, string>
   context?: Record<string, string>
+  onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>) => void
 } & Settings
 
 export type Settings = {
