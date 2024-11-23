@@ -18,3 +18,26 @@ index 4e734a0..1624da7 100644
              this._pendingBuffer = null;
            }
            // Hold if the buffer ends in an incomplete unicode sequence
+diff --git a/node_modules/n3/src/N3Parser.js b/node_modules/n3/src/N3Parser.js
+index fc4af34..8db4346 100644
+--- a/node_modules/n3/src/N3Parser.js
++++ b/node_modules/n3/src/N3Parser.js
+@@ -1,7 +1,7 @@
+ // **N3Parser** parses N3 documents.
+-import N3Lexer from './N3Lexer';
+-import N3DataFactory from './N3DataFactory';
+ import namespaces from './IRIs';
++import N3DataFactory from './N3DataFactory';
++import N3Lexer from './N3Lexer';
+ 
+ let blankNodePrefix = 0;
+ 
+@@ -937,7 +937,7 @@ export default class N3Parser {
+     // Resolve root-relative IRIs at the root of the base IRI
+     case '/':
+       // Resolve scheme-relative IRIs to the scheme
+-      return (iri[1] === '/' ? this._baseScheme : this._baseRoot) + this._removeDotSegments(iri);
++      return ((iri[1] === '/' ? this._baseScheme : this._baseRoot) ?? '') + this._removeDotSegments(iri);
+     // Resolve all other IRIs at the base IRI's path
+     default:
+       // Relative IRIs cannot contain a colon in the first path segment

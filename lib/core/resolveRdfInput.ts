@@ -37,7 +37,7 @@ export const resolveRdfInput = async (
 
   if (typeof input === 'string') {
     const FinalParser = Parser.default ? Parser.default : Parser
-    const parser = new FinalParser({ baseIRI: originalUrl })
+    const parser = new FinalParser({ baseIRI: originalUrl ?? '' })
 
     const quads: Quad[] = await parser.parse(input)
 
