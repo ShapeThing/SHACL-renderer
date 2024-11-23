@@ -4,8 +4,7 @@
   "type": "module",
   "exports": {
     ".": {
-      "default": "./dist/shacl-renderer.js",
-      "types": "./dist/index.d.ts"
+      "default": "./lib/index.tsx"
     },
     "./style.scss": {
       "default": "./lib/scss/style.scss"
@@ -50,8 +49,6 @@
     "lodash-es": "^4.17.21",
     "multi-range-slider-react": "^2.0.7",
     "n3": "^1.22.3",
-    "preact": "^10.24.3",
-    "preact-render-to-string": "^6.5.11",
     "prop-types": "^15.8.1",
     "rdf-dereference": "^4.0.0",
     "react": "^18.3.1",
@@ -88,8 +85,8 @@
     "@types/rdfjs__dataset": "^2.0.7",
     "@types/rdfjs__fetch": "^3.0.7",
     "@types/rdfjs__namespace": "^2.0.10",
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc",
+    "@types/react": "npm:types-react",
+    "@types/react-dom": "npm:types-react-dom",
     "@types/sortablejs": "^1.15.8",
     "@vitejs/plugin-react": "^4.3.3",
     "eslint": "^9.15.0",

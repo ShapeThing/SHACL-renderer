@@ -5,6 +5,7 @@
 
 <>
   a schema:Person ;
+	sh:shapesGraph <./shapes/contact.ttl> ;
   schema:givenName "Hendrik", "Jan" ;
   schema:familyName "Doe" ;
   schema:name "Hendrik Jan Doe" ;

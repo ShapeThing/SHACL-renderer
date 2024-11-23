@@ -1,10 +1,12 @@
 import { Icon } from '@iconify-icon/react'
 import factory from '@rdfjs/data-model'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { fetchContext } from '../../../core/fetchContext'
 import { stsr } from '../../../core/namespaces'
 import { WidgetProps } from '../../widgets-context'
 
 export default function IconifyEditor({ term, setTerm, property }: WidgetProps) {
+  const { fetch } = useContext(fetchContext)
   const [searchTerm, setSearchTerm] = useState(term?.value)
   const [results, setResults] = useState<Array<string> | null>(null)
   const collections = property.out([stsr('collections')]).values

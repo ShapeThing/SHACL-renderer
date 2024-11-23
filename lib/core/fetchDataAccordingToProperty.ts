@@ -19,6 +19,7 @@ type Input = {
   dataset?: DatasetCore
   searchTerm?: string
   limit?: number
+  fetch?: (typeof globalThis)['fetch']
 }
 
 export const fetchDataAccordingToProperty = async ({
@@ -27,7 +28,8 @@ export const fetchDataAccordingToProperty = async ({
   endpoint,
   dataset,
   searchTerm,
-  limit = 10
+  limit = 10,
+  fetch
 }: Input) => {
   const shapeQuads = outAll(nodeShape.out().distinct().out())
   const shapeDataset = datasetFactory.dataset(shapeQuads)
@@ -42,7 +44,7 @@ export const fetchDataAccordingToProperty = async ({
       ? constructQueryToSearch(dataConstructQuery, searchTerm, labelPredicates, limit)
       : dataConstructQuery
 
-  const termNeedsProxy = term?.value ? await needsHttpProxy(term.value) : false
+  const termNeedsProxy = term?.value ? await needsHttpProxy(term.value, fetch) : false
   const store = dataset ? new Store([...dataset]) : undefined
   const sources = [endpoint, endpoint ? undefined : store, endpoint ? undefined : term?.value].filter(nonNullable)
 
@@ -51,7 +53,7 @@ export const fetchDataAccordingToProperty = async ({
     const body = new URLSearchParams()
     body.set('query', query)
 
-    const response = await fetch(endpoint, {
+    const response = await (fetch ?? globalThis['fetch'])(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -70,6 +72,7 @@ export const fetchDataAccordingToProperty = async ({
     /** @ts-expect-error the types of Comunica do not match */
     sources,
     lenient: true,
+    // TODO no fetch, the cachedFetch does not work with comunica.
     httpProxyHandler: termNeedsProxy ? new ProxyHandlerStatic(`https://corsproxy.io/?`) : undefined
   })
   return (await quadsStream.toArray()) ?? []

@@ -1,12 +1,12 @@
 import datasetFactory from '@rdfjs/dataset'
 import type { DatasetCore, Quad } from '@rdfjs/types'
 import Parser from 'n3/src/N3Parser.js'
-import { cachedFetch } from '../helpers/cachedFetch'
 import { owl } from './namespaces'
 
 export const resolveRdfInput = async (
   input: URL | DatasetCore | string,
-  allowImports: boolean = false
+  allowImports: boolean = false,
+  fetch?: (typeof globalThis)['fetch']
 ): Promise<{
   dataset: DatasetCore
   prefixes: Record<string, string>
@@ -26,9 +26,9 @@ export const resolveRdfInput = async (
       const fs = await import('fs/promises')
       input = await fs.readFile(input.pathname, 'utf8')
     } else {
-      const response = await cachedFetch(input)
+      const response = await (globalThis.fetch ?? fetch)(input)
 
-      if (!['text/turtle'].includes(response.headers.get('content-type').split(';')[0] ?? ''))
+      if (!['text/turtle'].includes(response.headers.get('content-type')?.split(';')[0] ?? ''))
         throw new Error('Unexpected mime type')
 
       input = await response.text()
@@ -49,7 +49,7 @@ export const resolveRdfInput = async (
         const url = isNode
           ? new URL(owlImport.value, `file://${process.cwd()}`)
           : new URL(owlImport.value, location.toString())
-        const importedData = await resolveRdfInput(url)
+        const importedData = await resolveRdfInput(url, allowImports, globalThis.fetch ?? fetch)
         quads.push(...[...importedData.dataset])
       }
     }

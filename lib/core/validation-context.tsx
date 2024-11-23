@@ -6,6 +6,7 @@ import { ReactNode, createContext, useCallback, useContext, useEffect, useState 
 import { Validator } from 'shacl-engine'
 import parsePath from '../helpers/parsePath'
 import { TouchableQuad } from '../helpers/touchableRdf'
+import { fetchContext } from './fetchContext'
 import { mainContext } from './main-context'
 import { sh, stsr } from './namespaces'
 
@@ -18,6 +19,7 @@ export default function ValidationContextProvider({ children }: { children: Reac
   const [report, setReport] = useState<ValidationReport | undefined>(undefined)
   const { data, shapes, shapePointer, dataPointer, mode } = useContext(mainContext)
   const [validator] = useState(() => new Validator(shapes, { factory }))
+  const { fetch } = useContext(fetchContext)
 
   const validate = useCallback(
     debounce(async () => {
@@ -35,7 +37,8 @@ export default function ValidationContextProvider({ children }: { children: Reac
           const additionalQuads = await fetchDataAccordingToProperty({
             nodeShape: property,
             term: dataItemPointer.term,
-            endpoint
+            endpoint,
+            fetch
           })
           for (const quad of additionalQuads) dataset.add(quad)
         }

@@ -62,6 +62,13 @@ export const InvalidData = {
   } as ShaclRendererProps
 }
 
+export const ShapesGraph = {
+  args: {
+    mode: 'edit',
+    data: new URL('/john-with-shapes-graph.ttl', location.origin)
+  } as ShaclRendererProps
+}
+
 // export const FormShacl = {
 //   args: {
 //     mode: 'edit',

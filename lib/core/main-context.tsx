@@ -3,7 +3,8 @@ import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
-import { ReactNode, createContext, useState } from 'react'
+import { ReactNode, createContext, useContext, useState } from 'react'
+import { fetchContext } from './fetchContext'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import LanguageProvider from './language-context'
 import { rdf, rdfs, sh } from './namespaces'
@@ -73,8 +74,12 @@ type MainContextProviderProps = {
 /**
  * Fetches the data, returns an empty dataset if no data was given.
  */
-const getData = async (dataInput?: URL | DatasetCore | string, subject?: NamedNode | BlankNode) => {
-  const resolvedData = dataInput ? await resolveRdfInput(dataInput) : null
+const getData = async (
+  dataInput?: URL | DatasetCore | string,
+  subject?: NamedNode | BlankNode,
+  fetch?: (typeof globalThis)['fetch']
+) => {
+  const resolvedData = dataInput ? await resolveRdfInput(dataInput, false, fetch) : null
   let dataset = resolvedData ? resolvedData.dataset : datasetFactory.dataset()
 
   if (!subject && dataInput instanceof URL) {
@@ -124,10 +129,11 @@ const getShapeIrisByChildShapeIri = (childIri: NamedNode, shapes: Grapoi, shapeI
 const getShapes = async (
   shapes?: URL | DatasetCore | string,
   givenTargetClass?: NamedNode,
-  shapeSubject?: URL | string
+  shapeSubject?: URL | string,
+  fetch?: (typeof globalThis)['fetch']
 ) => {
   const { dataset: resolvedShapes } = shapes
-    ? await resolveRdfInput(shapes, true)
+    ? await resolveRdfInput(shapes, true, fetch)
     : {
         dataset: datasetFactory.dataset([
           factory.quad(factory.namedNode(''), rdf('type'), sh('NodeShape')),
@@ -194,12 +200,17 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     languages,
     ...settings
   } = originalInput
+  const { fetch } = useContext(fetchContext)
+  let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject, fetch)
 
-  let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject)
+  const shapesGraph = dataPointer.out(sh('shapesGraph')).term
+  const shapesUrl = !shapes && shapesGraph?.value ? new URL(shapesGraph.value, location.toString()) : undefined
+
   let { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject, shapesPointer } = await getShapes(
-    shapes,
+    shapes ?? shapesUrl,
     givenTargetClass,
-    givenShapeSubject
+    givenShapeSubject,
+    fetch
   )
 
   // This is only for facets, it contains a dataset that we will filter through.
