@@ -65,5 +65,10 @@
 
 .actions {
   display: flex;
+  gap: 10px;
+  max-width: 800px;
+}
+
+[data-mode="edit"] .actions {
   flex-direction: row-reverse;
 }

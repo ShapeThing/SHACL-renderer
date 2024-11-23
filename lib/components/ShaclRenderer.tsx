@@ -24,37 +24,38 @@ function ShaclRendererInner(props: ShaclRendererProps) {
   const shapePointers = context.shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
   const showShapePicker = shapePointers.terms.length > 1 && !context.targetClass
 
+  const submit = async () => {
+    const finalDataset = datasetFactory.dataset(
+      [...context.data].filter(quad => (quad.object as TouchableTerm).touched !== false)
+    )
+
+    if (props.onSubmit) {
+      props.onSubmit(finalDataset, context.jsonLdContext.getContextRaw())
+    }
+    // For now this is helpful for debugging.
+    else {
+      const turtle = await write([...finalDataset], {
+        prefixes: context.jsonLdContext.getContextRaw()
+      })
+      console.log(turtle)
+    }
+  }
+
   return (
     <MainContextProvider context={context}>
       <ValidationContextProvider>
         <LanguageAwareTabs>
           {showShapePicker ? <ShapePicker /> : null}
           <NodeShape {...context} key="root" />
-          {['edit', 'inline-edit'].includes(context.mode) ? (
-            <div className="actions">
-              <button
-                onClick={async () => {
-                  const finalDataset = datasetFactory.dataset(
-                    [...context.data].filter(quad => (quad.object as TouchableTerm).touched !== false)
-                  )
-
-                  if (props.onSubmit) {
-                    props.onSubmit(finalDataset, context.jsonLdContext.getContextRaw())
-                  }
-                  // For now this is helpful for debugging.
-                  else {
-                    const turtle = await write([...finalDataset], {
-                      prefixes: context.jsonLdContext.getContextRaw()
-                    })
-                    console.log(turtle)
-                  }
-                }}
-                className="button primary"
-              >
+          <div className="actions">
+            {props.children ? (
+              props.children(submit)
+            ) : ['edit', 'inline-edit'].includes(context.mode) ? (
+              <button onClick={submit} className="button primary">
                 Save
               </button>
-            </div>
-          ) : null}
+            ) : null}
+          </div>
         </LanguageAwareTabs>
       </ValidationContextProvider>
     </MainContextProvider>

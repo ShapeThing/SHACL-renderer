@@ -21,6 +21,7 @@ export type MainContextInput = {
   languages?: Record<string, string>
   context?: Record<string, string>
   onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>) => void
+  children?: (submit: () => void) => ReactNode
 } & Settings
 
 export type Settings = {
