@@ -11,7 +11,7 @@ export type WidgetItem = {
 
 export type WidgetMeta = {
   score?: (data?: Grapoi, property?: Grapoi) => number | undefined
-  createTerm?: ({ activeContentLanguage }: { activeContentLanguage?: string }) => Term
+  createTerm?: ({ activeContentLanguage }: { activeContentLanguage?: string }, property?: Grapoi) => Term
   iri: NamedNode
   showIfEmpty?: true
 }

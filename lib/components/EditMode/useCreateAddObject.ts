@@ -18,17 +18,20 @@ export const useCreateAddObject =
   ({ activeContentLanguage }: { activeContentLanguage?: string }) => {
     const path = parsePath(property.out(sh('path')))
     const firstPathPart = path?.at(0)
-    if (firstPathPart.predicates.length > 1) throw new Error('Alternative property paths are not yet supported')
-    const [predicate] = firstPathPart.predicates
+    if (firstPathPart?.predicates && firstPathPart?.predicates?.length > 1)
+      throw new Error('Alternative property paths are not yet supported')
+    const [predicate] = firstPathPart?.predicates ?? []
 
     const widgetItem = scoreWidgets(editors, items, property, dash('editor'))
-    const emptyTerm = widgetItem?.meta.createTerm ? widgetItem?.meta.createTerm({ activeContentLanguage }) : null
+    const emptyTerm = widgetItem?.meta.createTerm
+      ? widgetItem?.meta.createTerm({ activeContentLanguage }, property)
+      : null
     if (!emptyTerm) return
     ;(emptyTerm as TouchableTerm).touched = false
 
     if (isList) {
       const terms = [...[...items].map((item: Grapoi) => item.term), emptyTerm]
-      const pointer = parentData.executeAll([path[0]])
+      const pointer = parentData.executeAll([path?.[0]])
       replaceList(terms, pointer)
     } else {
       parentData.addOut(predicate, emptyTerm)

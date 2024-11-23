@@ -5,10 +5,14 @@ import { WidgetMeta } from '../../widgets-context'
 
 export default {
   iri: dash('TextFieldEditor'),
-  createTerm: () => factory.literal(''),
+  createTerm: (_language, property) => {
+    /** @ts-expect-error */
+    const options = [...property?.out(sh('in')).list()]
+    return options[0].term.termType === 'NamedNode' ? factory.namedNode('') : factory.literal('')
+  },
   score: (_data?: Grapoi, propertyShape?: Grapoi) => {
     if (propertyShape && propertyShape.out(sh('in')).term) {
-      return 10
+      return 40
     }
   }
 } satisfies WidgetMeta

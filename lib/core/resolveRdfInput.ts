@@ -26,7 +26,7 @@ export const resolveRdfInput = async (
       const fs = await import('fs/promises')
       input = await fs.readFile(input.pathname, 'utf8')
     } else {
-      const response = await (globalThis.fetch ?? fetch)(input)
+      const response = await (fetch ?? globalThis.fetch)(input)
 
       if (!['text/turtle'].includes(response.headers.get('content-type')?.split(';')[0] ?? ''))
         throw new Error('Unexpected mime type')
@@ -49,7 +49,7 @@ export const resolveRdfInput = async (
         const url = isNode
           ? new URL(owlImport.value, `file://${process.cwd()}`)
           : new URL(owlImport.value, location.toString())
-        const importedData = await resolveRdfInput(url, allowImports, globalThis.fetch ?? fetch)
+        const importedData = await resolveRdfInput(url, allowImports, fetch ?? globalThis.fetch)
         quads.push(...[...importedData.dataset])
       }
     }

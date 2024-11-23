@@ -127,10 +127,10 @@ const getShapeIrisByChildShapeIri = (childIri: NamedNode, shapes: Grapoi, shapeI
  * Fetches the shape part, can return a generic shape if none was given
  */
 const getShapes = async (
+  fetch: (typeof globalThis)['fetch'],
   shapes?: URL | DatasetCore | string,
   givenTargetClass?: NamedNode,
-  shapeSubject?: URL | string,
-  fetch?: (typeof globalThis)['fetch']
+  shapeSubject?: URL | string
 ) => {
   const { dataset: resolvedShapes } = shapes
     ? await resolveRdfInput(shapes, true, fetch)
@@ -188,7 +188,7 @@ const getShapes = async (
  * Creates a new main context. This is a promise, so it should be awaited.
  */
 export const initContext = async (originalInput: MainContextInput): Promise<MainContext> => {
-  const {
+  let {
     shapes,
     data,
     facetSearchData,
@@ -205,12 +205,13 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
 
   const shapesGraph = dataPointer.out(sh('shapesGraph')).term
   const shapesUrl = !shapes && shapesGraph?.value ? new URL(shapesGraph.value, location.toString()) : undefined
+  if (!givenShapeSubject && shapesGraph) givenShapeSubject = shapesUrl
 
   let { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject, shapesPointer } = await getShapes(
+    fetch,
     shapes ?? shapesUrl,
     givenTargetClass,
-    givenShapeSubject,
-    fetch
+    givenShapeSubject
   )
 
   // This is only for facets, it contains a dataset that we will filter through.
