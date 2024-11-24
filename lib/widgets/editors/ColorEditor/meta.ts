@@ -15,7 +15,7 @@ export default {
       term &&
       (term.value || (term as TouchableTerm).touched === false) &&
       term.termType === 'Literal' &&
-      (colorParse(term.value).space || term.datatype.equals(stsr('color')))
+      (['rgb', 'cmyk'].includes(colorParse(term.value).space) || term.datatype.equals(stsr('color')))
     ) {
       return 2
     }

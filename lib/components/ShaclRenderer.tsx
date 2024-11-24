@@ -1,5 +1,6 @@
 import { write } from '@jeswr/pretty-turtle/dist'
 import datasetFactory from '@rdfjs/dataset'
+import { Quad } from '@rdfjs/types'
 import { Suspense } from 'react'
 import { MainContext, MainContextInput, MainContextProvider, initContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
@@ -25,12 +26,17 @@ function ShaclRendererInner(props: ShaclRendererProps) {
   const showShapePicker = shapePointers.terms.length > 1 && !context.targetClass
 
   const submit = async () => {
-    // TODO filter out untouched blank nodes / named nodes that do not have children.
     const finalDataset = datasetFactory.dataset(
-      [...context.data].filter(
-        quad =>
-          (quad.object as TouchableTerm).termType !== 'Literal' || (quad.object as TouchableTerm).touched !== false
-      )
+      [...context.data]
+        .filter(
+          quad =>
+            (quad.object as TouchableTerm).termType !== 'Literal' || (quad.object as TouchableTerm).touched !== false
+        )
+        .filter(quad => {
+          if (quad.object.termType !== 'BlankNode' || (quad.object as TouchableTerm).touched !== false) return true
+          const children = context.data.match(quad.object)
+          return [...children].filter((child: Quad) => (child.object as TouchableTerm).touched !== false).length
+        })
     )
 
     if (props.onSubmit) {
