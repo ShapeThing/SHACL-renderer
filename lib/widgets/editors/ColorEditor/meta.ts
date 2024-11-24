@@ -17,7 +17,7 @@ export default {
       term.termType === 'Literal' &&
       (colorParse(term.value).space || term.datatype.equals(stsr('color')))
     ) {
-      return 11
+      return 2
     }
 
     if (propertyShape && stsr('color').equals(propertyShape.out(sh('datatype')).term)) {

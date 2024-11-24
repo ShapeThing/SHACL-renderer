@@ -10,3 +10,9 @@
 .node {
   flex: 1 1 auto;
 }
+
+.shacl-renderer[data-mode='view'] {
+  >.node {
+    margin-bottom: .5em;
+  }
+}

@@ -25,8 +25,12 @@ function ShaclRendererInner(props: ShaclRendererProps) {
   const showShapePicker = shapePointers.terms.length > 1 && !context.targetClass
 
   const submit = async () => {
+    // TODO filter out untouched blank nodes / named nodes that do not have children.
     const finalDataset = datasetFactory.dataset(
-      [...context.data].filter(quad => (quad.object as TouchableTerm).touched !== false)
+      [...context.data].filter(
+        quad =>
+          (quad.object as TouchableTerm).termType !== 'Literal' || (quad.object as TouchableTerm).touched !== false
+      )
     )
 
     if (props.onSubmit) {
