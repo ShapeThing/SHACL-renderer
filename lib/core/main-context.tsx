@@ -4,7 +4,6 @@ import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import { ReactNode, createContext, useContext, useState } from 'react'
-import { fetchContext } from './fetchContext'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import LanguageProvider from './language-context'
 import { rdf, rdfs, sh } from './namespaces'
@@ -22,6 +21,7 @@ export type MainContextInput = {
   context?: Record<string, string>
   onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>) => void
   children?: (submit: () => void) => ReactNode
+  fetch?: typeof globalThis['fetch']
 } & Settings
 
 export type Settings = {
@@ -200,9 +200,9 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     languageMode,
     shapeSubject: givenShapeSubject,
     languages,
+    fetch = globalThis['fetch'],
     ...settings
   } = originalInput
-  const { fetch } = useContext(fetchContext)
   let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject, fetch)
 
   const shapesGraph = dataPointer.out(sh('shapesGraph')).term

@@ -29,3 +29,5 @@ export const prefixes = Object.fromEntries(
     owl
   }).map(([alias, namespace]) => [alias, namespace('').value])
 )
+
+export const queryPrefixes = Object.entries(prefixes).map(([alias, iri]) => `prefix ${alias}: <${iri}>`).join('\n')
