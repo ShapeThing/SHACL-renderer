@@ -52,6 +52,7 @@ const propertyShape = (
   const compactedPredicate = context.compactIri(predicate.value, true)
 
   const widget = scoreWidgets(widgets['editors'], undefined, propertyPointer)
+  // We use dash:DetailsEditor here as an indication of a nested node vs. a reference.
   const mustRenderNode = widget?.meta.iri?.equals(dash('DetailsEditor'))
   let subType = undefined
 

@@ -3,7 +3,7 @@ import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
-import { ReactNode, createContext, useContext, useState } from 'react'
+import { ReactNode, createContext, useState } from 'react'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import LanguageProvider from './language-context'
 import { rdf, rdfs, sh } from './namespaces'
@@ -19,9 +19,9 @@ export type MainContextInput = {
   targetClass?: NamedNode
   languages?: Record<string, string>
   context?: Record<string, string>
-  onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>) => void
+  onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>, dataPointer: Grapoi) => void
   children?: (submit: () => void) => ReactNode
-  fetch?: typeof globalThis['fetch']
+  fetch?: (typeof globalThis)['fetch']
 } & Settings
 
 export type Settings = {

@@ -1,14 +1,15 @@
 import { write } from '@jeswr/pretty-turtle/dist'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useContext, useEffect, useState } from 'react'
+import { fetchContext } from '../core/fetchContext'
 import { MainContext, MainContextInput, MainContextProvider, initContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import ValidationContextProvider from '../core/validation-context'
+import { cleanUpDataset } from '../helpers/cleanUpDataset'
 import { createCidFromProps } from '../helpers/createCidFromProps'
 import { wrapPromise } from '../helpers/wrapPromise'
 import LanguageAwareTabs from './LanguageAwareTabs'
 import NodeShape from './NodeShape'
 import ShapePicker from './ShapePicker'
-import { cleanUpDataset } from '../helpers/cleanUpDataset'
 export * from '../core/namespaces'
 
 export type ShaclRendererProps = MainContextInput
@@ -17,7 +18,8 @@ const cache = new Map()
 
 function ShaclRendererInner(props: ShaclRendererProps) {
   const cid = createCidFromProps(props)
-  if (!cache.has(cid)) cache.set(cid, wrapPromise(initContext(props)))
+  const { fetch } = useContext(fetchContext)
+  if (!cache.has(cid)) cache.set(cid, wrapPromise(initContext({ ...props, fetch })))
   const context: MainContext = cache.get(cid).read()
   const [, setCounter] = useState(0)
 
@@ -28,7 +30,7 @@ function ShaclRendererInner(props: ShaclRendererProps) {
     cleanUpDataset(context.data)
 
     if (props.onSubmit) {
-      props.onSubmit(context.data, context.jsonLdContext.getContextRaw())
+      props.onSubmit(context.data, context.jsonLdContext.getContextRaw(), context.dataPointer)
     }
     // For now this is helpful for debugging.
     else {
