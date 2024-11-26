@@ -26,6 +26,8 @@ export default function ValidationContextProvider({ children }: { children: Reac
       const properties = shapePointer.out(sh('property'))
       const dataset = datasetFactory.dataset([...data].filter(quad => !('touched' in (quad as TouchableQuad).object)))
 
+      if (!dataset.size) return
+
       for (const property of properties) {
         const endpoint = property.out(stsr('endpoint')).value
 
