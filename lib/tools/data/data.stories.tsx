@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import ReactJson from 'react-json-view'
 import { ShaclRendererProps } from '../../components/ShaclRenderer'
 import { rdfToData } from './data'
 
@@ -10,7 +9,9 @@ function RenderData(props: ShaclRendererProps) {
   }, [])
 
   return json ? (
-    <ReactJson enableClipboard={false} displayDataTypes={false} displayObjectSize={false} name={false} src={json} />
+    <pre>
+      <code>{JSON.stringify(json, null, 2)}</code>
+    </pre>
   ) : null
 }
 
