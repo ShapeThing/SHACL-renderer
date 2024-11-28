@@ -1,19 +1,19 @@
 {
   "name": "@shapething/shacl-renderer",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "exports": {
     ".": {
       "default": "./dist/shacl-renderer.js",
       "types": "./dist/index.d.ts"
     },
-    "./style.scss": {
-      "default": "./lib/scss/style.scss"
+    "./style.css": {
+      "default": "./dist/style.css"
     }
   },
   "scripts": {
     "dev": "storybook dev -p 6006",
-    "build": "tsc --p ./tsconfig.build.json && vite build",
+    "build": "tsc --p ./tsconfig.build.json && vite build && sass lib/scss/style.scss > dist/style.css",
     "lint": "eslint lib/**/*.ts --report-unused-disable-directives --max-warnings 0 --fix",
     "preview": "vite preview",
     "postinstall": "patch-package",

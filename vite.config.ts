@@ -18,18 +18,14 @@ export default defineConfig({
     rollupOptions: {
       external: Object.keys(dependencies).filter(
         item => !['grapoi', 'n3', 'multi-range-slider-react', '@hydrofoil/shape-to-query'].includes(item)
-      ),
-      output: {
-        exports: 'named',
-        sourcemapExcludeSources: true
-      }
+      )
     },
-    sourcemap: true,
-    minify: false
+    minify: true
   },
   css: {
     preprocessorOptions: {
       scss: {
+        additionalData: `@import "./lib/scss/style.scss";`,
         api: 'modern-compiler'
       }
     }
