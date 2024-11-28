@@ -13,7 +13,7 @@
   },
   "scripts": {
     "dev": "storybook dev -p 6006",
-    "build": "tsc && vite build && tsc --emitDeclarationOnly",
+    "build": "tsc --p ./tsconfig.build.json && vite build",
     "lint": "eslint lib/**/*.ts --report-unused-disable-directives --max-warnings 0 --fix",
     "preview": "vite preview",
     "postinstall": "patch-package",
@@ -90,6 +90,7 @@
     "@types/react-dom": "npm:types-react-dom",
     "@types/sortablejs": "^1.15.8",
     "@vitejs/plugin-react": "^4.3.3",
+    "ajv": "^8.17.1",
     "eslint": "^9.15.0",
     "eslint-plugin-react": "^7.37.2",
     "globals": "^15.12.0",
