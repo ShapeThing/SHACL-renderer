@@ -1,6 +1,6 @@
 {
   "name": "@shapething/shacl-renderer",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "exports": {
     ".": {
@@ -105,6 +105,7 @@
     "vite-dts": "^1.0.4",
     "vite-plugin-dts": "^4.3.0",
     "vite-plugin-node-polyfills": "^0.22.0",
+    "vite-plugin-top-level-await": "^1.4.4",
     "vitest": "^2.1.4"
   }
 }

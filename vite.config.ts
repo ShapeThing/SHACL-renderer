@@ -1,11 +1,12 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
+import topLevelAwait from 'vite-plugin-top-level-await'
 import { dependencies } from './package.json'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), dts({ include: ['lib'] })],
+  plugins: [topLevelAwait(), react(), dts({ include: ['lib'] })],
   build: {
     copyPublicDir: false,
     lib: {
