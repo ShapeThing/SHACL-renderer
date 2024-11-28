@@ -26,7 +26,6 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "./lib/scss/style.scss";`,
         api: 'modern-compiler'
       }
     }
