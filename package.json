@@ -2,9 +2,18 @@
   "name": "@shapething/shacl-renderer",
   "version": "0.0.1",
   "type": "module",
-  "exports": {
+  "exports2": {
     ".": {
       "default": "./lib/index.tsx"
+    },
+    "./style.scss": {
+      "default": "./lib/scss/style.scss"
+    }
+  },
+  "exports": {
+    ".": {
+      "default": "./dist/shacl-renderer.js",
+      "types": "./dist/index.d.ts"
     },
     "./style.scss": {
       "default": "./lib/scss/style.scss"

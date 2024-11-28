@@ -14,7 +14,9 @@ export default defineConfig({
     },
     target: 'esnext',
     rollupOptions: {
-      external: Object.keys(dependencies),
+      external: Object.keys(dependencies).filter(
+        item => !['grapoi', 'n3', 'multi-range-slider-react', '@hydrofoil/shape-to-query'].includes(item)
+      ),
       output: {
         exports: 'named',
         sourcemapExcludeSources: true

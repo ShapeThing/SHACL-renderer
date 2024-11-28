@@ -38,7 +38,7 @@ export default function EditorJsEditor({ data: dataPointer, dataset, setTerm, te
         holder: id,
         data: savedValue,
         ...configuration,
-        onChange: async (api, event) => {
+        onChange: async (_api, _event) => {
           const outputData = await ref.current?.editor!.save()
           const newQuads = await dataToRdf({ data: outputData, ...transformationOptions, subject: term as NamedNode })
           const oldQuads = outAll(dataPointer.distinct().out())
