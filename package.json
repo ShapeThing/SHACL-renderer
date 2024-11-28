@@ -1,11 +1,23 @@
 {
   "name": "@shapething/shacl-renderer",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "type": "module",
   "exports": {
     ".": {
       "default": "./dist/shacl-renderer.js",
       "types": "./dist/index.d.ts"
+    },
+    "./data": {
+      "default": "./dist/data.js",
+      "types": "./dist/tools/data/data.d.ts"
+    },
+    "./faker": {
+      "default": "./dist/faker.js",
+      "types": "./dist/tools/faker/faker.d.ts"
+    },
+    "./type": {
+      "default": "./dist/type.js",
+      "types": "./dist/tools/type/type.d.ts"
     },
     "./style.css": {
       "default": "./dist/style.css"

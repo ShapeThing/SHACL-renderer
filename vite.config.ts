@@ -10,10 +10,14 @@ export default defineConfig({
   build: {
     copyPublicDir: false,
     lib: {
-      entry: './lib/index.tsx',
+      entry: {
+        'shacl-renderer': './lib/index.tsx',
+        type: './lib/tools/type/type.ts',
+        faker: './lib/tools/faker/faker.ts',
+        data: './lib/tools/data/data.ts'
+      },
       name: 'ShaclRenderer',
-      formats: ['es'],
-      fileName: 'shacl-renderer'
+      formats: ['es']
     },
     target: 'esnext',
     rollupOptions: {
