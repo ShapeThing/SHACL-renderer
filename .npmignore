@@ -1,0 +1,8 @@
+.storybook
+.vscode
+lib
+node_modules
+patches
+public
+storybook-static
+index.html
