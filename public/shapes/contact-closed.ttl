@@ -7,6 +7,7 @@
 @prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
 @prefix stf: <http://ontology.shapething.com/facet#> .
 @prefix dbc: <http://dbpedia.org/resource/Category:> .
+@prefix faker: <https://fakerjs.dev/> .
 
 <>
   a sh:NodeShape ;
@@ -18,6 +19,7 @@
     sh:name "Given name"@en ;
     sh:group <#name> ;
     sh:path schema:givenName ;
+    faker:generator faker:person.firstName ;
     sh:minCount 1;
     sh:maxCount 5;
     sh:datatype xsd:string ;
@@ -31,6 +33,7 @@
   sh:property [
     sh:name "Family name"@en ;
     sh:group <#name> ;
+    faker:generator faker:person.lastName ;
     sh:path schema:familyName ;
     sh:minCount 1;
     sh:maxCount 1;
@@ -113,6 +116,7 @@ Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
     sh:path schema:birthDate ;
     sh:order 2 ;
     sh:editor dash:DatePickerEditor ;
+    faker:generator faker:date.birthdate ;
     sh:maxCount 1;
     sh:datatype xsd:date ;
   ];

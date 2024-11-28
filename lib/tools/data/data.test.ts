@@ -138,27 +138,28 @@ test.only('rdf output with shape', async () => {
   })
 
   const serializedOutput = await write([...output], { prefixes })
-  expect(serializedOutput).toBe(`@prefix ed: <https://editorjs.io/> .
+  expect(serializedOutput).toBe(`@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ed: <https://editorjs.io/> .
 
 <#> ed:version "2.30.7" ;
-  ed:blocks [
+  ed:blocks ([
     ed:id "9d61vUfGCT" ;
     ed:type "paragraph" ;
     ed:data [
       ed:text "Lorem"
     ]
-  ], [
+  ] [
     ed:id "pK4nbVeBqp" ;
     ed:type "paragraph" ;
     ed:data [
       ed:text "Ipsum"
     ]
-  ], [
+  ] [
     ed:id "8xA8tKBIw9" ;
     ed:type "paragraph" ;
     ed:data [
       ed:text "asda"
     ]
-  ] .
+  ]) .
 `)
 })
