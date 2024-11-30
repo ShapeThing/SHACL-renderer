@@ -9,7 +9,7 @@ import { isOrderedList } from '../../helpers/isOrderedList'
 import parsePath from '../../helpers/parsePath'
 import { coreWidgets } from '../../widgets/coreWidgets'
 
-const cast = (value: any, datatype: NamedNode) => {
+export const cast = (value: any, datatype: NamedNode) => {
   if (datatype.equals(xsd('boolean'))) return value ? 'true' : 'false'
   if (datatype.equals(xsd('date')))
     return `${value.getFullYear()}-${(value.getMonth() + 1).toString().padStart(2, '0')}-${value

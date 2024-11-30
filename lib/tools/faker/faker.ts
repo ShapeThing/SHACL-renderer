@@ -7,6 +7,7 @@ import { dash, faker, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import parsePath from '../../helpers/parsePath'
 import { coreWidgets } from '../../widgets/coreWidgets'
+import { cast } from '../data/dataToRdf'
 
 export async function generateFake({
   shapes,
@@ -67,7 +68,7 @@ const nodeShape = (
       .split('|')
       .map(() => {
         const term = widget!.meta.createTerm!({ activeContentLanguage }, property)
-        term.value = generator() as any
+        term.value = cast(generator(), property.out(sh('datatype')).term)
         return term
       }) as Quad_Object[]
 
