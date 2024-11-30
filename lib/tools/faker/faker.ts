@@ -60,17 +60,16 @@ const nodeShape = (
 
     const generator = getFakerGenerator(fakerIri.substring(20), fakerLibrary)
 
-    const minCount = parseInt(property.out(sh('minCount')).value ?? '0')
-    const maxCount = parseInt(property.out(sh('maxCount')).value ?? '10')
+    const min = parseInt(property.out(sh('minCount')).value ?? '0')
+    const max = parseInt(property.out(sh('maxCount')).value ?? '10')
 
-    const values = '|'
-      .repeat(Math.floor(Math.random() * (maxCount - minCount + 1) + minCount))
-      .split('|')
-      .map(() => {
-        const term = widget!.meta.createTerm!({ activeContentLanguage }, property)
-        term.value = cast(generator(), property.out(sh('datatype')).term)
-        return term
-      }) as Quad_Object[]
+    const values: Quad_Object[] = []
+
+    for (let index = 0; index < fakerLibrary.number.int({ min, max }); index++) {
+      const term = widget!.meta.createTerm!({ activeContentLanguage }, property)
+      term.value = cast(generator(), property.out(sh('datatype')).term)
+      values.push(term as Quad_Object)
+    }
 
     values.forEach(value => quads.push(factory.quad(subject, predicate, value)))
   }

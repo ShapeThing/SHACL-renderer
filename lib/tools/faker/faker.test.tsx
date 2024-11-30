@@ -12,6 +12,8 @@ test('faker output', async () => {
 
   const date = fakeItem.find(quad => quad.object.termType === 'Literal' && quad.object.datatype.equals(xsd('date')))
 
+  console.log(fakeItem)
+
   expect(date?.object.value.split('-').length).toBe(3)
   expect(typeof fakeItem[0].object.value === 'string')
 })

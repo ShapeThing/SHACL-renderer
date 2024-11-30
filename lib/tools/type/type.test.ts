@@ -21,7 +21,7 @@ test('type output', async () => {
   icon?: Array<string>
   knows?: Array<string>
   selfReference?: Array<string>
-  birthDate?: Date
+  birthDate: Date
   child?: Array<string>
   address?: {
     streetAddress: string
