@@ -1,5 +1,5 @@
-import { DatasetCore, Quad } from "@rdfjs/types"
-import { TouchableTerm } from "./touchableRdf"
+import { DatasetCore, Quad } from '@rdfjs/types'
+import { TouchableTerm } from './touchableRdf'
 
 export const cleanUpDataset = (dataset: DatasetCore) => {
   const quadsToDelete = [...dataset]

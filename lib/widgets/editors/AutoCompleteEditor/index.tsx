@@ -32,6 +32,8 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
   const [_isPending, startTransition] = useTransition()
 
   const searchHandler = useDebounced((search: string) => {
+    if (!data && !endpoint) return
+
     setSearchInstances(undefined)
     setIsLoading(true)
 
