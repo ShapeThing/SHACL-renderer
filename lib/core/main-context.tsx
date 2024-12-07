@@ -18,6 +18,7 @@ export type MainContextInput = {
   subject?: NamedNode | BlankNode
   targetClass?: NamedNode
   languages?: Record<string, string>
+  cacheId?: string
   context?: Record<string, string>
   onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>, dataPointer: Grapoi) => void
   children?: (submit: () => void) => ReactNode

@@ -14,13 +14,12 @@ export * from '../core/namespaces'
 
 export type ShaclRendererProps = MainContextInput
 
-const cache = new Map()
-
-function ShaclRendererInner(props: ShaclRendererProps) {
+function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any, any> }) {
+  const { contextCache } = props
   const cid = createCidFromProps(props)
   const { fetch } = useContext(fetchContext)
-  if (!cache.has(cid)) cache.set(cid, wrapPromise(initContext({ ...props, fetch })))
-  const context: MainContext = cache.get(cid).read()
+  if (!contextCache.has(cid)) contextCache.set(cid, wrapPromise(initContext({ ...props, fetch })))
+  const context: MainContext = contextCache.get(cid).read()
   const [, setCounter] = useState(0)
 
   const shapePointers = context.shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
@@ -30,7 +29,7 @@ function ShaclRendererInner(props: ShaclRendererProps) {
     cleanUpDataset(context.data)
 
     if (props.onSubmit) {
-      props.onSubmit(context.data, context.jsonLdContext.getContextRaw(), context.dataPointer)
+      await props.onSubmit(context.data, context.jsonLdContext.getContextRaw(), context.dataPointer)
     }
     // For now this is helpful for debugging.
     else {
@@ -70,10 +69,12 @@ function ShaclRendererInner(props: ShaclRendererProps) {
 }
 
 export default function ShaclRenderer(props: ShaclRendererProps) {
+  const [contextCache, _setContextCache] = useState(new Map())
+
   return (
     <div data-mode={props.mode} className="shacl-renderer">
       <Suspense>
-        <ShaclRendererInner {...props} />
+        <ShaclRendererInner {...props} contextCache={contextCache} />
       </Suspense>
     </div>
   )

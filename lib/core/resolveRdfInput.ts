@@ -27,10 +27,8 @@ export const resolveRdfInput = async (
       input = await fs.readFile(input.pathname, 'utf8')
     } else {
       const response = await (fetch ?? globalThis.fetch)(input)
-
       if (!['text/turtle'].includes(response.headers.get('content-type')?.split(';')[0] ?? ''))
         throw new Error('Unexpected mime type')
-
       input = await response.text()
     }
   }
