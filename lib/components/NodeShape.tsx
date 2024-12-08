@@ -5,8 +5,14 @@ import { ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, rdfs, sh } from '../core/namespaces'
 import { nonNullable } from '../helpers/nonNullable'
+import CollapsiblePropertyGroup from './CollapsiblePropertyGroup'
 import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
+
+const propertyGroupTypes = {
+  _default: PropertyGroup,
+  CollapsiblePropertyGroup: CollapsiblePropertyGroup
+}
 
 export default function NodeShape() {
   const { shapePointer, mode, dataPointer, facetSearchDataPointer, data: dataset } = useContext(mainContext)
@@ -22,19 +28,25 @@ export default function NodeShape() {
   const sortablePropertyWithGroups: [number, ReactNode][] = groups
     .map(group => {
       const groupProperties = [...propertiesWithGroups.hasOut(sh('group'), group.term)]
+      const groupType = group.out(rdf('type')).filter(pointer => !pointer.term.equals(sh('PropertyGroup')))
+      const type = (groupType.values
+        .map(value => value.split(/\/|\#/g).pop())
+        .find(type => (type ? Object.keys(propertyGroupTypes).includes(type) : false)) ??
+        '_default') as keyof typeof propertyGroupTypes
+      const Element = propertyGroupTypes[type]
 
       for (const groupProperty of groupProperties) {
         const path: Term = groupProperty.out(sh('path')).term
         if (path.termType !== 'NamedNode') throw new Error('We do not support anything other than named nodes yet.')
         usedPredicates.add(path.value)
       }
-      return groupProperties.length ? { group, properties: groupProperties } : null
+      return groupProperties.length ? { group, properties: groupProperties, Element } : null
     })
     .filter(nonNullable)
-    .map(({ group, properties }) => {
+    .map(({ group, properties, Element }) => {
       return [
         parseInt(group.out(sh('order')).value as string) ?? 0,
-        <PropertyGroup
+        <Element
           key={group.term.value}
           facetSearchDataPointer={facetSearchDataPointer}
           nodeDataPointer={dataPointer}

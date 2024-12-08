@@ -7,3 +7,18 @@
     flex: 1;
   }
 }
+
+.collapsible-group {
+  summary {
+    font-size: .7em;
+    font-style: italic;
+    color: #777;
+    cursor: pointer;
+  }
+
+  &[open] {
+    summary {
+      margin-bottom: 1em;
+    }
+  }
+}

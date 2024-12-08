@@ -11,13 +11,13 @@
   a sh:NodeShape ;
   sh:targetClass schema:Person ;
   sh:closed true ;
-  sh:name "Persoon" ;
+  sh:name "Persoon"@nl, "Person"@en ;
   dash:stem <../Mensen> ;
   stsr:icon "stash:person"^^<https://iconify.design> ;
   stsr:filenameSuggestion ( schema:givenName schema:familyName ) ;
 
   sh:property [
-    sh:name "Voornaam"@nl ;
+    sh:name "Voornaam"@nl, "Given name"@en ;
     sh:group <#name> ;
     sh:path schema:givenName ;
     faker:generator faker:person.firstName ;
@@ -27,7 +27,7 @@
   ];
 
   sh:property [
-    sh:name "Achternaam"@nl ;
+    sh:name "Achternaam"@nl, "Family name"@en ;
     sh:group <#name> ;
     sh:path schema:familyName ;
     faker:generator faker:person.lastName ;
@@ -37,7 +37,7 @@
   ];
 
   sh:property [
-    sh:name "Geslacht"@nl ;
+    sh:name "Geslacht"@nl, "Gender"@en ;
     sh:in ( schema:Male schema:Female ) ;
     sh:maxCount 1;
     sh:minCount 1;
@@ -45,7 +45,7 @@
   ];
   
   sh:property [
-    sh:name "Geboortedatum"@nl ;
+    sh:name "Geboortedatum"@nl, "Date of birth"@en ;
     sh:path schema:birthDate ;
     sh:order 2 ;
     sh:editor dash:DatePickerEditor ;
@@ -55,7 +55,7 @@
   ];
 
   sh:property [
-    sh:name "Adres"@nl ;
+    sh:name "Adres"@nl, "Address"@en ;
     sh:order 4 ;
     sh:path schema:address ;
     sh:maxCount 1 ;
@@ -75,7 +75,7 @@
   	sh:ignoredProperties (rdf:type) ;
 
     sh:property [
-        sh:name "Straatnaam"@nl ;
+        sh:name "Straatnaam"@nl, "Street"@en ;
         sh:group <#street-and-housenumber> ;
         sh:path schema:streetAddress ;
         faker:generator faker:location.street ;
@@ -85,7 +85,7 @@
     ] ;
 
     sh:property [
-        sh:name "Postcode"@nl ;
+        sh:name "Postcode"@nl, "Zipcode"@en ;
         sh:path schema:postalCode ;
         sh:group <#street-and-housenumber> ;
         faker:generator faker:location.zipCode ;
@@ -95,7 +95,7 @@
     ] ;
 
     sh:property [
-        sh:name "Plaats"@en ;
+        sh:name "Plaats"@nl, "Locality"@en ;
         sh:group <#world> ;
         sh:path schema:addressLocality ;
         faker:generator faker:location.city ;
@@ -105,7 +105,7 @@
     ] ;
 
     sh:property [
-        sh:name "Land"@en ;
+        sh:name "Land"@nl, "Country"@en ;
         sh:path schema:addressCountry ;
         faker:generator faker:location.country ;
         sh:group <#world> ;
@@ -127,5 +127,5 @@
 	a sh:PropertyGroup ;
 	sh:order 3 .
 
-schema:Male sh:name "Man" .
-schema:Female sh:name "Vrouw" .
+schema:Male sh:name "Man"@nl, "Man"@en .
+schema:Female sh:name "Vrouw"@nl, "Female"@en .

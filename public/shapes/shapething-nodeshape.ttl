@@ -36,8 +36,8 @@
   ];
 
   sh:property [
-    sh:name "Property"@en ;
-    sh:name "Eigenschap"@nl ;
+    sh:name "Properties"@en ;
+    sh:name "Eigenschappen"@nl ;
     sh:minCount 1;
     sh:path sh:property ;
     sh:nodeKind sh:BlankNode ;
@@ -78,7 +78,7 @@
 	sh:order 3 .
 
 <#details>
-	a sh:PropertyGroup ;
+	a sh:PropertyGroup, stsr:CollapsiblePropertyGroup ;
 	sh:order 4 .
 
 <#propertyShape>
@@ -101,6 +101,7 @@
     sh:name "Omschrijving"@nl ;
     dash:singleLine false ;
     sh:minCount 1;
+    sh:group <#details> ;
     sh:order 2;
     sh:maxCount 1;
     sh:path sh:description ;
@@ -113,6 +114,7 @@
     sh:minCount 1;
     sh:group <#propertyName> ;
     sh:maxCount 1;
+    dash:editor dash:URIEditor ;
     sh:path sh:path ;
     sh:nodeKind sh:IRI ;
   ];
@@ -121,7 +123,7 @@
     sh:name "Minimum count"@en ;
     sh:name "Minimaal aantal"@nl ;
     sh:maxCount 1;
-    sh:group <#cardinality> ;
+    sh:group <#details> ;
     sh:path sh:minCount ;
     sh:datatype xsd:integer ;
   ];
@@ -130,7 +132,7 @@
     sh:name "Maximum count"@en ;
     sh:name "Maximaal aantal"@nl ;
     sh:maxCount 1;
-    sh:group <#cardinality> ;
+    sh:group <#details> ;
     sh:path sh:maxCount ;
     sh:datatype xsd:integer ;
   ];

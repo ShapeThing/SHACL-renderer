@@ -19,6 +19,7 @@
 @use 'widgets/editors/fileupload';
 @use 'widgets/editors/textfieldwithlang';
 @use 'widgets/editors/editor-js';
+@use 'widgets/editors/uri' as UriEditor;
 
 @use 'widgets/viewers/color';
 @use 'widgets/viewers/uri';
