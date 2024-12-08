@@ -21,6 +21,7 @@
     sh:name "Knows"@en ;
     sh:description "When the sh:path property is exactly: `( YOUR_PREDICATE [ sh:zeroOrMorePath rdf:rest ] rdf:first )`. A sortable list is used." ;
     sh:path ( schema:knows [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+    sh:nodeKind sh:IRI ;
   ];
     .
 

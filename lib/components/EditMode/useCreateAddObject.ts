@@ -30,9 +30,17 @@ export const useCreateAddObject =
     ;(emptyTerm as TouchableTerm).touched = false
 
     if (isList) {
-      const terms = [...[...items].map((item: Grapoi) => item.term), emptyTerm]
-      const pointer = parentData.executeAll([path?.[0]])
-      replaceList(terms, pointer)
+      const previousTerms = [...items].map((item: Grapoi) => item.term)
+      const terms = [...previousTerms, emptyTerm]
+      let pointer = parentData.executeAll([path?.[0]])
+      if ((previousTerms?.[0] as TouchableTerm)?.touched === false) return
+
+      if (!pointer.isList()) {
+        parentData.addList(predicate, emptyTerm)
+        pointer = parentData.executeAll([path?.[0]])
+      } else {
+        replaceList(terms, pointer)
+      }
     } else {
       parentData.addOut(predicate, emptyTerm)
     }

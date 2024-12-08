@@ -23,7 +23,9 @@ export default function LanguageProvider({ children }: Props) {
   const { languages: languagesSetting, shapePointer, dataPointer } = useContext(mainContext)
   const usedLanguageCodes = dataPointer ? getUsedLanguageCodes(shapePointer, dataPointer) : []
   const [languages, setLanguages] = useState<Record<string, string>>(languagesSetting)
-  const [activeContentLanguage, setActiveContentLanguage] = useState(usedLanguageCodes[0])
+  const [activeContentLanguage, setActiveContentLanguage] = useState(
+    usedLanguageCodes[0] ?? Object.keys(languagesSetting)[0]
+  )
 
   return (
     <languageContext.Provider

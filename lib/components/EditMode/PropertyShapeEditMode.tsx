@@ -37,9 +37,9 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const { activeContentLanguage } = useContext(languageContext)
   const { validate } = useContext(validationContext)
 
+  const isList = isOrderedList(path)
   const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
   const defaultWidget = scoreWidgets(editors, items, property, dash('editor'))
-  const isList = isOrderedList(path)
   const sortableState = items.map((item: Grapoi) => ({ id: JSON.stringify(item.term), term: item.term }))
 
   const setItems = () => {

@@ -33,7 +33,7 @@ export const fetchDataAccordingToProperty = async ({
 }: Input) => {
   const shapeQuads = outAll(nodeShape.out().distinct().out())
   const shapeDataset = datasetFactory.dataset(shapeQuads)
-  const shape = clownFace({ dataset: shapeDataset, term: shapeQuads[0].subject }) as GraphPointer
+  const shape = clownFace({ dataset: shapeDataset, term: shapeQuads?.[0]?.subject }) as GraphPointer
 
   const mustUseFocusTerm = typeof searchTerm === 'string' && !searchTerm ? false : true
 

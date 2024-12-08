@@ -6,9 +6,16 @@ import { WidgetMeta } from '../../widgets-context'
 export default {
   iri: dash('TextFieldEditor'),
   createTerm: (_language, property) => {
-    /** @ts-ignore */
-    const options = [...property?.out(sh('in')).list()]
-    return options[0].term.termType === 'NamedNode' ? factory.namedNode('') : factory.literal('')
+    const mode = property?.out(sh('in')).isList()
+    if (mode === true) {
+      /** @ts-ignore */
+      const options = [...property?.out(sh('in')).list()]
+      return options[0].term.termType === 'NamedNode' ? factory.namedNode('') : factory.literal('')
+    } else if (mode === false) {
+      return factory.namedNode('')
+    } else {
+      return factory.namedNode('')
+    }
   },
   score: (_data?: Grapoi, propertyShape?: Grapoi) => {
     if (propertyShape && propertyShape.out(sh('in')).term) {

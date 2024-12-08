@@ -68,7 +68,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
             }}
             setTerm={setTerm}
           />
-          {!itemIsRequired || errors?.length ? (
+          {(!itemIsRequired && props.index !== 0) || errors?.length ? (
             <button
               className="button icon remove-object"
               onClick={async () => {

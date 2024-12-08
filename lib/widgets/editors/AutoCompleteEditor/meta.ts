@@ -6,7 +6,7 @@ import { WidgetMeta } from '../../widgets-context'
 
 export default {
   iri: dash('AutoCompleteEditor'),
-  createTerm: () => factory.literal(''),
+  createTerm: () => factory.namedNode(''),
   score: (data?: Grapoi, propertyShape?: Grapoi) => {
     const term = data?.terms[0]
 

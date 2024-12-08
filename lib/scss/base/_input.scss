@@ -4,6 +4,7 @@
   flex: 1 1 auto;
   border-radius: var(--input-radius);
   transition: box-shadow var(--easing) var(--speed);
+  resize: vertical;
 
   &:focus {
     outline: none;

@@ -1,0 +1,175 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
+@prefix stf: <http://ontology.shapething.com/facet#> .
+@prefix dbc: <http://dbpedia.org/resource/Category:> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<>
+  a sh:NodeShape ;
+  sh:targetClass sh:NodeShape ;
+  sh:closed true ;
+
+  sh:property [
+    sh:name "Name"@en ;
+    sh:name "Naam"@nl ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:group <#name> ;
+    sh:path sh:name ;
+    sh:datatype rdf:langString ;
+  ];
+
+  sh:property [
+    sh:name "Icon"@en ;
+    sh:name "Icoon"@nl ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:group <#name> ;
+    sh:path stsr:icon ;
+    sh:datatype <https://iconify.design> ;
+  ];
+
+  sh:property [
+    sh:name "Property"@en ;
+    sh:name "Eigenschap"@nl ;
+    sh:minCount 1;
+    sh:path sh:property ;
+    sh:nodeKind sh:BlankNode ;
+    sh:node <#propertyShape>;
+  ];
+
+  sh:property [
+    sh:name "Name pattern"@en ;
+    sh:name "Naam patroon"@nl ;
+    sh:minCount 1;
+    sh:path ( stsr:filenameSuggestion [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+    sh:in [
+      sh:select """
+        prefix sh: <http://www.w3.org/ns/shacl#>
+
+        SELECT ?value ?label
+        WHERE {
+          ?property ^sh:property ?node .
+          ?property sh:path ?value .
+          ?property sh:name ?label .
+        }
+        """ ;
+    ] ;
+  ];
+
+.
+
+<#name>
+	a sh:PropertyGroup ;
+	sh:order 1 .
+
+<#propertyName>
+	a sh:PropertyGroup ;
+	sh:order 1 .
+
+<#cardinality>
+	a sh:PropertyGroup ;
+	sh:order 3 .
+
+<#details>
+	a sh:PropertyGroup ;
+	sh:order 4 .
+
+<#propertyShape>
+  sh:closed true ;
+  a sh:NodeShape ;
+  dash:abstract true ;
+
+  sh:property [
+    sh:name "Name"@en ;
+    sh:name "Name"@nl ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:group <#propertyName> ;
+    sh:path sh:name ;
+    sh:datatype rdf:langString ;
+  ];
+
+  sh:property [
+    sh:name "Description"@en ;
+    sh:name "Omschrijving"@nl ;
+    dash:singleLine false ;
+    sh:minCount 1;
+    sh:order 2;
+    sh:maxCount 1;
+    sh:path sh:description ;
+    sh:datatype rdf:langString ;
+  ];
+
+  sh:property [
+    sh:name "Path"@en ;
+    sh:name "Pad"@nl ;
+    sh:minCount 1;
+    sh:group <#propertyName> ;
+    sh:maxCount 1;
+    sh:path sh:path ;
+    sh:nodeKind sh:IRI ;
+  ];
+  
+  sh:property [
+    sh:name "Minimum count"@en ;
+    sh:name "Minimaal aantal"@nl ;
+    sh:maxCount 1;
+    sh:group <#cardinality> ;
+    sh:path sh:minCount ;
+    sh:datatype xsd:integer ;
+  ];
+    
+  sh:property [
+    sh:name "Maximum count"@en ;
+    sh:name "Maximaal aantal"@nl ;
+    sh:maxCount 1;
+    sh:group <#cardinality> ;
+    sh:path sh:maxCount ;
+    sh:datatype xsd:integer ;
+  ];
+
+  sh:property [
+    sh:name "Group"@en ;
+    sh:name "Groep"@nl ;
+    sh:group <#details> ;
+    sh:maxCount 1;
+    sh:path sh:group ;
+    sh:in [
+      sh:select """
+        prefix sh: <http://www.w3.org/ns/shacl#>
+
+        SELECT ?value ?label
+        WHERE {
+          ?value a sh:PropertyGroup .
+          optional {
+            ?value sh:name ?name .
+          }
+          bind(coalesce(?name, strafter(str(?value), "#"), strafter(str(?value), "/")) as ?label)
+        }
+        """ ;
+    ] ;
+  ];
+
+  sh:property [
+    sh:name "Data type"@en ;
+    sh:name "Data type"@nl ;
+    sh:group <#details> ;
+    sh:maxCount 1;
+    sh:path sh:datatype ;
+    sh:in (
+      xsd:string xsd:float rdf:langString
+    ) ;
+  ];
+.
+
+xsd:string rdfs:label "Text" .
+xsd:integer rdfs:label "Integer" .
+xsd:float rdfs:label "Float" .
+rdf:langString rdfs:label "Multilingual text" .

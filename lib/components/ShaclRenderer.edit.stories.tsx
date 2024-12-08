@@ -32,6 +32,14 @@ export const SortableData = {
   } as ShaclRendererProps
 }
 
+export const SortableDataEmpty = {
+  args: {
+    mode: 'edit',
+    shapes: new URL('/shapes/ordered-list.ttl#shape', location.origin),
+    targetClass: schema('Person')
+  } as ShaclRendererProps
+}
+
 export const MultipleForms = {
   args: {
     mode: 'edit',
@@ -66,6 +74,29 @@ export const ShapesGraph = {
   args: {
     mode: 'edit',
     data: new URL('/john-with-shapes-graph.ttl', location.origin)
+  } as ShaclRendererProps
+}
+
+export const ShapeThingNodeShape = {
+  args: {
+    mode: 'edit',
+    shapes: new URL('/shapes/shapething-nodeshape.ttl', location.origin),
+    languages: {
+      en: 'English',
+      nl: 'Dutch'
+    }
+  } as ShaclRendererProps
+}
+
+export const ShapeThingNodeShapeData = {
+  args: {
+    mode: 'edit',
+    shapes: new URL('/shapes/shapething-nodeshape.ttl', location.origin),
+    data: new URL('/shapes/shapething-person.ttl', location.origin),
+    languages: {
+      en: 'English',
+      nl: 'Dutch'
+    }
   } as ShaclRendererProps
 }
 

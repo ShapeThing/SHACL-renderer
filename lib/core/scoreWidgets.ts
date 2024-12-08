@@ -1,5 +1,6 @@
 import type { NamedNode } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
+import { TouchableTerm } from '../helpers/touchableRdf'
 import type { WidgetItem } from '../widgets/widgets-context'
 import { stsr } from './namespaces'
 
@@ -15,7 +16,12 @@ export const scoreWidgets = (widgets: Array<WidgetItem>, data?: Grapoi, property
 
   const widgetMatches = widgets
     .map(widgetItem => {
-      const score = widgetItem.meta.score ? widgetItem.meta.score(data, property) : 0
+      const score = widgetItem.meta.score
+        ? widgetItem.meta.score(
+            data?.filter(pointer => (pointer?.terms?.[0] as TouchableTerm)?.touched !== false),
+            property
+          )
+        : 0
       return { widgetItem, score: score === undefined ? 0 : score }
     })
     .sort((a, b) => b.score - a.score)
