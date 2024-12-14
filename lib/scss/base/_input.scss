@@ -5,6 +5,7 @@
   border-radius: var(--input-radius);
   transition: box-shadow var(--easing) var(--speed);
   resize: vertical;
+  background-color: white;
 
   &:focus {
     outline: none;

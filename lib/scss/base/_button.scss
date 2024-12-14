@@ -66,7 +66,7 @@
 .actions {
   display: flex;
   gap: 10px;
-  max-width: 1200px;
+  max-width: var(--max-width);
 }
 
 [data-mode="edit"] .actions {

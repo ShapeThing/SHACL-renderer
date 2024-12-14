@@ -62,7 +62,7 @@ export default function NodeShape() {
     usedPredicates.add(property.out(sh('path')).value)
 
     return [
-      parseInt(property.out(sh('order')).value as string) ?? 0,
+      parseFloat(property.out(sh('order')).value as string) ?? 0,
       <PropertyShape
         dataset={dataset}
         key={property.term.value}

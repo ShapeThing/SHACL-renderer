@@ -1,7 +1,7 @@
 .shacl-renderer[data-mode='facet'],
 .shacl-renderer[data-mode='edit'] {
   flex: 1 1 auto;
-  max-width: 1200px;
+  max-width: var(--max-width);
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -14,5 +14,25 @@
 .shacl-renderer[data-mode='view'] {
   >.node {
     margin-bottom: .5em;
+  }
+}
+
+.node-headers {
+  display: flex;
+  position: sticky;
+  top: 0;
+  padding-block-start: .5em;
+  background-color: rgba(var(--primary-rgb), 0.07);
+  padding-left: .5em;
+  padding-right: calc(.5em + 28px);
+}
+
+.node-header {
+  flex: 1 1 auto;
+}
+
+.node-headers+.editors>.details>.node>.group {
+  label {
+    display: none;
   }
 }

@@ -30,7 +30,9 @@ export default function URIEditor({ term, setTerm }: WidgetProps) {
         onChange={event => {
           const newPrefixAlias = prefixes[event.target.value]
           if (newPrefixAlias) {
-            setTerm(factory.namedNode(`${newPrefixAlias}${value}`))
+            setTerm(factory.namedNode(`${newPrefixAlias ?? ''}${value ?? ''}`))
+          } else {
+            setTerm(factory.namedNode(``))
           }
         }}
       >
@@ -50,7 +52,7 @@ export default function URIEditor({ term, setTerm }: WidgetProps) {
             setTerm(factory.namedNode(event.target.value))
           } else {
             const prefix = prefixes[prefixAlias]
-            setTerm(factory.namedNode(`${prefix}${event.target.value}`))
+            setTerm(factory.namedNode(`${prefix ?? ''}${event.target.value ?? ''}`))
           }
         }}
         value={value}

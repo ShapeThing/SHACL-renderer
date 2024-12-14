@@ -16,6 +16,9 @@ const config: StorybookConfig = {
   viteFinal: async config => {
     config.plugins = config.plugins?.filter(item => item?.name !== 'vite-plugin-top-level-await')
     return config
+  },
+  typescript: {
+    reactDocgen: false
   }
 }
 export default config

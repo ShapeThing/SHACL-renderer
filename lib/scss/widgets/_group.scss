@@ -9,14 +9,18 @@
 }
 
 .collapsible-group {
+  margin-top: -.5em;
+
   summary {
     font-size: .7em;
     font-style: italic;
-    color: #777;
+    color: var(--primary);
     cursor: pointer;
   }
 
   &[open] {
+    margin-top: .5em;
+
     summary {
       margin-bottom: 1em;
     }

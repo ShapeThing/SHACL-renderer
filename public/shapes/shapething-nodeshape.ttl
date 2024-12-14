@@ -38,6 +38,7 @@
   sh:property [
     sh:name "Properties"@en ;
     sh:name "Eigenschappen"@nl ;
+    stsr:showTableHeaders true ;
     sh:minCount 1;
     sh:path sh:property ;
     sh:nodeKind sh:BlankNode ;

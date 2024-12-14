@@ -33,7 +33,11 @@ export default function CollapsiblePropertyGroup({
   const label = group.out(sh('name')).values[0] ?? localName
 
   return (
-    <details className={`collapsible-group ${localName}`} data-term={group.term.value}>
+    <details
+      // style={{ '--primary-rgb': '117, 0, 0', '--secondary-rgb': '151, 140, 151' } as any}
+      className={`collapsible-group ${localName}`}
+      data-term={group.term.value}
+    >
       <summary>{label}</summary>
       {propertiesAsElements}
     </details>

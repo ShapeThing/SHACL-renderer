@@ -7,11 +7,12 @@
   .property {
     display: flex;
     flex-direction: column;
+    margin-bottom: 1em;
   }
 }
 
 .property.has-error {
-  > label {
+  >label {
     color: var(--danger);
   }
 }
