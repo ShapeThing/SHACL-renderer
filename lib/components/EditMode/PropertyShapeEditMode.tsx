@@ -42,6 +42,8 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const defaultWidget = scoreWidgets(editors, items, property, dash('editor'))
   const sortableState = items.map((item: Grapoi) => ({ id: JSON.stringify(item.term), term: item.term }))
 
+  const uniqueLang = property.out(sh('uniqueLang')).term?.value === 'true'
+
   const setItems = () => {
     const oldTerms = items.terms
     const newItems = nodeDataPointer.executeAll(path)
@@ -182,7 +184,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
           />
         ) : null}
 
-        {items.ptrs.length < maxCount ? (
+        {items.ptrs.length < maxCount && !uniqueLang ? (
           <button className="button icon secondary add-object" onClick={() => addObject({ activeContentLanguage })}>
             <Icon icon="iconoir:plus" />
           </button>

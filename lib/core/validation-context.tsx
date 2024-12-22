@@ -9,6 +9,7 @@ import { TouchableQuad } from '../helpers/touchableRdf'
 import { fetchContext } from './fetchContext'
 import { mainContext } from './main-context'
 import { sh, stsr } from './namespaces'
+import { resolveDynamicShacl } from './resolveDynamicShacl'
 
 export const validationContext = createContext<{ report: ValidationReport | undefined; validate: () => void }>({
   report: undefined,
@@ -17,7 +18,7 @@ export const validationContext = createContext<{ report: ValidationReport | unde
 
 export default function ValidationContextProvider({ children }: { children: ReactNode }) {
   const [report, setReport] = useState<ValidationReport | undefined>(undefined)
-  const { data, shapes, shapePointer, dataPointer, mode } = useContext(mainContext)
+  const { data, shapes, shapePointer, dataPointer, mode, shapeSubject } = useContext(mainContext)
   const [validator] = useState(() => new Validator(shapes, { factory }))
   const { fetch } = useContext(fetchContext)
 
@@ -28,6 +29,7 @@ export default function ValidationContextProvider({ children }: { children: Reac
 
       if (!dataset.size) return
 
+      // TODO refactor to a standalone function
       for (const property of properties) {
         const endpoint = property.out(stsr('endpoint')).value
 
@@ -46,7 +48,8 @@ export default function ValidationContextProvider({ children }: { children: Reac
         }
       }
 
-      const report = await validator.validate({ dataset })
+      await resolveDynamicShacl(shapePointer, dataset)
+      const report = await validator.validate({ dataset }, shapePointer)
       setReport(report)
     }, 100),
     []

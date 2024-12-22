@@ -43,7 +43,7 @@ const modePredicates = {
 
 export default function PropertyShape(props: PropertyShapeProps) {
   const { property } = props
-  const { mode } = useContext(mainContext)
+  const { mode, shapeSubject } = useContext(mainContext)
 
   const selectedWidgetIri = property.out(modePredicates[mode]).term
   if (selectedWidgetIri?.equals(stsr('HideWidget'))) return null
@@ -52,7 +52,10 @@ export default function PropertyShape(props: PropertyShapeProps) {
   const PropertyShapeInner = modes[mode]
 
   const { report } = useContext(validationContext)
-  const errors = report?.results?.filter((result: { path: unknown }) => isEqual(result.path, path)) ?? []
+  const errors =
+    (report?.results as any)?.filter((result: { path: unknown; focusNode: Grapoi }) => {
+      return isEqual(result.path, path) && shapeSubject.equals(result.focusNode.term)
+    }) ?? []
 
   useEffect(() => {
     document.dispatchEvent(new CustomEvent('react.render'))

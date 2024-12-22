@@ -42,7 +42,9 @@ export async function generateFake({
   })
   const { shapePointer } = mainContext
   const widgets = coreWidgets
-  const activeContentLanguage = Object.keys(mainContext.languages).length ? Object.keys(mainContext.languages)[0] : 'en'
+  const activeContentLanguage = Object.keys(mainContext.contentLanguages).length
+    ? Object.keys(mainContext.contentLanguages)[0]
+    : 'en'
   if (!subject) subject = factory.namedNode('#')
   return nodeShape(shapePointer, widgets, subject, activeContentLanguage)
 }

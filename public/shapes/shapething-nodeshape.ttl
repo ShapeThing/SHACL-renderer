@@ -9,6 +9,7 @@
 @prefix dbc: <http://dbpedia.org/resource/Category:> .
 @prefix wdt: <http://www.wikidata.org/prop/direct/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix faker: <https://fakerjs.dev/> .
 
 <>
   a sh:NodeShape ;
@@ -16,29 +17,66 @@
   sh:closed true ;
 
   sh:property [
-    sh:name "Name"@en ;
-    sh:name "Naam"@nl ;
+    sh:name "Name"@en, "Naam"@nl ;
     sh:minCount 1;
-    sh:maxCount 1;
+		sh:uniqueLang true ;
     sh:group <#name> ;
     sh:path sh:name ;
     sh:datatype rdf:langString ;
   ];
 
   sh:property [
-    sh:name "Icon"@en ;
-    sh:name "Icoon"@nl ;
+    sh:name "Target"@en, "Doel"@nl ;
     sh:minCount 1;
     sh:maxCount 1;
     sh:group <#name> ;
+    sh:path sh:targetClass ;
+    sh:nodeKind sh:IRI ;
+    dash:editor dash:URIEditor ;
+  ];
+
+  sh:property [
+    sh:name "Closed"@en, "Gesloten"@nl ;
+    sh:maxCount 1;
+    sh:datatype xsd:boolean ;
+    sh:group <#booleans>;
+    sh:path sh:closed ;
+  ];
+
+  sh:property [
+    sh:name "Abstract"@en, "Abstract"@nl ;
+    sh:maxCount 1;
+    sh:datatype xsd:boolean ;
+    sh:group <#booleans>;
+    sh:path dash:abstract ;
+  ];
+
+  # sh:property [
+  #   sh:name "Ignored properties"@en, "Genegeerde eigenschappen"@nl ;
+  #   sh:group <#booleans>;
+  #   sh:path sh:ignoredProperties ;
+  # ];
+
+  sh:property [
+    sh:name "Stem"@en, "Stam"@nl ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:group <#stem-icon> ;
+    sh:path dash:stem ;
+    dash:editor dash:URIEditor ;
+  ];
+
+  sh:property [
+    sh:name "Icon"@en, "Icoon"@nl ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:group <#stem-icon> ;
     sh:path stsr:icon ;
     sh:datatype <https://iconify.design> ;
   ];
 
   sh:property [
-    sh:name "Properties"@en ;
-    sh:name "Eigenschappen"@nl ;
-    stsr:showTableHeaders true ;
+    sh:name "Properties"@en, "Eigenschappen"@nl ;
     sh:minCount 1;
     sh:path sh:property ;
     sh:nodeKind sh:BlankNode ;
@@ -46,15 +84,14 @@
   ];
 
   sh:property [
-    sh:name "Name pattern"@en ;
-    sh:name "Naam patroon"@nl ;
+    sh:name "Name pattern"@en, "Naam patroon"@nl ;
     sh:minCount 1;
     sh:path ( stsr:filenameSuggestion [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
     sh:in [
       sh:select """
         prefix sh: <http://www.w3.org/ns/shacl#>
 
-        SELECT ?value ?label
+        SELECT distinct ?value ?label
         WHERE {
           ?property ^sh:property ?node .
           ?property sh:path ?value .
@@ -66,52 +103,93 @@
 
 .
 
+<#booleans>
+	a sh:PropertyGroup ;
+	sh:order 3 .
+
+<#stem-icon>
+	a sh:PropertyGroup ;
+	sh:order 2 .
+
 <#name>
 	a sh:PropertyGroup ;
 	sh:order 1 .
 
 <#propertyName>
 	a sh:PropertyGroup ;
+  sh:group <#propertyShapeGroup> ;
 	sh:order 1 .
 
 <#cardinality>
 	a sh:PropertyGroup ;
-	sh:order 3 .
+  sh:group <#propertyShapeGroup> ;
+	sh:order 4 .
+
+<#misc>
+	a sh:PropertyGroup ;
+  sh:group <#propertyShapeGroup> ;
+	sh:order 4 .
 
 <#details>
-	a sh:PropertyGroup, stsr:CollapsiblePropertyGroup ;
-	sh:order 4 .
+	a sh:PropertyGroup ;
+  sh:group <#propertyShapeGroup> ;
+	sh:order 3 .
+
+<#propertyShapeGroup>
+	a sh:PropertyGroup, stsr:CollapsiblePropertyGroup;
+  stsr:groupLabelPath ( "Eigenschap: "@nl "Property: "@en sh:name ) ;
+	sh:order 1 .
 
 <#propertyShape>
   sh:closed true ;
   a sh:NodeShape ;
   dash:abstract true ;
 
+  sh:ignoredProperties ( faker:generator sh:in ) ;
+
   sh:property [
-    sh:name "Name"@en ;
-    sh:name "Name"@nl ;
+    sh:name "Name"@en, "Name"@nl ;
     sh:minCount 1;
-    sh:maxCount 1;
+		sh:uniqueLang true ;
     sh:group <#propertyName> ;
     sh:path sh:name ;
     sh:datatype rdf:langString ;
   ];
 
   sh:property [
-    sh:name "Description"@en ;
-    sh:name "Omschrijving"@nl ;
-    dash:singleLine false ;
-    sh:minCount 1;
-    sh:group <#details> ;
-    sh:order 2;
+    sh:name "Ignored properties"@en, "Genegeerde eigenschappen"@nl ;
+    sh:path sh:ignoredProperties ;
+    sh:group <#misc> ;
+  ];
+
+  sh:property [
+    sh:name "Order"@en, "Volgorde"@nl ;
     sh:maxCount 1;
+    sh:group <#misc> ;
+    sh:datatype xsd:float ;
+    sh:path sh:order ;
+  ];
+
+  sh:property [
+    sh:name "Closed"@en, "Gesloten"@nl ;
+    sh:maxCount 1;
+    sh:group <#misc> ;
+    sh:datatype xsd:boolean ;
+    sh:path sh:closed ;
+  ];
+
+  sh:property [
+    sh:name "Description"@en, "Omschrijving"@nl ;
+    dash:singleLine false ;
+    sh:order 5;
+		sh:uniqueLang true ;
+    sh:group <#propertyShapeGroup> ;
     sh:path sh:description ;
     sh:datatype rdf:langString ;
   ];
 
   sh:property [
-    sh:name "Path"@en ;
-    sh:name "Pad"@nl ;
+    sh:name "Path"@en, "Pad"@nl ;
     sh:minCount 1;
     sh:group <#propertyName> ;
     sh:maxCount 1;
@@ -121,26 +199,23 @@
   ];
   
   sh:property [
-    sh:name "Minimum count"@en ;
-    sh:name "Minimaal aantal"@nl ;
+    sh:name "Minimum count"@en, "Minimaal aantal"@nl ;
+    sh:group <#cardinality> ;
     sh:maxCount 1;
-    sh:group <#details> ;
     sh:path sh:minCount ;
     sh:datatype xsd:integer ;
   ];
     
   sh:property [
-    sh:name "Maximum count"@en ;
-    sh:name "Maximaal aantal"@nl ;
+    sh:name "Maximum count"@en, "Maximaal aantal"@nl ;
     sh:maxCount 1;
-    sh:group <#details> ;
+    sh:group <#cardinality> ;
     sh:path sh:maxCount ;
     sh:datatype xsd:integer ;
   ];
 
   sh:property [
-    sh:name "Group"@en ;
-    sh:name "Groep"@nl ;
+    sh:name "Group"@en, "Groep"@nl ;
     sh:group <#details> ;
     sh:maxCount 1;
     sh:path sh:group ;
@@ -148,7 +223,7 @@
       sh:select """
         prefix sh: <http://www.w3.org/ns/shacl#>
 
-        SELECT ?value ?label
+        SELECT distinct ?value ?label
         WHERE {
           ?value a sh:PropertyGroup .
           optional {
@@ -161,8 +236,7 @@
   ];
 
   sh:property [
-    sh:name "Data type"@en ;
-    sh:name "Data type"@nl ;
+    sh:name "Data type"@en, "Data type"@nl ;
     sh:group <#details> ;
     sh:maxCount 1;
     sh:path sh:datatype ;

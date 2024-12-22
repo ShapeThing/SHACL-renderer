@@ -1,17 +1,16 @@
 import factory from '@rdfjs/data-model'
-import { Term } from '@rdfjs/types'
+import { language } from '@rdfjs/score'
+import { NamedNode, Quad_Object, Quad_Subject, Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { Store } from 'n3'
 import { useContext, useEffect, useState } from 'react'
+import { languageContext } from '../../../core/language-context'
 import { rdfs, sh } from '../../../core/namespaces'
-import { validationContext } from '../../../core/validation-context'
 import { WidgetProps } from '../../widgets-context'
 
 export default function EnumSelectEditor({ property, term, setTerm, dataset }: WidgetProps) {
   const [options, setOptions] = useState<Term[]>([])
-  const [labels, setLabels] = useState<Record<string, string>>({})
-
-  const { report } = useContext(validationContext)
+  const { activeInterfaceLanguage } = useContext(languageContext)
 
   useEffect(() => {
     const usesSparql: Term | undefined = property.out(sh('in')).out(sh('select')).term
@@ -27,27 +26,24 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
         const response = await engine.queryBindings(usesSparql.value, { sources: [new Store([...dataset])] })
         const bindings = await response.toArray()
 
-        const newOptions = []
-        const newLabels: Record<string, string> = {}
-
         for (const binding of bindings) {
           const label = binding.get('label')
           const value = binding.get('value')
-          if (!value?.value) continue
+          const shapesDataset = property.ptrs[0].dataset
 
-          newOptions.push(value)
-          newLabels[value.value ?? ''] = label?.value ?? ''
+          if (value && label) {
+            // We add these labels to the shapes graph.
+            shapesDataset.add(factory.quad(value as Quad_Subject, rdfs('label'), label as Quad_Object))
+          }
         }
-
-        if (newOptions.map(option => option.value).join('') !== options.map(option => option.value).join('')) {
-          setOptions(newOptions)
-          setLabels(newLabels)
-        }
+        setOptions([
+          ...new Map(bindings.map(binding => [binding.get('value')?.value, binding.get('value') as NamedNode])).values()
+        ])
       })()
     }
-  }, [report])
+  }, [])
 
-  return (
+  return options.length ? (
     <select
       className="input"
       value={term.value}
@@ -65,7 +61,10 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
         </option>
       ) : null}
       {options.map((term: Term) => {
-        const label = property.node(term).out([sh('name'), rdfs('label')]).values[0] ?? labels[term.value]
+        const label = property
+          .node(term)
+          .out([sh('name'), rdfs('label')])
+          .best(language([activeInterfaceLanguage, ''])).value
 
         return (
           <option key={term.value} value={term.value}>
@@ -74,5 +73,5 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
         )
       })}
     </select>
-  )
+  ) : null
 }

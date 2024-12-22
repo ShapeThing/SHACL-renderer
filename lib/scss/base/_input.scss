@@ -24,7 +24,7 @@
 }
 
 .editor.has-error {
-  .input {
+  >.input {
     border-color: var(--danger);
   }
 }

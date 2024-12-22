@@ -1,4 +1,4 @@
-[data-mode='edit'] .node>.group {
+[data-mode='edit'] .group {
   gap: 16px;
   display: flex;
   flex-wrap: wrap;
@@ -9,18 +9,16 @@
 }
 
 .collapsible-group {
-  margin-top: -.5em;
+  margin-top: .1em;
 
-  summary {
-    font-size: .7em;
-    font-style: italic;
-    color: var(--primary);
+  summary.title {
     cursor: pointer;
+    font-weight: 300;
+    font-size: .9em;
+    margin: 0;
   }
 
   &[open] {
-    margin-top: .5em;
-
     summary {
       margin-bottom: 1em;
     }

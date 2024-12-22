@@ -17,7 +17,8 @@ export type MainContextInput = {
   facetSearchData?: URL | DatasetCore | string
   subject?: NamedNode | BlankNode
   targetClass?: NamedNode
-  languages?: Record<string, string>
+  contentLanguages?: Record<string, string>
+  interfaceLanguages?: Record<string, string>
   cacheId?: string
   context?: Record<string, string>
   onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>, dataPointer: Grapoi) => void
@@ -43,7 +44,8 @@ export type MainContext = {
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
   languageMode: 'tabs' | 'individual'
-  languages: Record<string, string>
+  contentLanguages: Record<string, string>
+  interfaceLanguages: Record<string, string>
   setShapeSubject: (iri: string) => void
   originalInput: MainContextInput
 } & Settings
@@ -64,7 +66,8 @@ export const mainContext = createContext<MainContext>({
   mode: 'edit',
   jsonLdContext: new JsonLdContextNormalized({}),
   languageMode: 'tabs',
-  languages: {},
+  contentLanguages: {},
+  interfaceLanguages: { en: 'English' },
   setShapeSubject: (_iri: string) => null,
   originalInput: null as unknown as MainContextInput
 })
@@ -199,8 +202,9 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     targetClass: givenTargetClass,
     mode,
     languageMode,
+    interfaceLanguages,
     shapeSubject: givenShapeSubject,
-    languages,
+    contentLanguages,
     fetch = globalThis['fetch'],
     ...settings
   } = originalInput
@@ -244,7 +248,8 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     shapesPointer,
     facetSearchDataPointer,
     shapeSubject: factory.namedNode(shapeSubject.toString()),
-    languages: languages ?? {},
+    contentLanguages: contentLanguages ?? {},
+    interfaceLanguages: interfaceLanguages ?? { en: 'English' },
     jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}) }),
     mode,
     setShapeSubject: (_iri: string) => null,

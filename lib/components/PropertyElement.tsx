@@ -1,7 +1,7 @@
 import { Grapoi } from 'grapoi'
 import { Fragment, ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'
-import { rdfs, sh, stsr } from '../core/namespaces'
+import { rdfs, sh } from '../core/namespaces'
 
 type PropertyElementProps = {
   property?: Grapoi
@@ -27,43 +27,6 @@ export default function PropertyElement({
 
   const descriptionLines = property?.out(sh('description')).values[0]?.split('\n')
 
-  const showTableHeaders = property?.out(stsr('showTableHeaders')).value
-
-  let headerItems = []
-
-  if (property && showTableHeaders) {
-    const node = property.out(sh('node')).term
-    const nodeShapePointer = property.node(node)
-
-    const groups = nodeShapePointer
-      .out(sh('property'))
-      .out(sh('group'))
-      .distinct()
-      .map((pointer: Grapoi, index: number) => {
-        const order = parseFloat(pointer.out(sh('order')).value ?? index.toString())
-        return {
-          group: pointer.term.value,
-          order
-        }
-      })
-
-    const properties = nodeShapePointer.out(sh('property')).map((pointer: Grapoi, index: number) => {
-      const group = pointer.out(sh('group')).term.value
-      return {
-        order: parseFloat(pointer.out(sh('order')).value ?? index.toString()),
-        label: pointer.out(sh('name')).values[0],
-        group
-      }
-    })
-
-    const mixed = [...properties, ...groups].toSorted((a, b) => a.order - b.order)
-    const firstItem = mixed[0]
-
-    headerItems = (
-      firstItem.group ? mixed.filter(item => item.group === firstItem.group && item.label) : [firstItem]
-    ).map(item => item.label)
-  }
-
   return (
     <div className={`property ${cssClass ?? ''}`.trim()} data-term={property?.term.value}>
       <label>
@@ -79,13 +42,6 @@ export default function PropertyElement({
             </Fragment>
           ))}
         </p>
-      ) : null}
-      {showTableHeaders && headerItems.length ? (
-        <div className="node-headers">
-          {headerItems.map(headerItem => (
-            <label className="node-header">{headerItem}</label>
-          ))}
-        </div>
       ) : null}
       {children}
     </div>
