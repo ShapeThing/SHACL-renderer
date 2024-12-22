@@ -1,12 +1,14 @@
 import { write } from '@jeswr/pretty-turtle/dist'
 import { Suspense, useContext, useEffect, useState } from 'react'
 import { fetchContext } from '../core/fetchContext'
+import LanguageProvider from '../core/language-context'
 import { MainContext, MainContextInput, MainContextProvider, initContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import ValidationContextProvider from '../core/validation-context'
 import { cleanUpDataset } from '../helpers/cleanUpDataset'
 import { createCidFromProps } from '../helpers/createCidFromProps'
 import { wrapPromise } from '../helpers/wrapPromise'
+import InterfaceLanguagePicker from './InterfaceLanguagePicker'
 import LanguageAwareTabs from './LanguageAwareTabs'
 import NodeShape from './NodeShape'
 import ShapePicker from './ShapePicker'
@@ -49,21 +51,27 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any,
 
   return (
     <MainContextProvider context={context}>
-      <ValidationContextProvider>
-        <LanguageAwareTabs>
-          {showShapePicker ? <ShapePicker /> : null}
-          <NodeShape {...context} key="root" />
-          <div className="actions">
-            {props.children ? (
-              props.children(submit)
-            ) : ['edit', 'inline-edit'].includes(context.mode) ? (
-              <button onClick={submit} className="button primary">
-                Save
-              </button>
-            ) : null}
-          </div>
-        </LanguageAwareTabs>
-      </ValidationContextProvider>
+      <LanguageProvider
+        activeContentLanguage={context.activeContentLanguage}
+        activeInterfaceLanguage={context.activeInterfaceLanguage}
+      >
+        <ValidationContextProvider>
+          <InterfaceLanguagePicker />
+          <LanguageAwareTabs>
+            {showShapePicker ? <ShapePicker /> : null}
+            <NodeShape {...context} key="root" />
+            <div className="actions">
+              {props.children ? (
+                props.children(submit)
+              ) : ['edit', 'inline-edit'].includes(context.mode) ? (
+                <button onClick={submit} className="button primary">
+                  Save
+                </button>
+              ) : null}
+            </div>
+          </LanguageAwareTabs>
+        </ValidationContextProvider>
+      </LanguageProvider>
     </MainContextProvider>
   )
 }

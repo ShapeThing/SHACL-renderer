@@ -3,24 +3,35 @@ import { useContext } from 'react'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
 import { sh, stsr } from '../core/namespaces'
+import { nonNullable } from '../helpers/nonNullable'
 import { getProperties, groupHasContents, PropertyGroupProps } from './PropertyGroup'
 
 export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
   const localName = props.group.term.value.split(/\/|#/g).pop()
   const { data: dataset } = useContext(mainContext)
-  const { activeContentLanguage } = useContext(languageContext)
+  const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
   const properties = getProperties({ ...props, dataset })
 
   const groupLabelPath = props.group.out(stsr('groupLabelPath')).list()
-  let label = props.group.out(sh('name')).best(language([activeContentLanguage, '', '*'])) ?? localName
+  let label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName
 
   if (groupLabelPath) {
     /** @ts-ignore */
-    label = [...groupLabelPath].map(pointer => {
-      if (pointer.term.termType === 'Literal' && pointer.term.language === activeContentLanguage)
-        return pointer.term.value
-      return props.nodeDataPointer.out(pointer.term).best(language([activeContentLanguage, ''])).value
-    })
+    const groupLabelPathPointers: Grapoi[] = [...groupLabelPath]
+
+    const hasMultipleLanguages =
+      groupLabelPathPointers.map(pointer => pointer.term.language).filter(nonNullable).length > 1
+
+    label = groupLabelPathPointers
+      .map(pointer => {
+        if (pointer.term.termType === 'Literal') {
+          if (hasMultipleLanguages && pointer.term.language === activeInterfaceLanguage) return pointer.term.value
+          if (!hasMultipleLanguages) return pointer.term.value
+          return ''
+        }
+        return props.nodeDataPointer.out(pointer.term).best(language([activeContentLanguage, '', '*'])).value
+      })
+      .join('')
   }
 
   return groupHasContents(props.group, props.shapePointer) ? (

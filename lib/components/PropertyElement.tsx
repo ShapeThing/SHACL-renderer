@@ -1,5 +1,7 @@
+import { language } from '@rdfjs/score'
 import { Grapoi } from 'grapoi'
 import { Fragment, ReactNode, useContext } from 'react'
+import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
 import { rdfs, sh } from '../core/namespaces'
 
@@ -19,13 +21,17 @@ export default function PropertyElement({
   label: givenLabel
 }: PropertyElementProps) {
   const { mode } = useContext(mainContext)
+  const { activeInterfaceLanguage } = useContext(languageContext)
 
   const label =
     givenLabel ??
-    property?.out([sh('name'), rdfs('label')]).values?.[0] ??
+    property?.out([sh('name'), rdfs('label')]).best(language([activeInterfaceLanguage, '', '*']))?.value ??
     property?.out(sh('path')).value.split(/\#|\//g).pop()
 
-  const descriptionLines = property?.out(sh('description')).values[0]?.split('\n')
+  const descriptionLines = property
+    ?.out(sh('description'))
+    .best(language([activeInterfaceLanguage, '', '*']))
+    ?.value?.split('\n')
 
   return (
     <div className={`property ${cssClass ?? ''}`.trim()} data-term={property?.term.value}>

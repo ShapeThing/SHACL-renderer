@@ -9,8 +9,10 @@ export const languageContext = createContext<{
   languages: Record<string, string>
   setLanguages: React.Dispatch<React.SetStateAction<Record<string, string>>>
   setActiveContentLanguage: (languageCode: string) => void
+  setActiveInterfaceLanguage: (languageCode: string) => void
 }>({
   setActiveContentLanguage: () => null,
+  setActiveInterfaceLanguage: () => null,
   setLanguages: () => null,
   activeInterfaceLanguage: 'en',
   usedLanguageCodes: [],
@@ -19,17 +21,22 @@ export const languageContext = createContext<{
 
 type Props = {
   children: ReactNode
+  activeContentLanguage?: string
+  activeInterfaceLanguage?: string
 }
 
-export default function LanguageProvider({ children }: Props) {
+export default function LanguageProvider({
+  children,
+  activeContentLanguage: givenActiveContentLanguage,
+  activeInterfaceLanguage: givenActiveInterfaceLanguage
+}: Props) {
   const { contentLanguages: languagesSetting, shapePointer, dataPointer } = useContext(mainContext)
   const usedLanguageCodes = dataPointer ? getUsedLanguageCodes(shapePointer, dataPointer) : []
   const [languages, setLanguages] = useState<Record<string, string>>(languagesSetting)
   const [activeContentLanguage, setActiveContentLanguage] = useState(
-    usedLanguageCodes[0] ?? Object.keys(languagesSetting)[0]
+    givenActiveContentLanguage ?? usedLanguageCodes[0] ?? Object.keys(languagesSetting)[0]
   )
-
-  const activeInterfaceLanguage = activeContentLanguage
+  const [activeInterfaceLanguage, setActiveInterfaceLanguage] = useState(givenActiveInterfaceLanguage ?? 'en')
 
   return (
     <languageContext.Provider
@@ -39,7 +46,8 @@ export default function LanguageProvider({ children }: Props) {
         usedLanguageCodes,
         languages,
         setLanguages,
-        activeInterfaceLanguage
+        activeInterfaceLanguage,
+        setActiveInterfaceLanguage
       }}
     >
       {children}

@@ -10,7 +10,7 @@ import { WidgetProps } from '../../widgets-context'
 
 export default function EnumSelectEditor({ property, term, setTerm, dataset }: WidgetProps) {
   const [options, setOptions] = useState<Term[]>([])
-  const { activeInterfaceLanguage } = useContext(languageContext)
+  const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
 
   useEffect(() => {
     const usesSparql: Term | undefined = property.out(sh('in')).out(sh('select')).term
@@ -41,9 +41,9 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
         ])
       })()
     }
-  }, [])
+  }, [activeInterfaceLanguage, activeContentLanguage])
 
-  return options.length ? (
+  return (
     <select
       className="input"
       value={term.value}
@@ -60,18 +60,22 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
           - Pick an option -
         </option>
       ) : null}
-      {options.map((term: Term) => {
-        const label = property
-          .node(term)
-          .out([sh('name'), rdfs('label')])
-          .best(language([activeInterfaceLanguage, ''])).value
+      {options.length ? (
+        options.map((term: Term) => {
+          const label = property
+            .node(term)
+            .out([sh('name'), rdfs('label')])
+            .best(language([activeInterfaceLanguage, activeContentLanguage, '', '*'])).value
 
-        return (
-          <option key={term.value} value={term.value}>
-            {label ?? term.value}
-          </option>
-        )
-      })}
+          return (
+            <option key={term.value} value={term.value}>
+              {label ?? term.value}
+            </option>
+          )
+        })
+      ) : (
+        <option>Loading...</option>
+      )}
     </select>
-  ) : null
+  )
 }

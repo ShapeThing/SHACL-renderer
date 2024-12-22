@@ -25,6 +25,7 @@
 @use 'widgets/viewers/uri';
 
 @use 'language-tabs';
+@use 'base/interface-language-picker';
 @use 'shape-picker';
 
 .shacl-renderer.loading {

@@ -5,7 +5,6 @@ import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import { ReactNode, createContext, useState } from 'react'
 import { getShapeSkeleton } from './getShapeSkeleton'
-import LanguageProvider from './language-context'
 import { rdf, rdfs, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
 
@@ -46,6 +45,8 @@ export type MainContext = {
   languageMode: 'tabs' | 'individual'
   contentLanguages: Record<string, string>
   interfaceLanguages: Record<string, string>
+  activeContentLanguage?: string
+  activeInterfaceLanguage?: string
   setShapeSubject: (iri: string) => void
   originalInput: MainContextInput
 } & Settings
@@ -266,8 +267,6 @@ export function MainContextProvider({ children, context: givenContext }: MainCon
   }
 
   return context ? (
-    <mainContext.Provider value={{ ...context, setShapeSubject }}>
-      <LanguageProvider>{children}</LanguageProvider>
-    </mainContext.Provider>
+    <mainContext.Provider value={{ ...context, setShapeSubject }}>{children}</mainContext.Provider>
   ) : null
 }

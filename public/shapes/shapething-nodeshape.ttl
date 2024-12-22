@@ -148,7 +148,7 @@
   sh:ignoredProperties ( faker:generator sh:in ) ;
 
   sh:property [
-    sh:name "Name"@en, "Name"@nl ;
+    sh:name "Name"@en, "Naam"@nl ;
     sh:minCount 1;
 		sh:uniqueLang true ;
     sh:group <#propertyName> ;
@@ -156,17 +156,17 @@
     sh:datatype rdf:langString ;
   ];
 
-  sh:property [
-    sh:name "Ignored properties"@en, "Genegeerde eigenschappen"@nl ;
-    sh:path sh:ignoredProperties ;
-    sh:group <#misc> ;
-  ];
+  # sh:property [
+  #   sh:name "Ignored properties"@en, "Genegeerde eigenschappen"@nl ;
+  #   sh:path sh:ignoredProperties ;
+  #   sh:group <#misc> ;
+  # ];
 
   sh:property [
     sh:name "Order"@en, "Volgorde"@nl ;
     sh:maxCount 1;
     sh:group <#misc> ;
-    sh:datatype xsd:float ;
+    sh:datatype xsd:decimal ;
     sh:path sh:order ;
   ];
 

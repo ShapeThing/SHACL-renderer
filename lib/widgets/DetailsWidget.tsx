@@ -3,6 +3,7 @@ import datasetFactory from '@rdfjs/dataset'
 import grapoi, { Grapoi } from 'grapoi'
 import { useContext } from 'react'
 import NodeShape from '../components/NodeShape'
+import { languageContext } from '../core/language-context'
 import { mainContext, MainContextProvider } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import { WidgetProps } from './widgets-context'
@@ -23,6 +24,8 @@ export default function DetailsWidget({ data, property, facetSearchData }: Widge
   const mainContextInstance = useContext(mainContext)
   const targetClass = nodeShapePointer.out(sh('targetClass')).term
 
+  const { activeContentLanguage, activeInterfaceLanguage } = useContext(languageContext)
+
   return (
     <MainContextProvider
       context={{
@@ -30,7 +33,9 @@ export default function DetailsWidget({ data, property, facetSearchData }: Widge
         targetClass: targetClass ?? mainContextInstance.targetClass,
         shapePointer: nodeShapePointer,
         dataPointer: data?.distinct(),
-        facetSearchDataPointer: facetSearchData
+        facetSearchDataPointer: facetSearchData,
+        activeContentLanguage,
+        activeInterfaceLanguage
       }}
     >
       <NodeShape />

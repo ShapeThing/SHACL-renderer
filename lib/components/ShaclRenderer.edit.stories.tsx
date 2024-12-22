@@ -93,7 +93,13 @@ export const ShapeThingNodeShapeData = {
     mode: 'edit',
     shapes: new URL('/shapes/shapething-nodeshape.ttl', location.origin),
     data: new URL('/shapes/shapething-person.ttl', location.origin),
+    activeInterfaceLanguage: 'nl',
+    activeContentLanguage: 'nl',
     contentLanguages: {
+      en: 'English',
+      nl: 'Dutch'
+    },
+    interfaceLanguages: {
       en: 'English',
       nl: 'Dutch'
     }
