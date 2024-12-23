@@ -1,4 +1,5 @@
-import { createContext, ReactNode, useContext, useState } from 'react'
+import { LocalizationProvider, ReactLocalization } from '@fluent/react'
+import { createContext, ReactNode, useContext, useMemo, useState } from 'react'
 import { getUsedLanguageCodes } from '../helpers/getUsedLanguageCodes'
 import { mainContext } from './main-context'
 
@@ -25,18 +26,25 @@ type Props = {
   activeInterfaceLanguage?: string
 }
 
-export default function LanguageProvider({
-  children,
-  activeContentLanguage: givenActiveContentLanguage,
-  activeInterfaceLanguage: givenActiveInterfaceLanguage
-}: Props) {
-  const { contentLanguages: languagesSetting, shapePointer, dataPointer } = useContext(mainContext)
+export default function LanguageProvider({ children }: Props) {
+  const {
+    contentLanguages: languagesSetting,
+    shapePointer,
+    dataPointer,
+    activeContentLanguage: givenActiveContentLanguage,
+    activeInterfaceLanguage: givenActiveInterfaceLanguage,
+    localizationBundles
+  } = useContext(mainContext)
   const usedLanguageCodes = dataPointer ? getUsedLanguageCodes(shapePointer, dataPointer) : []
   const [languages, setLanguages] = useState<Record<string, string>>(languagesSetting)
   const [activeContentLanguage, setActiveContentLanguage] = useState(
     givenActiveContentLanguage ?? usedLanguageCodes[0] ?? Object.keys(languagesSetting)[0]
   )
   const [activeInterfaceLanguage, setActiveInterfaceLanguage] = useState(givenActiveInterfaceLanguage ?? 'en')
+  const l10n = useMemo(
+    () => new ReactLocalization([localizationBundles[activeInterfaceLanguage]]),
+    [activeInterfaceLanguage]
+  )
 
   return (
     <languageContext.Provider
@@ -50,7 +58,7 @@ export default function LanguageProvider({
         setActiveInterfaceLanguage
       }}
     >
-      {children}
+      <LocalizationProvider l10n={l10n}>{children}</LocalizationProvider>
     </languageContext.Provider>
   )
 }

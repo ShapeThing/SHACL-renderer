@@ -51,10 +51,7 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any,
 
   return (
     <MainContextProvider context={context}>
-      <LanguageProvider
-        activeContentLanguage={context.activeContentLanguage}
-        activeInterfaceLanguage={context.activeInterfaceLanguage}
-      >
+      <LanguageProvider>
         <ValidationContextProvider>
           <InterfaceLanguagePicker />
           <LanguageAwareTabs>

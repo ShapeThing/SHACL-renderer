@@ -1,3 +1,4 @@
+import { FluentBundle, FluentResource } from '@fluent/bundle'
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
@@ -38,6 +39,7 @@ export type MainContext = {
   targetClass?: NamedNode
   shapePointer: Grapoi
   shapesPointer: Grapoi
+  localizationBundles: Record<string, FluentBundle>
   activeShapePointers: Grapoi
   dataPointer: Grapoi
   facetSearchDataPointer: Grapoi
@@ -70,7 +72,8 @@ export const mainContext = createContext<MainContext>({
   contentLanguages: {},
   interfaceLanguages: { en: 'English' },
   setShapeSubject: (_iri: string) => null,
-  originalInput: null as unknown as MainContextInput
+  originalInput: null as unknown as MainContextInput,
+  localizationBundles: null as unknown as Record<string, FluentBundle>
 })
 
 type MainContextProviderProps = {
@@ -191,6 +194,21 @@ const getShapes = async (
   }
 }
 
+export const createLocalizationBundles = async (languageCodes: string[]) => {
+  const translations = languageCodes.map(languageCode =>
+    fetch(`/translations/${languageCode}/shacl-renderer.ftl`)
+      .then(response => response.text())
+      .then(translation => new FluentResource(translation))
+      .then(resource => {
+        const bundle = new FluentBundle(languageCode)
+        bundle.addResource(resource)
+        return [languageCode, bundle] as [string, FluentBundle]
+      })
+  )
+
+  return Object.fromEntries(await Promise.all(translations))
+}
+
 /**
  * Creates a new main context. This is a promise, so it should be awaited.
  */
@@ -210,6 +228,8 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     ...settings
   } = originalInput
   let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject, fetch)
+
+  const localizationBundles = await createLocalizationBundles(Object.keys(interfaceLanguages ?? { en: true }))
 
   const shapesGraph = dataPointer.out(sh('shapesGraph')).term
   const shapesUrl = !shapes && shapesGraph?.value ? new URL(shapesGraph.value, location.toString()) : undefined
@@ -246,6 +266,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     shapePointer,
     languageMode: languageMode ?? 'tabs',
     activeShapePointers: shapePointers,
+    localizationBundles,
     shapesPointer,
     facetSearchDataPointer,
     shapeSubject: factory.namedNode(shapeSubject.toString()),

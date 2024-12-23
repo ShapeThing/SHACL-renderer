@@ -1,5 +1,5 @@
 import { language } from '@rdfjs/score'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
 import { sh, stsr } from '../core/namespaces'
@@ -11,6 +11,7 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
   const { data: dataset } = useContext(mainContext)
   const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
   const properties = getProperties({ ...props, dataset })
+  const [expanded, setExpanded] = useState(false)
 
   const groupLabelPath = props.group.out(stsr('groupLabelPath')).list()
   let label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName
@@ -35,13 +36,15 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
   }
 
   return groupHasContents(props.group, props.shapePointer) ? (
-    <details
-      style={{ '--primary-rgb': '117, 0, 0', '--secondary-rgb': '151, 140, 151' } as any}
-      className={`collapsible-group ${localName}`}
+    <div
+      // style={{ '--primary-rgb': '117, 0, 0', '--secondary-rgb': '151, 140, 151' } as any}
+      className={`collapsible-group ${localName} ${expanded ? 'expanded' : ''}`}
       data-term={props.group.term.value}
     >
-      <summary className="title">{label}</summary>
-      {properties}
-    </details>
+      <button className="title" onClick={() => setExpanded(!expanded)}>
+        {label}
+      </button>
+      {expanded ? properties : null}
+    </div>
   ) : null
 }
