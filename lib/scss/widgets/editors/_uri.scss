@@ -1,6 +1,7 @@
 .uri-selector {
     display: flex;
     flex: 1 1 auto;
+    position: relative;
 
     .prefix {
         flex: 1 1 100px;
@@ -13,5 +14,16 @@
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
         flex: 1 1 90%;
+    }
+
+    .link {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        font-size: .8em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform: translate(-50%, -50%);
     }
 }

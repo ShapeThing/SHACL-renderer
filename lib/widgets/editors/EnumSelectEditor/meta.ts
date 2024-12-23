@@ -4,7 +4,7 @@ import { dash, sh } from '../../../core/namespaces'
 import { WidgetMeta } from '../../widgets-context'
 
 export default {
-  iri: dash('TextFieldEditor'),
+  iri: dash('EnumEditor'),
   createTerm: (_language, property) => {
     const mode = property?.out(sh('in')).isList()
     if (mode === true) {

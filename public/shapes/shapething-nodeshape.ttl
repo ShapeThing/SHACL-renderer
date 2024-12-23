@@ -10,6 +10,7 @@
 @prefix wdt: <http://www.wikidata.org/prop/direct/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix faker: <https://fakerjs.dev/> .
+@prefix app: <http://localhost:6006/> .
 
 <>
   a sh:NodeShape ;
@@ -19,8 +20,10 @@
   sh:property [
     sh:name "Name"@en, "Naam"@nl ;
     sh:minCount 1;
+    sh:order 1;
 		sh:uniqueLang true ;
-    sh:group <#name> ;
+    # sh:group <#name> ;
+    sh:description "De gebruiksvriendelijke naam"@nl, "A user friendly name"@en ;
     sh:path sh:name ;
     sh:datatype rdf:langString ;
   ];
@@ -29,7 +32,9 @@
     sh:name "Target"@en, "Doel"@nl ;
     sh:minCount 1;
     sh:maxCount 1;
-    sh:group <#name> ;
+    sh:description "Het type van de resource"@nl, "The type of resource"@en ;
+    sh:order 2 ;
+    # sh:group <#name> ;
     sh:path sh:targetClass ;
     sh:nodeKind sh:IRI ;
     dash:editor dash:URIEditor ;
@@ -37,6 +42,7 @@
 
   sh:property [
     sh:name "Closed"@en, "Gesloten"@nl ;
+    sh:description "Wanneer de vorm gesloten is, worden onbekende eigenschappen niet toegelaten."@nl, "When the shape is closed, it does not allow unknown properties."@en ;
     sh:maxCount 1;
     sh:datatype xsd:boolean ;
     sh:group <#booleans>;
@@ -47,6 +53,7 @@
     sh:name "Abstract"@en, "Abstract"@nl ;
     sh:maxCount 1;
     sh:datatype xsd:boolean ;
+    sh:description "An abstract shape is often a sub shape, something you do not want to list or create a stand alone version for."@en, "Een abstracte vorm is vaak een subvorm. U wilt deze vorm niet opsommen en er geen aparte versie van maken."@nl ;
     sh:group <#booleans>;
     sh:path dash:abstract ;
   ];
@@ -61,7 +68,9 @@
     sh:name "Stem"@en, "Stam"@nl ;
     sh:minCount 1;
     sh:maxCount 1;
-    sh:group <#stem-icon> ;
+    sh:order 3;
+    sh:description "Het gedeelte na het domein wordt gebruikt voor het maken van de mappenstructuur."@nl, "The section after the domain is used for creating the folder structure."@en ;
+    # sh:group <#stem-icon> ;
     sh:path dash:stem ;
     dash:editor dash:URIEditor ;
   ];
@@ -70,7 +79,8 @@
     sh:name "Icon"@en, "Icoon"@nl ;
     sh:minCount 1;
     sh:maxCount 1;
-    sh:group <#stem-icon> ;
+    sh:order 4;
+    # sh:group <#stem-icon> ;
     sh:path stsr:icon ;
     sh:datatype <https://iconify.design> ;
   ];
@@ -80,12 +90,14 @@
     sh:minCount 1;
     sh:path sh:property ;
     sh:nodeKind sh:BlankNode ;
+    sh:description "Dit zijn de eigenschappen van het type. De velden in het formulier."@nl, "These are the properties of the type. The fields in the form."@en ;
     sh:node <#propertyShape>;
   ];
 
   sh:property [
     sh:name "Name pattern"@en, "Naam patroon"@nl ;
     sh:minCount 1;
+    sh:description "De naam van het bestand wordt gegenereerd uit de volgende waarden."@nl, "The file name is generated from the following values."@en ;
     sh:path ( stsr:filenameSuggestion [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
     sh:in [
       sh:select """
@@ -105,7 +117,7 @@
 
 <#booleans>
 	a sh:PropertyGroup ;
-	sh:order 3 .
+	sh:order 5 .
 
 <#stem-icon>
 	a sh:PropertyGroup ;
@@ -123,7 +135,7 @@
 <#cardinality>
 	a sh:PropertyGroup ;
   sh:group <#propertyShapeGroup> ;
-	sh:order 4 .
+	sh:order 9 .
 
 <#misc>
 	a sh:PropertyGroup ;
@@ -150,9 +162,11 @@
   sh:property [
     sh:name "Name"@en, "Naam"@nl ;
     sh:minCount 1;
+    sh:order 1;
 		sh:uniqueLang true ;
-    sh:group <#propertyName> ;
+    sh:group <#propertyShapeGroup> ;
     sh:path sh:name ;
+    sh:description "De naam van deze eigenschap zoals deze getoond wordt in het formulier."@nl, "The name of this property as it will appear in the form."@en ;
     sh:datatype rdf:langString ;
   ];
 
@@ -165,24 +179,28 @@
   sh:property [
     sh:name "Order"@en, "Volgorde"@nl ;
     sh:maxCount 1;
-    sh:group <#misc> ;
+    sh:order 8;
+    stsr:nestedOrder true ;
+    sh:group <#propertyShapeGroup> ;
     sh:datatype xsd:decimal ;
     sh:path sh:order ;
   ];
 
-  sh:property [
-    sh:name "Closed"@en, "Gesloten"@nl ;
-    sh:maxCount 1;
-    sh:group <#misc> ;
-    sh:datatype xsd:boolean ;
-    sh:path sh:closed ;
-  ];
+  # sh:property [
+  #   sh:name "Closed"@en, "Gesloten"@nl ;
+  #   sh:maxCount 1;
+  #   sh:order 4;
+  #   sh:group <#propertyShapeGroup> ;
+  #   sh:datatype xsd:boolean ;
+  #   sh:path sh:closed ;
+  # ];
 
   sh:property [
     sh:name "Description"@en, "Omschrijving"@nl ;
     dash:singleLine false ;
-    sh:order 5;
 		sh:uniqueLang true ;
+    sh:description "De beschrijving van deze eigenschap, wordt getoond in het formulier."@nl, "The description of this property is shown in the form."@en ;
+    sh:order 10;
     sh:group <#propertyShapeGroup> ;
     sh:path sh:description ;
     sh:datatype rdf:langString ;
@@ -191,8 +209,10 @@
   sh:property [
     sh:name "Path"@en, "Pad"@nl ;
     sh:minCount 1;
-    sh:group <#propertyName> ;
+    sh:description "Het predicaat voor deze eigenschap."@nl, "The predicate for this property."@en ;
+    sh:group <#propertyShapeGroup> ;
     sh:maxCount 1;
+    sh:order 2;
     dash:editor dash:URIEditor ;
     sh:path sh:path ;
     sh:nodeKind sh:IRI ;
@@ -202,6 +222,7 @@
     sh:name "Minimum count"@en, "Minimaal aantal"@nl ;
     sh:group <#cardinality> ;
     sh:maxCount 1;
+    sh:order 1;
     sh:path sh:minCount ;
     sh:datatype xsd:integer ;
   ];
@@ -209,6 +230,7 @@
   sh:property [
     sh:name "Maximum count"@en, "Maximaal aantal"@nl ;
     sh:maxCount 1;
+    sh:order 2;
     sh:group <#cardinality> ;
     sh:path sh:maxCount ;
     sh:datatype xsd:integer ;
@@ -216,8 +238,9 @@
 
   sh:property [
     sh:name "Group"@en, "Groep"@nl ;
-    sh:group <#details> ;
+    sh:group <#propertyShapeGroup> ;
     sh:maxCount 1;
+    sh:order 6;
     sh:path sh:group ;
     sh:in [
       sh:select """
@@ -237,8 +260,9 @@
 
   sh:property [
     sh:name "Data type"@en, "Data type"@nl ;
-    sh:group <#details> ;
+    sh:group <#propertyShapeGroup> ;
     sh:maxCount 1;
+    sh:order 5;
     sh:path sh:datatype ;
     sh:in (
       xsd:string xsd:float rdf:langString
@@ -246,7 +270,7 @@
   ];
 .
 
-xsd:string rdfs:label "Text" .
-xsd:integer rdfs:label "Integer" .
-xsd:float rdfs:label "Float" .
-rdf:langString rdfs:label "Multilingual text" .
+xsd:string rdfs:label "Text"@en, "Tekst"@nl .
+xsd:integer rdfs:label "Integer"@en, "Nummer"@nl .
+xsd:decimal rdfs:label "Decimal"@en, "Decimaal"@nl .
+rdf:langString rdfs:label "Multilingual text"@en, "Meertalige tekst"@nl .

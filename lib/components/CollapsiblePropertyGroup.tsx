@@ -1,5 +1,6 @@
+import { Icon } from '@iconify-icon/react'
 import { language } from '@rdfjs/score'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
 import { sh, stsr } from '../core/namespaces'
@@ -12,6 +13,7 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
   const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
   const properties = getProperties({ ...props, dataset })
   const [expanded, setExpanded] = useState(false)
+  const wrapper = useRef<HTMLDivElement>(null)
 
   const groupLabelPath = props.group.out(stsr('groupLabelPath')).list()
   let label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName
@@ -35,16 +37,22 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
       .join('')
   }
 
+  useEffect(() => {
+    if (expanded) wrapper.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [expanded])
+
   return groupHasContents(props.group, props.shapePointer) ? (
     <div
+      ref={wrapper}
       // style={{ '--primary-rgb': '117, 0, 0', '--secondary-rgb': '151, 140, 151' } as any}
       className={`collapsible-group ${localName} ${expanded ? 'expanded' : ''}`}
       data-term={props.group.term.value}
     >
       <button className="title" onClick={() => setExpanded(!expanded)}>
+        <Icon className="iconify" icon={expanded ? 'cuida:caret-down-outline' : 'cuida:caret-right-outline'} />
         {label}
       </button>
-      {expanded ? properties : null}
+      {expanded ? <div className="collapsible-group-contents">{properties}</div> : null}
     </div>
   ) : null
 }

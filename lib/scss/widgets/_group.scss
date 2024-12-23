@@ -9,6 +9,9 @@
 }
 
 .collapsible-group {
+  border-radius: var(--input-radius);
+  transition: background-color .3s ease-in-out;
+
   .title {
     text-align: left;
     appearance: none;
@@ -18,15 +21,34 @@
     font-weight: 300;
     font-size: .9em;
     margin: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
     width: 100%;
-    padding: 0;
+    transition: padding .3s ease-in-out, margin .3s ease-in-out;
+    padding: .5em;
+
+    .iconify {
+      margin-right: .6em;
+    }
+  }
+
+  &:not(.expanded) .title:hover {
+    background-color: rgba(var(--primary-rgb), 0.1);
+  }
+
+  .collapsible-group-contents {
+    padding: .5em;
   }
 
   &.expanded {
     background-color: rgba(var(--primary-rgb), 0.1);
 
     .title {
-      margin-bottom: 1em;
+      padding-top: 1.1em;
+      margin-bottom: .6em;
     }
   }
 }
@@ -34,12 +56,8 @@
 .editor.details {
   padding: 0;
 
-  >.node>* {
-    padding: .5em;
-  }
-
   >.button {
     margin-inline-end: 1em;
-    margin-top: 1em;
+    margin-top: .75em;
   }
 }

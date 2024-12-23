@@ -69,7 +69,7 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
 
           return (
             <option key={term.value} value={term.value}>
-              {label ?? term.value}
+              {label ?? term.value.split(/\#|\//g).pop()!}
             </option>
           )
         })

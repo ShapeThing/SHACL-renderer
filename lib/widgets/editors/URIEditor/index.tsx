@@ -1,3 +1,4 @@
+import { Icon } from '@iconify-icon/react/dist/iconify.mjs'
 import factory from '@rdfjs/data-model'
 import { useContext } from 'react'
 import { mainContext } from '../../../core/main-context'
@@ -57,6 +58,12 @@ export default function URIEditor({ term, setTerm }: WidgetProps) {
         }}
         value={value}
       />
+
+      {term.value ? (
+        <a className="link" href={term.value} target="_blank">
+          <Icon icon={'mdi:external-link'} />
+        </a>
+      ) : null}
     </div>
   )
 }
