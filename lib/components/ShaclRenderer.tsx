@@ -1,3 +1,4 @@
+import { Localized } from '@fluent/react'
 import { write } from '@jeswr/pretty-turtle/dist'
 import { Suspense, useContext, useEffect, useState } from 'react'
 import { fetchContext } from '../core/fetchContext'
@@ -62,7 +63,7 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any,
                 props.children(submit)
               ) : ['edit', 'inline-edit'].includes(context.mode) ? (
                 <button onClick={submit} className="button primary">
-                  Save
+                  <Localized id="save">Save</Localized>
                 </button>
               ) : null}
             </div>

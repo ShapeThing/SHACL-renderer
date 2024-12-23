@@ -1,3 +1,4 @@
+import { Localized } from '@fluent/react'
 import { Icon } from '@iconify-icon/react'
 import { ReactNode, useContext, useState } from 'react'
 import { languageContext } from '../core/language-context'
@@ -58,7 +59,7 @@ export default function LanguageAwareTabs({ children }: Props) {
           ) : null}
 
           <button className="add-language button secondary" onClick={() => setIsCreatingLanguage(true)}>
-            Add language
+            <Localized id="add-language">Add language</Localized>
           </button>
         </div>
       ) : null}
