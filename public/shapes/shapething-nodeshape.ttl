@@ -89,8 +89,9 @@
     sh:name "Properties"@en, "Eigenschappen"@nl ;
     sh:minCount 1;
     sh:path sh:property ;
+    stsr:nestedOrder sh:order ;
     sh:nodeKind sh:BlankNode ;
-    sh:description "Dit zijn de eigenschappen van het type. De velden in het formulier."@nl, "These are the properties of the type. The fields in the form."@en ;
+    sh:description "Dit zijn de eigenschappen van het type. De velden in het formulier. Je kunt de volgorde aanpassen door te slepen."@nl, "These are the properties of the type. The fields in the form. You can change the order by dragging."@en ;
     sh:node <#propertyShape>;
   ];
 
@@ -180,7 +181,6 @@
     sh:name "Order"@en, "Volgorde"@nl ;
     sh:maxCount 1;
     sh:order 8;
-    stsr:nestedOrder true ;
     sh:group <#propertyShapeGroup> ;
     sh:datatype xsd:decimal ;
     sh:path sh:order ;

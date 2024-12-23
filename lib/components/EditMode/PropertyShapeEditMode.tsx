@@ -7,7 +7,7 @@ import { useContext, useEffect } from 'react'
 import { ReactSortable } from 'react-sortablejs'
 import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
-import { dash, sh } from '../../core/namespaces'
+import { dash, sh, stsr, xsd } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { validationContext } from '../../core/validation-context'
 import { deleteTermAndDescendants } from '../../helpers/deleteTermAndDescendants'
@@ -37,7 +37,12 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const { activeContentLanguage } = useContext(languageContext)
   const { validate } = useContext(validationContext)
 
-  const isList = isOrderedList(path)
+  const isRdfList = isOrderedList(path)
+
+  const nestedOrderPredicate = property.out(stsr('nestedOrder')).term
+  const isListWithOrderPredicate = !!nestedOrderPredicate
+  const isList = isRdfList || isListWithOrderPredicate
+
   const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
   const defaultWidget = scoreWidgets(editors, items, property, dash('editor'))
   const sortableState = items.map((item: Grapoi) => ({ id: JSON.stringify(item.term), term: item.term }))
@@ -47,7 +52,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const setItems = () => {
     const oldTerms = items.terms
     const newItems = nodeDataPointer.executeAll(path)
-    if (!isList) sortPointersStable(newItems, oldTerms)
+    if (!isRdfList && !isListWithOrderPredicate) sortPointersStable(newItems, oldTerms)
     realSetItems(newItems)
     validate()
   }
@@ -58,17 +63,25 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
     if (oldStateSerialized !== newStateSerialized) {
       const pointer = nodeDataPointer.executeAll([path[0]])
-      replaceList(
-        newState.map((item: Grapoi) => item.term),
-        pointer
-      )
+      if (isListWithOrderPredicate) {
+        newState.forEach((item: any, index: number) => {
+          const pointer = nodeDataPointer.node(item.term)
+          pointer.deleteOut(sh('order'))
+          pointer.addOut(sh('order'), factory.literal((index + 1).toString(), xsd('decimal')))
+        })
+      } else {
+        replaceList(
+          newState.map((item: Grapoi) => item.term),
+          pointer
+        )
+      }
       const newItems = nodeDataPointer.executeAll(path)
       realSetItems(newItems)
       validate()
     }
   }
 
-  const addObject = useCreateAddObject(editors, property, items, nodeDataPointer, setItems, isList)
+  const addObject = useCreateAddObject(editors, property, items, nodeDataPointer, setItems, isRdfList)
 
   useEffect(() => {
     if (items.ptrs.length === 0) addObject({ activeContentLanguage })
@@ -82,6 +95,12 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
   const childItems = [...items]
     .sort((a: Grapoi, b: Grapoi) => {
+      if (isListWithOrderPredicate) {
+        const aOrder = parseFloat(a.out(nestedOrderPredicate).value ?? '0')
+        const bOrder = parseFloat(b.out(nestedOrderPredicate).value ?? '0')
+        return aOrder - bOrder
+      }
+
       const aTermSerialized = JSON.stringify(a.term)
       const aTerm = sortableState.find(sortableItem => sortableItem.id === aTermSerialized)
       const aIndex = aTerm ? sortableState.indexOf(aTerm) : 1000
@@ -111,7 +130,8 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
         <PropertyObjectEditMode
           {...props}
           // Use the property so that we have proper Component caching
-          key={property.term.value + ':' + index}
+          // TODO find out why it only works when the cache is broken
+          key={isListWithOrderPredicate ? performance.now() + index : property.term.value + ':' + index}
           data={item}
           items={items}
           isList={isList}
@@ -119,7 +139,9 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
           errors={errorMessages}
           rerenderAfterManipulatingPointer={setItems}
           setTerm={(term: Term) => {
-            if (isList) {
+            if (isListWithOrderPredicate) return // TODO
+
+            if (isRdfList) {
               const pointer = nodeDataPointer.executeAll([path[0]])
               replaceList(
                 items.map((innerItem: Grapoi) => {
@@ -140,7 +162,9 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
             setItems()
           }}
           deleteTerm={() => {
-            if (isList) {
+            if (isListWithOrderPredicate) return // TODO
+
+            if (isRdfList) {
               const pointer = nodeDataPointer.executeAll([path[0]])
               replaceList(
                 items.map((item: Grapoi) => item.term).filter((innerTerm: Term) => !innerTerm.equals(item.term)),
