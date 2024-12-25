@@ -50,7 +50,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const uniqueLang = property.out(sh('uniqueLang')).term?.value === 'true'
 
   const setItems = () => {
-    const oldTerms = items.terms
+    const oldTerms = items.map((i: Grapoi) => i.term)
     const newItems = nodeDataPointer.executeAll(path)
     if (!isRdfList && !isListWithOrderPredicate) sortPointersStable(newItems, oldTerms)
     realSetItems(newItems)
@@ -62,7 +62,6 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
     const newStateSerialized = newState.map((item: any) => JSON.stringify(item.term)).join('')
 
     if (oldStateSerialized !== newStateSerialized) {
-      const pointer = nodeDataPointer.executeAll([path[0]])
       if (isListWithOrderPredicate) {
         newState.forEach((item: any, index: number) => {
           const pointer = nodeDataPointer.node(item.term)
@@ -70,12 +69,24 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
           pointer.addOut(sh('order'), factory.literal((index + 1).toString(), xsd('decimal')))
         })
       } else {
+        const pointer = nodeDataPointer.executeAll([path[0]])
         replaceList(
           newState.map((item: Grapoi) => item.term),
           pointer
         )
       }
       const newItems = nodeDataPointer.executeAll(path)
+
+      if (isListWithOrderPredicate) {
+        newItems.ptrs.sort((aPtr: any, bPtr: any) => {
+          const a = nodeDataPointer.node(aPtr.term)
+          const b = nodeDataPointer.node(bPtr.term)
+          const aOrder = parseFloat(a.out(nestedOrderPredicate).value ?? '0')
+          const bOrder = parseFloat(b.out(nestedOrderPredicate).value ?? '0')
+          return aOrder - bOrder
+        })
+      }
+
       realSetItems(newItems)
       validate()
     }
@@ -93,94 +104,95 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
   const emptyFallback = !items.ptrs.length ? defaultWidget : null
 
-  const childItems = [...items]
-    .sort((a: Grapoi, b: Grapoi) => {
-      if (isListWithOrderPredicate) {
-        const aOrder = parseFloat(a.out(nestedOrderPredicate).value ?? '0')
-        const bOrder = parseFloat(b.out(nestedOrderPredicate).value ?? '0')
-        return aOrder - bOrder
-      }
+  const sortedItems = [...items].sort((a: Grapoi, b: Grapoi) => {
+    if (isListWithOrderPredicate) {
+      const aOrder = parseFloat(a.out(nestedOrderPredicate).value ?? '0')
+      const bOrder = parseFloat(b.out(nestedOrderPredicate).value ?? '0')
+      return aOrder - bOrder
+    }
 
-      const aTermSerialized = JSON.stringify(a.term)
-      const aTerm = sortableState.find(sortableItem => sortableItem.id === aTermSerialized)
-      const aIndex = aTerm ? sortableState.indexOf(aTerm) : 1000
+    const aTermSerialized = JSON.stringify(a.term)
+    const aTerm = sortableState.find(sortableItem => sortableItem.id === aTermSerialized)
+    const aIndex = aTerm ? sortableState.indexOf(aTerm) : 1000
 
-      const bTermSerialized = JSON.stringify(b.term)
-      const bTerm = sortableState.find(sortableItem => sortableItem.id === bTermSerialized)
-      const bIndex = bTerm ? sortableState.indexOf(bTerm) : 1000
+    const bTermSerialized = JSON.stringify(b.term)
+    const bTerm = sortableState.find(sortableItem => sortableItem.id === bTermSerialized)
+    const bIndex = bTerm ? sortableState.indexOf(bTerm) : 1000
 
-      return aIndex - bIndex
-    })
-    .map((item: Grapoi, index: number) => {
-      const itemErrors = errors?.filter((error: any) => error.value?.term.equals(item.term)) ?? []
-      const errorMessages = itemErrors.flatMap(error =>
-        error.message
-          .map((message: any) => message.value)
-          .map((message: string) => {
-            const IRIs = [...message.matchAll(/\<(.*)\>/g)].map(iriMatch => iriMatch[1])
-            const compactedIRIs = IRIs.map(IRI => [IRI, jsonLdContext.compactIri(IRI, true)])
-            for (const [expanded, compacted] of compactedIRIs) {
-              message = message.replaceAll(`<${expanded}>`, `<span class="iri" title="${expanded}">${compacted}</span>`)
-            }
-            return message
-          })
-      )
+    return aIndex - bIndex
+  })
 
-      return (
-        <PropertyObjectEditMode
-          {...props}
-          // Use the property so that we have proper Component caching
-          // TODO find out why it only works when the cache is broken
-          key={isListWithOrderPredicate ? performance.now() + index : property.term.value + ':' + index}
-          data={item}
-          items={items}
-          isList={isList}
-          index={index}
-          errors={errorMessages}
-          rerenderAfterManipulatingPointer={setItems}
-          setTerm={(term: Term) => {
-            if (isListWithOrderPredicate) return // TODO
+  const childItems = sortedItems.map((item: Grapoi, index: number) => {
+    const itemErrors = errors?.filter((error: any) => error.value?.term.equals(item.term)) ?? []
+    const errorMessages = itemErrors.flatMap(error =>
+      error.message
+        .map((message: any) => message.value)
+        .map((message: string) => {
+          const IRIs = [...message.matchAll(/\<(.*)\>/g)].map(iriMatch => iriMatch[1])
+          const compactedIRIs = IRIs.map(IRI => [IRI, jsonLdContext.compactIri(IRI, true)])
+          for (const [expanded, compacted] of compactedIRIs) {
+            message = message.replaceAll(`<${expanded}>`, `<span class="iri" title="${expanded}">${compacted}</span>`)
+          }
+          return message
+        })
+    )
 
-            if (isRdfList) {
-              const pointer = nodeDataPointer.executeAll([path[0]])
-              replaceList(
-                items.map((innerItem: Grapoi) => {
-                  if (innerItem.term.equals(item.term)) return term
-                  return innerItem.term
-                }),
-                pointer
-              )
-              const newItems = nodeDataPointer.executeAll(path)
-              realSetItems(newItems)
-              validate()
-            } else {
-              const [quad] = [...item.quads()]
-              if (quad.object.equals(term)) return
-              dataset.delete(quad)
-              dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
-            }
-            setItems()
-          }}
-          deleteTerm={() => {
-            if (isListWithOrderPredicate) return // TODO
+    return (
+      <PropertyObjectEditMode
+        {...props}
+        key={
+          isListWithOrderPredicate
+            ? property.term.value + ':' + index + (item.out(sh('order')).value ?? '0') + item.term.value
+            : property.term.value + ':' + index
+        }
+        data={item}
+        items={items}
+        isList={isList}
+        index={index}
+        errors={errorMessages}
+        rerenderAfterManipulatingPointer={setItems}
+        setTerm={(term: Term) => {
+          // When this is a nested predicate list there are no mutations.
+          if (isListWithOrderPredicate) return
 
-            if (isRdfList) {
-              const pointer = nodeDataPointer.executeAll([path[0]])
-              replaceList(
-                items.map((item: Grapoi) => item.term).filter((innerTerm: Term) => !innerTerm.equals(item.term)),
-                pointer
-              )
-              const newItems = nodeDataPointer.executeAll(path)
-              realSetItems(newItems)
-              validate()
-            } else {
-              deleteTermAndDescendants(item)
-            }
-            setItems()
-          }}
-        />
-      )
-    })
+          if (isRdfList) {
+            const pointer = nodeDataPointer.executeAll([path[0]])
+            replaceList(
+              items.map((innerItem: Grapoi) => {
+                if (innerItem.term.equals(item.term)) return term
+                return innerItem.term
+              }),
+              pointer
+            )
+            const newItems = nodeDataPointer.executeAll(path)
+            realSetItems(newItems)
+            validate()
+          } else {
+            const [quad] = [...item.quads()]
+            if (quad.object.equals(term)) return
+            dataset.delete(quad)
+            dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
+          }
+          setItems()
+        }}
+        deleteTerm={() => {
+          if (isRdfList) {
+            const pointer = nodeDataPointer.executeAll([path[0]])
+            replaceList(
+              items.map((item: Grapoi) => item.term).filter((innerTerm: Term) => !innerTerm.equals(item.term)),
+              pointer
+            )
+            const newItems = nodeDataPointer.executeAll(path)
+            realSetItems(newItems)
+            validate()
+          } else {
+            deleteTermAndDescendants(item)
+          }
+          setItems()
+        }}
+      />
+    )
+  })
 
   return (
     <PropertyElement cssClass={errors?.length ? 'has-error' : ''} property={property}>
