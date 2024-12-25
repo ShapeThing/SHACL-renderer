@@ -1,6 +1,10 @@
 .editor.booleanselect {
-    input {
-        margin-inline-end: auto;
+    .input {
         flex: 0 0 auto;
+    }
+
+    .label {
+        cursor: pointer;
+        font-style: italic;
     }
 }

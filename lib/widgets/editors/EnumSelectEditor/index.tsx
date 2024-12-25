@@ -1,47 +1,56 @@
 import factory from '@rdfjs/data-model'
 import { language } from '@rdfjs/score'
-import { NamedNode, Quad_Object, Quad_Subject, Term } from '@rdfjs/types'
+import { DatasetCore, NamedNode, Quad_Object, Quad_Subject, Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { Store } from 'n3'
-import { useContext, useEffect, useState } from 'react'
+import { useContext } from 'react'
 import { languageContext } from '../../../core/language-context'
 import { rdfs, sh } from '../../../core/namespaces'
+import { wrapPromise } from '../../../helpers/wrapPromise'
 import { WidgetProps } from '../../widgets-context'
 
-export default function EnumSelectEditor({ property, term, setTerm, dataset }: WidgetProps) {
-  const [options, setOptions] = useState<Term[]>([])
-  const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
+const queries: Map<string, any> = new Map()
 
-  useEffect(() => {
-    const usesSparql: Term | undefined = property.out(sh('in')).out(sh('select')).term
+const processDynamicShacl = async (query: string, dataset: DatasetCore, shapesDataset: DatasetCore) => {
+  const { QueryEngine } = await import('@comunica/query-sparql')
+  const engine = new QueryEngine()
+  const response = await engine.queryBindings(query, { sources: [new Store([...dataset])] })
+  const bindings = await response.toArray()
 
-    if (!usesSparql) {
-      /** @ts-ignore */
-      setOptions([...property.out(sh('in')).list()].map((pointer: Grapoi) => pointer.term))
-    } else {
-      // See https://datashapes.org/dynamic.html
-      ;(async () => {
-        const { QueryEngine } = await import('@comunica/query-sparql')
-        const engine = new QueryEngine()
-        const response = await engine.queryBindings(usesSparql.value, { sources: [new Store([...dataset])] })
-        const bindings = await response.toArray()
+  for (const binding of bindings) {
+    const label = binding.get('label')
+    const value = binding.get('value')
 
-        for (const binding of bindings) {
-          const label = binding.get('label')
-          const value = binding.get('value')
-          const shapesDataset = property.ptrs[0].dataset
-
-          if (value && label) {
-            // We add these labels to the shapes graph.
-            shapesDataset.add(factory.quad(value as Quad_Subject, rdfs('label'), label as Quad_Object))
-          }
-        }
-        setOptions([
-          ...new Map(bindings.map(binding => [binding.get('value')?.value, binding.get('value') as NamedNode])).values()
-        ])
-      })()
+    if (value && label) {
+      // We add these labels to the shapes graph.
+      shapesDataset.add(factory.quad(value as Quad_Subject, rdfs('label'), label as Quad_Object))
     }
-  }, [activeInterfaceLanguage, activeContentLanguage])
+  }
+
+  return [
+    ...new Map(bindings.map(binding => [binding.get('value')?.value, binding.get('value') as NamedNode])).values()
+  ]
+}
+
+const getOptions = (property: Grapoi, dataset: DatasetCore, shapesDataset: DatasetCore) => {
+  const usesSparql: Term | undefined = property.out(sh('in')).out(sh('select')).term
+  const query = usesSparql?.value
+
+  if (query) {
+    if (!queries.has(query)) {
+      const promise = processDynamicShacl(query, dataset, shapesDataset)
+      queries.set(query, wrapPromise(promise))
+    }
+    return queries.get(query).read()
+  } else {
+    /** @ts-ignore */
+    return [...property.out(sh('in')).list()].map((pointer: Grapoi) => pointer.term)
+  }
+}
+
+export default function EnumSelectEditor({ property, term, setTerm, dataset }: WidgetProps) {
+  const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
+  const options = getOptions(property, dataset, property.ptrs[0].dataset)
 
   return (
     <select

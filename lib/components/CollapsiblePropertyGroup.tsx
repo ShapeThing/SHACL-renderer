@@ -52,7 +52,8 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
         <Icon className="iconify" icon={expanded ? 'cuida:caret-down-outline' : 'cuida:caret-right-outline'} />
         {label}
       </button>
-      {expanded ? <div className="collapsible-group-contents">{properties}</div> : null}
+      {/* We render this always, if we would only render when needed, Suspense items would trigger a re-render which conflict with expanding. */}
+      <div className="collapsible-group-contents">{properties}</div>
     </div>
   ) : null
 }

@@ -39,16 +39,27 @@
     background-color: rgba(var(--primary-rgb), 0.1);
   }
 
+  &.expanded {
+    .title {
+      border-bottom: 1px solid #55555560;
+    }
+  }
+
   .collapsible-group-contents {
     padding: .5em;
+    display: none;
   }
 
   &.expanded {
-    background-color: rgba(var(--primary-rgb), 0.1);
+    background-color: #dfe8e8;
 
     .title {
-      padding-top: 1.1em;
-      margin-bottom: .6em;
+      background-color: #dfe8e8;
+      padding-block: 1.1em;
+    }
+
+    .collapsible-group-contents {
+      display: block;
     }
   }
 }
