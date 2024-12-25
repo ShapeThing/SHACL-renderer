@@ -1,3 +1,3 @@
 interface-language = Interface taal
-add-language = Taal toevoegen
+add-language = Content taal toevoegen
 save = opslaan

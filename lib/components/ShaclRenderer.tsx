@@ -9,7 +9,6 @@ import ValidationContextProvider from '../core/validation-context'
 import { cleanUpDataset } from '../helpers/cleanUpDataset'
 import { createCidFromProps } from '../helpers/createCidFromProps'
 import { wrapPromise } from '../helpers/wrapPromise'
-import InterfaceLanguagePicker from './InterfaceLanguagePicker'
 import LanguageAwareTabs from './LanguageAwareTabs'
 import NodeShape from './NodeShape'
 import ShapePicker from './ShapePicker'
@@ -54,7 +53,6 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any,
     <MainContextProvider context={context}>
       <LanguageProvider>
         <ValidationContextProvider>
-          <InterfaceLanguagePicker />
           <LanguageAwareTabs>
             {showShapePicker ? <ShapePicker /> : null}
             <NodeShape {...context} key="root" />

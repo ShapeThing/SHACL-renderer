@@ -1,3 +1,3 @@
 interface-language = Interface language
-add-language = Add language
+add-language = Add content language
 save = save

@@ -15,6 +15,11 @@
     color: var(--secondary);
   }
 
+  &.small {
+    padding: 6px 8px;
+    font-size: .6em;
+  }
+
   &.primary {
     color: white;
     background-color: var(--primary);
