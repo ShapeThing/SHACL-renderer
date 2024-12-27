@@ -100,12 +100,18 @@
   sh:property [
     sh:name "Name pattern"@en, "Naam patroon"@nl ;
     sh:minCount 1;
+    sh:path ( stsr:filenameSuggestion [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+    sh:description "De naam van het bestand wordt gegenereerd uit de volgende waarden."@nl, "The file name is generated from the following values."@en ;
 
 		sh:or (
 			[
 				sh:datatype xsd:string ;
+        dash:editor dash:TextFieldEditor ;
+        sh:nodeKind sh:Literal ;
 			]
 			[
+        sh:nodeKind sh:IRI ;
+        dash:editor dash:EnumSelectEditor ;
         sh:in [
           sh:select """
             prefix sh: <http://www.w3.org/ns/shacl#>
@@ -120,9 +126,6 @@
         ] ;
 			]
 		) ;
-
-    sh:description "De naam van het bestand wordt gegenereerd uit de volgende waarden."@nl, "The file name is generated from the following values."@en ;
-    sh:path ( stsr:filenameSuggestion [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
   ];
 
 .

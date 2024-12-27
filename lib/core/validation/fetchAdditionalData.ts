@@ -1,0 +1,31 @@
+import { DatasetCore } from '@rdfjs/types'
+import { Grapoi } from 'grapoi'
+import parsePath from '../../helpers/parsePath'
+import { sh, stsr } from '../namespaces'
+
+export const fetchAdditionalData = async (
+  shapePointer: Grapoi,
+  dataset: DatasetCore,
+  dataPointer: Grapoi,
+  fetch: (typeof globalThis)['fetch']
+) => {
+  const properties = shapePointer.out(sh('property'))
+
+  for (const property of properties) {
+    const endpoint = property.out(stsr('endpoint')).value
+
+    if (endpoint) {
+      const fetchDataAccordingToProperty = (await import('../fetchDataAccordingToProperty'))
+        .fetchDataAccordingToProperty
+      const path = parsePath(property.out(sh('path')))
+      const dataItemPointer = dataPointer.executeAll(path)
+      const additionalQuads = await fetchDataAccordingToProperty({
+        nodeShape: property,
+        term: dataItemPointer.term,
+        endpoint,
+        fetch
+      })
+      for (const quad of additionalQuads) dataset.add(quad)
+    }
+  }
+}

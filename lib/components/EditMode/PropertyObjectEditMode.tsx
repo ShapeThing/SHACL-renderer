@@ -20,8 +20,10 @@ type PropertyObjectEditModeProps = {
 }
 
 export default function PropertyObjectEditMode(props: PropertyObjectEditModeProps) {
-  const { data, property, items, errors, setTerm, deleteTerm } = props
+  const { data, items, errors, setTerm, deleteTerm } = props
+  let property = props.property
   const { editors } = useContext(widgetsContext)
+
   const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
   const [widgetConfiguration, setWidgetConfiguration] = useState<AdditionalWidgetConfiguration>()
   const [isDeleting, setIsDeleting] = useState(false)

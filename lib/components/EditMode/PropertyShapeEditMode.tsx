@@ -9,7 +9,8 @@ import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
 import { dash, sh, stsr, xsd } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
-import { validationContext } from '../../core/validation-context'
+import { validationContext } from '../../core/validation/validation-context'
+import { allLogicalPointers } from '../../helpers/allLogicalPointers'
 import { deleteTermAndDescendants } from '../../helpers/deleteTermAndDescendants'
 import { isOrderedList } from '../../helpers/isOrderedList'
 import { replaceList } from '../../helpers/replaceList'
@@ -31,7 +32,7 @@ type PropertyShapeEditModeProps = {
 }
 
 export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps) {
-  const { property, nodeDataPointer, errors, path } = props
+  const { nodeDataPointer, errors, path } = props
   const { editors } = useContext(widgetsContext)
   const { jsonLdContext, data: dataset } = useContext(mainContext)
   const { activeContentLanguage } = useContext(languageContext)
@@ -39,15 +40,15 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
   const isRdfList = isOrderedList(path)
 
-  const nestedOrderPredicate = property.out(stsr('nestedOrder')).term
+  const nestedOrderPredicate = props.property.out(stsr('nestedOrder')).term
   const isListWithOrderPredicate = !!nestedOrderPredicate
   const isList = isRdfList || isListWithOrderPredicate
 
   const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
-  const defaultWidget = scoreWidgets(editors, items, property, dash('editor'))
+  const defaultWidget = scoreWidgets(editors, items, props.property, dash('editor'))
   const sortableState = items.map((item: Grapoi) => ({ id: JSON.stringify(item.term), term: item.term }))
 
-  const uniqueLang = property.out(sh('uniqueLang')).term?.value === 'true'
+  const uniqueLang = props.property.out(sh('uniqueLang')).term?.value === 'true'
 
   const setItems = () => {
     const oldTerms = items.map((i: Grapoi) => i.term)
@@ -92,14 +93,14 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
     }
   }
 
-  const addObject = useCreateAddObject(editors, property, items, nodeDataPointer, setItems, isRdfList)
+  const addObject = useCreateAddObject(editors, props.property, items, nodeDataPointer, setItems, isRdfList)
 
   useEffect(() => {
     if (items.ptrs.length === 0) addObject({ activeContentLanguage })
   }, [items])
 
-  const maxCount = property.out(sh('maxCount')).value
-    ? parseInt(property.out(sh('maxCount')).value.toString())
+  const maxCount = props.property.out(sh('maxCount')).value
+    ? parseInt(props.property.out(sh('maxCount')).value.toString())
     : Infinity
 
   const emptyFallback = !items.ptrs.length ? defaultWidget : null
@@ -137,13 +138,35 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
         })
     )
 
+    let property = props.property.clone({})
+    const allPointers = allLogicalPointers(property)
+
+    // sh:or support specifically for the current item.
+    if (allPointers.length > 1) {
+      const filteredPointers = allPointers.filter(pointer => {
+        // TODO add other checks to invalidate certain property shapes.
+        const nodeKind = pointer.out(sh('nodeKind')).term
+        if (nodeKind?.equals(sh('IRI')) && item?.term?.termType !== 'NamedNode') return false
+        if (nodeKind?.equals(sh('Literal')) && item?.term?.termType !== 'Literal') return false
+
+        return true
+      })
+
+      if (filteredPointers.length === 1) {
+        property = filteredPointers[0]
+      } else {
+        throw new Error('Not yet supported')
+      }
+    }
+
     return (
       <PropertyObjectEditMode
         {...props}
+        property={property}
         key={
           isListWithOrderPredicate
-            ? property.term.value + ':' + index + (item.out(sh('order')).value ?? '0') + item.term.value
-            : property.term.value + ':' + index
+            ? property.values.join(':') + ':' + index + (item.out(sh('order')).value ?? '0') + item.term.value
+            : property.values.join(':') + ':' + index
         }
         data={item}
         items={items}
@@ -195,7 +218,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   })
 
   return (
-    <PropertyElement cssClass={errors?.length ? 'has-error' : ''} property={property}>
+    <PropertyElement cssClass={errors?.length ? 'has-error' : ''} property={props.property}>
       <div className="editors">
         {isList ? (
           <ReactSortable

@@ -44,7 +44,7 @@ const getOptions = (property: Grapoi, dataset: DatasetCore, shapesDataset: Datas
     return queries.get(query).read()
   } else {
     /** @ts-ignore */
-    return [...property.out(sh('in')).list()].map((pointer: Grapoi) => pointer.term)
+    return [...(property.out(sh('in')).list() ?? [])].map((pointer: Grapoi) => pointer.term)
   }
 }
 

@@ -26,7 +26,7 @@ export default function PropertyElement({
   const label =
     givenLabel ??
     property?.out([sh('name'), rdfs('label')]).best(language([activeInterfaceLanguage, '', '*']))?.value ??
-    property?.out(sh('path')).value.split(/\#|\//g).pop()
+    property?.out(sh('path')).value?.split(/\#|\//g).pop()
 
   const descriptionLines = property
     ?.out(sh('description'))
@@ -34,7 +34,7 @@ export default function PropertyElement({
     ?.value?.split('\n')
 
   return (
-    <div className={`property ${cssClass ?? ''}`.trim()} data-term={property?.term.value}>
+    <div className={`property ${cssClass ?? ''}`.trim()} data-term={property?.values.join(':')}>
       <label>
         {label}
         {showColon ? ': ' : ''}

@@ -1,8 +1,8 @@
 import { DatasetCore } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { Store } from 'n3'
-import { nonNullable } from '../helpers/nonNullable'
-import { sh } from './namespaces'
+import { nonNullable } from '../../helpers/nonNullable'
+import { sh } from '../namespaces'
 
 export async function resolveDynamicShacl(shapePointer: Grapoi, dataset: DatasetCore) {
   const dynamicIns = shapePointer.node().out(sh('in')).hasOut(sh('select'))
@@ -23,7 +23,4 @@ export async function resolveDynamicShacl(shapePointer: Grapoi, dataset: Dataset
     property.deleteList(sh('in'))
     property.addList(sh('in'), dedupedValues.filter(nonNullable))
   }
-
-  // console.log(await write([...(shapePointer.dataset as DatasetCore)], { prefixes }))
-  // console.log(await write([...(dataset as DatasetCore)], { prefixes }))
 }
