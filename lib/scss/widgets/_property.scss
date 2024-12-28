@@ -1,5 +1,10 @@
 .property {
   flex: 1 1 auto;
+
+  .plus-options {
+    display: flex;
+    gap: .5em;
+  }
 }
 
 [data-mode='facet'],
@@ -14,5 +19,12 @@
 .property.has-error {
   >label {
     color: var(--danger);
+  }
+}
+
+button {
+  iconify-icon {
+    width: 20px;
+    height: 20px;
   }
 }

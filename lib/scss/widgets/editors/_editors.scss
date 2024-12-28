@@ -30,11 +30,6 @@
     margin-inline-start: 4px;
   }
 
-  >input+.button {
-    margin-inline-start: 4px;
-    margin-inline-end: 4px;
-  }
-
   [data-mode='inline-edit'] & {
     display: inline-flex;
     padding: 0;

@@ -56,9 +56,16 @@
 
   &.icon {
     padding: 0;
-    aspect-ratio: 1;
-    width: 20px;
+    min-width: 20px;
     height: 20px;
+
+    iconify-icon {
+      transition: color .3s ease-in-out;
+    }
+
+    span {
+      margin-right: 7px;
+    }
   }
 }
 

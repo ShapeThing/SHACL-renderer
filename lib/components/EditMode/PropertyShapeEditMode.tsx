@@ -1,4 +1,3 @@
-import { Icon } from '@iconify-icon/react'
 import factory from '@rdfjs/data-model'
 import type { Quad_Object, Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
@@ -7,18 +6,17 @@ import { useContext, useEffect } from 'react'
 import { ReactSortable } from 'react-sortablejs'
 import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
-import { dash, sh, stsr, xsd } from '../../core/namespaces'
-import { scoreWidgets } from '../../core/scoreWidgets'
+import { sh, stsr, xsd } from '../../core/namespaces'
 import { validationContext } from '../../core/validation/validation-context'
 import { allLogicalPointers } from '../../helpers/allLogicalPointers'
 import { deleteTermAndDescendants } from '../../helpers/deleteTermAndDescendants'
 import { isOrderedList } from '../../helpers/isOrderedList'
 import { replaceList } from '../../helpers/replaceList'
 import { sortPointersStable } from '../../helpers/sortPointersStable'
-import { TouchableTerm } from '../../helpers/touchableRdf'
 import { useLanguageFilteredItems } from '../../hooks/useLanguageFilteredItems'
 import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
+import { AddButtons } from './AddButtons'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
 import { useCreateAddObject } from './useCreateAddObject'
 
@@ -45,7 +43,6 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const isList = isRdfList || isListWithOrderPredicate
 
   const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
-  const defaultWidget = scoreWidgets(editors, items, props.property, dash('editor'))
   const sortableState = items.map((item: Grapoi) => ({ id: JSON.stringify(item.term), term: item.term }))
 
   const uniqueLang = props.property.out(sh('uniqueLang')).term?.value === 'true'
@@ -102,8 +99,6 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
   const maxCount = props.property.out(sh('maxCount')).value
     ? parseInt(props.property.out(sh('maxCount')).value.toString())
     : Infinity
-
-  const emptyFallback = !items.ptrs.length ? defaultWidget : null
 
   const sortedItems = [...items].sort((a: Grapoi, b: Grapoi) => {
     if (isListWithOrderPredicate) {
@@ -233,21 +228,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
           childItems
         )}
 
-        {emptyFallback && emptyFallback.meta.showIfEmpty ? (
-          <emptyFallback.Component
-            setTerm={(term: Term) => {
-              ;(term as TouchableTerm).touched = false
-              items.addOut(path[0].predicates[0], term)
-              setItems()
-            }}
-          />
-        ) : null}
-
-        {items.ptrs.length < maxCount && !uniqueLang ? (
-          <button className="button icon secondary add-object" onClick={() => addObject({ activeContentLanguage })}>
-            <Icon icon="iconoir:plus" />
-          </button>
-        ) : null}
+        <AddButtons property={props.property} items={items} onAdd={addObject} />
       </div>
     </PropertyElement>
   )

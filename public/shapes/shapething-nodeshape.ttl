@@ -108,9 +108,11 @@
 				sh:datatype xsd:string ;
         dash:editor dash:TextFieldEditor ;
         sh:nodeKind sh:Literal ;
+        sh:name "Text"@en, "Tekst"@nl ;
 			]
 			[
         sh:nodeKind sh:IRI ;
+        sh:name "Reference"@en, "Referentie"@nl ;
         dash:editor dash:EnumSelectEditor ;
         sh:in [
           sh:select """
