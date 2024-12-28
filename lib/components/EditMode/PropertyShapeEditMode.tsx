@@ -8,7 +8,6 @@ import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
 import { sh, stsr, xsd } from '../../core/namespaces'
 import { validationContext } from '../../core/validation/validation-context'
-import { allLogicalPointers } from '../../helpers/allLogicalPointers'
 import { deleteTermAndDescendants } from '../../helpers/deleteTermAndDescendants'
 import { isOrderedList } from '../../helpers/isOrderedList'
 import { replaceList } from '../../helpers/replaceList'
@@ -18,6 +17,7 @@ import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
 import { AddButtons } from './AddButtons'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
+import { splitPointers } from './splitPointers'
 import { useCreateAddObject } from './useCreateAddObject'
 
 type PropertyShapeEditModeProps = {
@@ -44,8 +44,6 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
 
   const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
   const sortableState = items.map((item: Grapoi) => ({ id: JSON.stringify(item.term), term: item.term }))
-
-  const uniqueLang = props.property.out(sh('uniqueLang')).term?.value === 'true'
 
   const setItems = () => {
     const oldTerms = items.map((i: Grapoi) => i.term)
@@ -96,10 +94,6 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
     if (items.ptrs.length === 0) addObject({ activeContentLanguage })
   }, [items])
 
-  const maxCount = props.property.out(sh('maxCount')).value
-    ? parseInt(props.property.out(sh('maxCount')).value.toString())
-    : Infinity
-
   const sortedItems = [...items].sort((a: Grapoi, b: Grapoi) => {
     if (isListWithOrderPredicate) {
       const aOrder = parseFloat(a.out(nestedOrderPredicate).value ?? '0')
@@ -133,26 +127,7 @@ export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps)
         })
     )
 
-    let property = props.property.clone({})
-    const allPointers = allLogicalPointers(property)
-
-    // sh:or support specifically for the current item.
-    if (allPointers.length > 1) {
-      const filteredPointers = allPointers.filter(pointer => {
-        // TODO add other checks to invalidate certain property shapes.
-        const nodeKind = pointer.out(sh('nodeKind')).term
-        if (nodeKind?.equals(sh('IRI')) && item?.term?.termType !== 'NamedNode') return false
-        if (nodeKind?.equals(sh('Literal')) && item?.term?.termType !== 'Literal') return false
-
-        return true
-      })
-
-      if (filteredPointers.length === 1) {
-        property = filteredPointers[0]
-      } else {
-        throw new Error('Not yet supported')
-      }
-    }
+    const property = splitPointers(props.property, item)
 
     return (
       <PropertyObjectEditMode
