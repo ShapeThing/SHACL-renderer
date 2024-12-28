@@ -7,6 +7,7 @@ export const splitPointers = (originalProperty: Grapoi, item: Grapoi) => {
   const allPointers = allLogicalPointers(property)
 
   // sh:or support specifically for the current item.
+  // For now we only support a tiny use case where it is either one or the other property path within the sh:or.
   if (allPointers.length > 1) {
     const filteredPointers = allPointers.filter(pointer => {
       // TODO add other checks to invalidate certain property shapes.
