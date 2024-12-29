@@ -9,7 +9,6 @@ import { validationContext } from '../core/validation/validation-context'
 import parsePath from '../helpers/parsePath'
 import PropertyShapeEditMode from './EditMode/PropertyShapeEditMode'
 import PropertyShapeFacetMode from './FacetMode/PropertyShapeFacetMode'
-import PropertyShapeInlineEditMode from './InlineEditMode/PropertyShapeInlineEditMode'
 import PropertyShapeViewMode from './ViewMode/PropertyShapeViewMode'
 
 type PropertyShapeProps = {
@@ -30,15 +29,13 @@ export type PropertyShapeInnerProps = {
 const modes: Record<Settings['mode'], ReactComponentLike> = {
   edit: PropertyShapeEditMode,
   view: PropertyShapeViewMode,
-  facet: PropertyShapeFacetMode,
-  'inline-edit': PropertyShapeInlineEditMode
+  facet: PropertyShapeFacetMode
 }
 
 const modePredicates = {
   edit: dash('editor'),
   view: dash('viewer'),
-  facet: stf('facet'),
-  'inline-edit': dash('editor')
+  facet: stf('facet')
 }
 
 export default function PropertyShape(props: PropertyShapeProps) {

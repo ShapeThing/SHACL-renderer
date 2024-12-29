@@ -3,18 +3,18 @@ import type { Grapoi } from 'grapoi'
 import type ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { useContext, useEffect } from 'react'
 import { ReactSortable } from 'react-sortablejs'
-import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
+import { sh } from '../../core/namespaces'
 import { validationContext } from '../../core/validation/validation-context'
+import parsePath from '../../helpers/parsePath'
 import { replaceList } from '../../helpers/replaceList'
+import { TouchableTerm } from '../../helpers/touchableRdf'
 import { useLanguageFilteredItems } from '../../hooks/useLanguageFilteredItems'
-import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
 import { AddButtons } from './AddButtons'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
-import { getErrorMessages, sortBySortableState } from './PropertyShapeEditMode'
+import { getErrorMessages, sortBySortableState, useEmptyTerm } from './PropertyShapeEditMode'
 import { splitPointers } from './splitPointers'
-import { useCreateAddObject } from './useCreateAddObject'
 
 type PropertyShapeEditModeProps = {
   property: Grapoi
@@ -27,9 +27,7 @@ type PropertyShapeEditModeProps = {
 
 export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditModeProps) {
   const { nodeDataPointer, errors, path } = props
-  const { editors } = useContext(widgetsContext)
   const { jsonLdContext } = useContext(mainContext)
-  const { activeContentLanguage } = useContext(languageContext)
   const { validate } = useContext(validationContext)
 
   const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
@@ -57,10 +55,33 @@ export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditMod
     }
   }
 
-  const addObject = useCreateAddObject(editors, props.property, items, nodeDataPointer, setItems, true)
+  const createEmptyTerm = useEmptyTerm(items, props.property)
+
+  const addObject = (emptyTerm?: Term) => {
+    if (!emptyTerm) return
+
+    const path = parsePath(props.property.out(sh('path')))
+    const firstPathPart = path?.at(0)
+    if (firstPathPart?.predicates && firstPathPart?.predicates?.length > 1)
+      throw new Error('Alternative property paths are not yet supported')
+    const [predicate] = firstPathPart?.predicates ?? []
+
+    const previousTerms = [...items].map((item: Grapoi) => item.term)
+    const terms = [...previousTerms, emptyTerm]
+    let pointer = nodeDataPointer.executeAll([path?.[0]])
+    if ((previousTerms?.[0] as TouchableTerm)?.touched === false) return
+
+    if (!pointer.isList()) {
+      nodeDataPointer.addList(predicate, emptyTerm)
+    } else {
+      replaceList(terms, pointer)
+    }
+
+    setItems()
+  }
 
   useEffect(() => {
-    if (items.ptrs.length === 0) addObject({ activeContentLanguage })
+    if (items.ptrs.length === 0) addObject(createEmptyTerm())
   }, [items])
 
   return (
@@ -118,7 +139,7 @@ export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditMod
           })}
         </ReactSortable>
 
-        <AddButtons property={props.property} items={items} onAdd={addObject} />
+        <AddButtons property={props.property} items={items} addTerm={addObject} />
       </div>
     </PropertyElement>
   )

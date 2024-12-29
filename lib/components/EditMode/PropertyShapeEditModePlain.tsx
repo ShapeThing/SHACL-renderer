@@ -3,19 +3,18 @@ import type { Quad_Object, Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
 import type ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { useContext, useEffect } from 'react'
-import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
+import { sh } from '../../core/namespaces'
 import { validationContext } from '../../core/validation/validation-context'
 import { deleteTermAndDescendants } from '../../helpers/deleteTermAndDescendants'
+import parsePath from '../../helpers/parsePath'
 import { sortPointersStable } from '../../helpers/sortPointersStable'
 import { useLanguageFilteredItems } from '../../hooks/useLanguageFilteredItems'
-import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyElement from '../PropertyElement'
 import { AddButtons } from './AddButtons'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
-import { getErrorMessages, sortBySortableState } from './PropertyShapeEditMode'
+import { getErrorMessages, sortBySortableState, useEmptyTerm } from './PropertyShapeEditMode'
 import { splitPointers } from './splitPointers'
-import { useCreateAddObject } from './useCreateAddObject'
 
 type PropertyShapeEditModeProps = {
   property: Grapoi
@@ -28,9 +27,7 @@ type PropertyShapeEditModeProps = {
 
 export default function PropertyShapeEditModePlain(props: PropertyShapeEditModeProps) {
   const { nodeDataPointer, errors, path } = props
-  const { editors } = useContext(widgetsContext)
   const { jsonLdContext, data: dataset } = useContext(mainContext)
-  const { activeContentLanguage } = useContext(languageContext)
   const { validate } = useContext(validationContext)
 
   const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
@@ -44,10 +41,22 @@ export default function PropertyShapeEditModePlain(props: PropertyShapeEditModeP
     validate()
   }
 
-  const addObject = useCreateAddObject(editors, props.property, items, nodeDataPointer, setItems)
+  const addObject = (emptyTerm?: Term) => {
+    if (!emptyTerm) return
+
+    const path = parsePath(props.property.out(sh('path')))
+    const firstPathPart = path?.at(0)
+    if (firstPathPart?.predicates && firstPathPart?.predicates?.length > 1)
+      throw new Error('Alternative property paths are not yet supported')
+    const [predicate] = firstPathPart?.predicates ?? []
+    nodeDataPointer.addOut(predicate, emptyTerm)
+    setItems()
+  }
+
+  const createEmptyTerm = useEmptyTerm(items, props.property)
 
   useEffect(() => {
-    if (items.ptrs.length === 0) addObject({ activeContentLanguage })
+    if (items.ptrs.length === 0) addObject(createEmptyTerm())
   }, [items])
 
   return (
@@ -82,7 +91,7 @@ export default function PropertyShapeEditModePlain(props: PropertyShapeEditModeP
             />
           )
         })}
-        <AddButtons property={props.property} items={items} onAdd={addObject} />
+        <AddButtons property={props.property} items={items} addTerm={addObject} />
       </div>
     </PropertyElement>
   )

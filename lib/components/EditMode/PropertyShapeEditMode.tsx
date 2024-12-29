@@ -2,8 +2,13 @@ import { Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import type ValidationReport from 'rdf-validate-shacl/src/validation-report'
-import { stsr } from '../../core/namespaces'
+import { useContext } from 'react'
+import { languageContext } from '../../core/language-context'
+import { dash, stsr } from '../../core/namespaces'
+import { scoreWidgets } from '../../core/scoreWidgets'
 import { isOrderedList } from '../../helpers/isOrderedList'
+import { TouchableTerm } from '../../helpers/touchableRdf'
+import { widgetsContext } from '../../widgets/widgets-context'
 import PropertyShapeEditModeNestedPredicateList from './PropertyShapeEditModeNestedPredicateList'
 import PropertyShapeEditModePlain from './PropertyShapeEditModePlain'
 import PropertyShapeEditModeRdfList from './PropertyShapeEditModeRdfList'
@@ -43,6 +48,20 @@ export const getErrorMessages = (errors: any[], term: Term, jsonLdContext: JsonL
         return message
       })
   )
+}
+
+export const useEmptyTerm = (items: Grapoi, property: Grapoi) => {
+  const { editors } = useContext(widgetsContext)
+  const { activeContentLanguage } = useContext(languageContext)
+
+  return (splitProperty?: Grapoi) => {
+    const widgetItem = scoreWidgets(editors, items, splitProperty ?? property, dash('editor'))
+    const emptyTerm = widgetItem?.meta.createTerm
+      ? widgetItem?.meta.createTerm({ activeContentLanguage }, splitProperty ?? property)
+      : null
+    if (emptyTerm) (emptyTerm as TouchableTerm).touched = false
+    return emptyTerm ? emptyTerm : undefined
+  }
 }
 
 export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps) {

@@ -3,7 +3,7 @@ import { language } from '@rdfjs/score'
 import { DatasetCore, NamedNode, Quad_Object, Quad_Subject, Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { Store } from 'n3'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { languageContext } from '../../../core/language-context'
 import { rdfs, sh } from '../../../core/namespaces'
 import { wrapPromise } from '../../../helpers/wrapPromise'
@@ -53,6 +53,9 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
   const options = getOptions(property, dataset, property.ptrs[0].dataset)
 
   // TODO add a way to clear the queries cache
+  useEffect(() => {
+    queries.clear()
+  }, [activeInterfaceLanguage, activeContentLanguage])
 
   return (
     <select

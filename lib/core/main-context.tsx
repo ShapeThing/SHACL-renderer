@@ -27,7 +27,7 @@ export type MainContextInput = {
 } & Settings
 
 export type Settings = {
-  mode: 'edit' | 'facet' | 'view' | 'inline-edit'
+  mode: 'edit' | 'facet' | 'view'
 }
 
 export type MainContext = {

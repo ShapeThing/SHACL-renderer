@@ -11,7 +11,7 @@ type Props = {
 }
 
 export default function LanguageAwareTabs({ children }: Props) {
-  const { languageMode, mode } = useContext(mainContext)
+  const { languageMode, mode, interfaceLanguages } = useContext(mainContext)
   const [isCreatingLanguage, setIsCreatingLanguage] = useState(false)
 
   const { usedLanguageCodes, activeContentLanguage, setActiveContentLanguage, languages, setLanguages } =
@@ -22,7 +22,8 @@ export default function LanguageAwareTabs({ children }: Props) {
     if (!(usedLanguageCode in localAllowedLanguages)) localAllowedLanguages[usedLanguageCode] = usedLanguageCode
   }
 
-  return languageMode === 'individual' || mode === 'facet' ? (
+  return ((languageMode === 'individual' || mode === 'facet') && Object.keys(interfaceLanguages).length <= 1) ||
+    !Object.keys(localAllowedLanguages).length ? (
     children
   ) : (
     <>
