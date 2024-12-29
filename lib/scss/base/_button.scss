@@ -39,6 +39,11 @@
       color: white;
     }
 
+    &.outline {
+      background-color: transparent;
+      border: 1px solid rgba(var(--secondary-rgb), .4);
+      color: var(--secondary);
+    }
   }
 
   &:hover {

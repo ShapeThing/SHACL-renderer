@@ -40,14 +40,14 @@ export default function PropertyElement({
         {showColon ? ': ' : ''}
       </label>
       {mode === 'edit' && descriptionLines?.length ? (
-        <p className="field-description">
+        <span className="field-description">
           {descriptionLines.map(line => (
             <Fragment key={line}>
               {line}
               <br />
             </Fragment>
           ))}
-        </p>
+        </span>
       ) : null}
       {children}
     </div>

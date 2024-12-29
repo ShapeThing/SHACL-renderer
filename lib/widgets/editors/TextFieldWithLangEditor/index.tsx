@@ -14,6 +14,7 @@ export default function TextFieldEditor({ term, setTerm, property }: WidgetProps
       {multiLine ? (
         <textarea
           className="input"
+          rows={4}
           value={term.value}
           onChange={event => setTerm(factory.literal(event.target.value, language))}
         ></textarea>

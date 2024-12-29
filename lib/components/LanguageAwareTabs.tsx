@@ -59,7 +59,7 @@ export default function LanguageAwareTabs({ children }: Props) {
                 }}
               />
             ) : null}
-            <button className="add-language button secondary small" onClick={() => setIsCreatingLanguage(true)}>
+            <button className="add-language button outline secondary small" onClick={() => setIsCreatingLanguage(true)}>
               <Localized id="add-language">Add language</Localized>
             </button>
           </>

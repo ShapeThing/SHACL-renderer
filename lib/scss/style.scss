@@ -28,9 +28,13 @@
 @use 'base/interface-language-picker';
 @use 'shape-picker';
 
-.shacl-renderer.loading {
-  opacity: 0;
-  pointer-events: none;
+.shacl-renderer {
+  color: var(--text);
+
+  &.loading {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 :root {
@@ -52,6 +56,9 @@
 
   --gray: #ccc;
   --gray-light: #eee;
+  --gray-dark: #999;
+
+  --text: #141414;
 }
 
 * {

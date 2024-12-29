@@ -1,7 +1,7 @@
 import { Icon } from '@iconify-icon/react'
 import type { Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
-import { useContext, useEffect, useState } from 'react'
+import { Suspense, useContext, useEffect, useState } from 'react'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { AdditionalWidgetConfiguration, widgetsContext } from '../../widgets/widgets-context'
@@ -16,11 +16,12 @@ type PropertyObjectEditModeProps = {
   isList: boolean
   index: number
   setTerm: (term: Term) => void
+  alwaysShowRemove?: true
   rerenderAfterManipulatingPointer: () => void
 }
 
 export default function PropertyObjectEditMode(props: PropertyObjectEditModeProps) {
-  const { data, items, errors, setTerm, deleteTerm } = props
+  const { data, items, errors, setTerm, deleteTerm, alwaysShowRemove } = props
   let property = props.property
   const { editors } = useContext(widgetsContext)
 
@@ -60,17 +61,19 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
               <Icon icon="mdi:drag" />
             </div>
           ) : null}
-          <widgetItem.Component
-            {...props}
-            term={data.term}
-            useConfigureWidget={hook => {
-              useEffect(() => {
-                setWidgetConfiguration(() => hook)
-              }, [])
-            }}
-            setTerm={setTerm}
-          />
-          {(!itemIsRequired && items.ptrs.length > 1) || errors?.length ? (
+          <Suspense>
+            <widgetItem.Component
+              {...props}
+              term={data.term}
+              useConfigureWidget={hook => {
+                useEffect(() => {
+                  setWidgetConfiguration(() => hook)
+                }, [])
+              }}
+              setTerm={setTerm}
+            />
+          </Suspense>
+          {alwaysShowRemove || (!itemIsRequired && items.ptrs.length > 1) || errors?.length ? (
             <button
               className="button icon remove-object"
               onClick={async () => {

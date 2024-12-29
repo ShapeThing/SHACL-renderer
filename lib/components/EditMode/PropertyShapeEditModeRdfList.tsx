@@ -1,7 +1,7 @@
 import type { Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
 import type ValidationReport from 'rdf-validate-shacl/src/validation-report'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { ReactSortable } from 'react-sortablejs'
 import { mainContext } from '../../core/main-context'
 import { sh } from '../../core/namespaces'
@@ -13,7 +13,7 @@ import { useLanguageFilteredItems } from '../../hooks/useLanguageFilteredItems'
 import PropertyElement from '../PropertyElement'
 import { AddButtons } from './AddButtons'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
-import { getErrorMessages, sortBySortableState, useEmptyTerm } from './PropertyShapeEditMode'
+import { getErrorMessages, sortBySortableState } from './PropertyShapeEditMode'
 import { splitPointers } from './splitPointers'
 
 type PropertyShapeEditModeProps = {
@@ -55,8 +55,6 @@ export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditMod
     }
   }
 
-  const createEmptyTerm = useEmptyTerm(items, props.property)
-
   const addObject = (emptyTerm?: Term) => {
     if (!emptyTerm) return
 
@@ -67,6 +65,9 @@ export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditMod
     const [predicate] = firstPathPart?.predicates ?? []
 
     const previousTerms = [...items].map((item: Grapoi) => item.term)
+
+    if (previousTerms.some(term => term.equals(emptyTerm))) return
+
     const terms = [...previousTerms, emptyTerm]
     let pointer = nodeDataPointer.executeAll([path?.[0]])
     if ((previousTerms?.[0] as TouchableTerm)?.touched === false) return
@@ -80,9 +81,10 @@ export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditMod
     setItems()
   }
 
-  useEffect(() => {
-    if (items.ptrs.length === 0) addObject(createEmptyTerm())
-  }, [items])
+  // const createEmptyTerm = useEmptyTerm(items, props.property)
+  // useEffect(() => {
+  //   if (items.ptrs.length === 0) addObject(createEmptyTerm())
+  // }, [items])
 
   return (
     <PropertyElement cssClass={errors?.length ? 'has-error' : ''} property={props.property}>
@@ -107,6 +109,7 @@ export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditMod
                 items={items}
                 isList={true}
                 index={index}
+                alwaysShowRemove={true}
                 errors={errorMessages}
                 rerenderAfterManipulatingPointer={setItems}
                 setTerm={(term: Term) => {

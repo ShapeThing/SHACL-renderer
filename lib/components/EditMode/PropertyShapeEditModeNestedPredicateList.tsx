@@ -2,7 +2,7 @@ import factory from '@rdfjs/data-model'
 import type { Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
 import type ValidationReport from 'rdf-validate-shacl/src/validation-report'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { ReactSortable } from 'react-sortablejs'
 import { mainContext } from '../../core/main-context'
 import { sh, stsr, xsd } from '../../core/namespaces'
@@ -13,7 +13,7 @@ import { useLanguageFilteredItems } from '../../hooks/useLanguageFilteredItems'
 import PropertyElement from '../PropertyElement'
 import { AddButtons } from './AddButtons'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
-import { getErrorMessages, useEmptyTerm } from './PropertyShapeEditMode'
+import { getErrorMessages } from './PropertyShapeEditMode'
 import { splitPointers } from './splitPointers'
 
 type PropertyShapeEditModeProps = {
@@ -77,11 +77,11 @@ export default function PropertyShapeEditModeNestedPredicateList(props: Property
     setItems()
   }
 
-  const createEmptyTerm = useEmptyTerm(items, props.property)
+  // const createEmptyTerm = useEmptyTerm(items, props.property)
 
-  useEffect(() => {
-    if (items.ptrs.length === 0) addObject(createEmptyTerm())
-  }, [items])
+  // useEffect(() => {
+  //   if (items.ptrs.length === 0) addObject(createEmptyTerm())
+  // }, [items])
 
   return (
     <PropertyElement cssClass={errors?.length ? 'has-error' : ''} property={props.property}>
@@ -106,6 +106,7 @@ export default function PropertyShapeEditModeNestedPredicateList(props: Property
               return (
                 <PropertyObjectEditMode
                   {...props}
+                  alwaysShowRemove={true}
                   property={property}
                   key={property.values.join(':') + ':' + index + (item.out(sh('order')).value ?? '0') + item.term.value}
                   data={item}

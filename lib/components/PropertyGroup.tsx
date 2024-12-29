@@ -1,6 +1,8 @@
+import { language } from '@rdfjs/score'
 import { DatasetCore } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { ReactNode, useContext } from 'react'
+import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
 import { rdf, sh } from '../core/namespaces'
 import { getElementHelpers } from './NodeShape'
@@ -54,13 +56,16 @@ export const getProperties = ({
 }
 
 export default function PropertyGroup(props: PropertyGroupProps) {
+  const { activeInterfaceLanguage } = useContext(languageContext)
   const localName = props.group.term.value.split(/\/|#/g).pop()
   const { data: dataset } = useContext(mainContext)
   const properties = getProperties({ ...props, dataset })
+  const label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value
 
   return groupHasContents(props.group, props.shapePointer) ? (
     <div className={`group ${localName}`} data-term={props.group.term.value}>
-      {properties}
+      {label ? <h3 className="title">{label}</h3> : null}
+      <div className="group-inner">{properties}</div>
     </div>
   ) : null
 }

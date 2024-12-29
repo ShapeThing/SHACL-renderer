@@ -12,7 +12,10 @@
   .property {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1.2em;
+
+    &:not(:last-child) {
+      margin-bottom: 1.2em;
+    }
   }
 }
 

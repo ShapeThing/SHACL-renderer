@@ -22,7 +22,7 @@
     sh:minCount 1;
     sh:order 1;
 		sh:uniqueLang true ;
-    # sh:group <#name> ;
+    sh:group <#base> ;
     sh:description "De gebruiksvriendelijke naam"@nl, "A user friendly name"@en ;
     sh:path sh:name ;
     sh:datatype rdf:langString ;
@@ -32,9 +32,9 @@
     sh:name "Target"@en, "Doel"@nl ;
     sh:minCount 1;
     sh:maxCount 1;
+    sh:group <#base> ;
     sh:description "Het type van de resource"@nl, "The type of resource"@en ;
     sh:order 2 ;
-    # sh:group <#name> ;
     sh:path sh:targetClass ;
     sh:nodeKind sh:IRI ;
     dash:editor dash:URIEditor ;
@@ -44,9 +44,9 @@
     sh:name "Closed"@en, "Gesloten"@nl ;
     sh:description "Wanneer de vorm gesloten is, worden onbekende eigenschappen niet toegelaten."@nl, "When the shape is closed, it does not allow unknown properties."@en ;
     sh:maxCount 1;
+    sh:group <#base> ;
     sh:datatype xsd:boolean ;
     sh:order 5;
-    # sh:group <#booleans>;
     sh:path sh:closed ;
   ];
 
@@ -55,24 +55,18 @@
     sh:maxCount 1;
     sh:datatype xsd:boolean ;
     sh:order 6;
+    sh:group <#base> ;
     sh:description "An abstract shape is often a sub shape, something you do not want to list or create a stand alone version for."@en, "Een abstracte vorm is vaak een subvorm. U wilt deze vorm niet opsommen en er geen aparte versie van maken."@nl ;
-    # sh:group <#booleans>;
     sh:path dash:abstract ;
   ];
-
-  # sh:property [
-  #   sh:name "Ignored properties"@en, "Genegeerde eigenschappen"@nl ;
-  #   sh:group <#booleans>;
-  #   sh:path sh:ignoredProperties ;
-  # ];
 
   sh:property [
     sh:name "Stem"@en, "Stam"@nl ;
     sh:minCount 1;
     sh:maxCount 1;
     sh:order 3;
+    sh:group <#base> ;
     sh:description "Het gedeelte na het domein wordt gebruikt voor het maken van de mappenstructuur."@nl, "The section after the domain is used for creating the folder structure."@en ;
-    # sh:group <#stem-icon> ;
     sh:path dash:stem ;
     dash:editor dash:URIEditor ;
   ];
@@ -82,7 +76,7 @@
     sh:minCount 1;
     sh:maxCount 1;
     sh:order 4;
-    # sh:group <#stem-icon> ;
+    sh:group <#base> ;
     sh:path stsr:icon ;
     sh:datatype <https://iconify.design> ;
   ];
@@ -90,6 +84,7 @@
   sh:property [
     sh:name "Properties"@en, "Eigenschappen"@nl ;
     sh:minCount 1;
+    sh:group <#properties>;
     sh:path sh:property ;
     stsr:nestedOrder sh:order ;
     sh:nodeKind sh:BlankNode ;
@@ -100,6 +95,7 @@
   sh:property [
     sh:name "Name pattern"@en, "Naam patroon"@nl ;
     sh:minCount 1;
+    sh:group <#properties>;
     sh:path ( stsr:filenameSuggestion [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
     sh:description "De naam van het bestand wordt gegenereerd uit de volgende waarden."@nl, "The file name is generated from the following values."@en ;
 
@@ -132,37 +128,15 @@
 
 .
 
-<#booleans>
+<#base>
+  sh:name "Base information"@en, "Basis informatie"@nl ;
 	a sh:PropertyGroup ;
-	sh:order 5 .
+	sh:order 1 .
 
-<#stem-icon>
+<#properties>
+  sh:name "Properties"@en, "Eigenschappen"@nl ;
 	a sh:PropertyGroup ;
 	sh:order 2 .
-
-<#name>
-	a sh:PropertyGroup ;
-	sh:order 1 .
-
-<#propertyName>
-	a sh:PropertyGroup ;
-  sh:group <#propertyShapeGroup> ;
-	sh:order 1 .
-
-<#cardinality>
-	a sh:PropertyGroup ;
-  sh:group <#propertyShapeGroup> ;
-	sh:order 9 .
-
-<#misc>
-	a sh:PropertyGroup ;
-  sh:group <#propertyShapeGroup> ;
-	sh:order 4 .
-
-<#details>
-	a sh:PropertyGroup ;
-  sh:group <#propertyShapeGroup> ;
-	sh:order 3 .
 
 <#propertyShapeGroup>
 	a sh:PropertyGroup, stsr:CollapsiblePropertyGroup;

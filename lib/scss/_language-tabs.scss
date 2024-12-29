@@ -12,6 +12,7 @@
     background-color: white;
     margin-bottom: -1px;
     display: inline-flex;
+    color: var(--gray-dark);
 
     &:not(.active):hover {
         background-color: var(--gray-light);
@@ -27,6 +28,7 @@
     }
 
     &.active {
+        color: var(--text);
         border: 1px solid var(--gray);
         border-bottom-color: white;
         z-index: 2;
