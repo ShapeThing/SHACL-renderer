@@ -3,3 +3,7 @@ add-language = Add content language
 save = save
 optional = optional
 pick-an-option = - Pick an option -
+label-in-language = Label in {$language}
+language-code = Language code
+cancel = Cancel
+label-in-the-language = Label in the language itself

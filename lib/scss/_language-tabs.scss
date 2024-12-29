@@ -58,12 +58,12 @@
     border-radius: var(--input-radius);
     box-shadow: 0 0 40px rgba(black, .2);
 
-    .actions {
-        justify-content: end;
+    .add-language-actions {
         margin-block-start: 20px;
         display: flex;
+        justify-content: end;
         align-items: center;
-        gap: 20px;
+        gap: .5em;
     }
 
     form {

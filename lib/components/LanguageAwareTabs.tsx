@@ -11,7 +11,7 @@ type Props = {
 }
 
 export default function LanguageAwareTabs({ children }: Props) {
-  const { languageMode, mode, interfaceLanguages } = useContext(mainContext)
+  const { languageMode, mode, interfaceLanguages, data } = useContext(mainContext)
   const [isCreatingLanguage, setIsCreatingLanguage] = useState(false)
 
   const {
@@ -46,25 +46,36 @@ export default function LanguageAwareTabs({ children }: Props) {
                 className={`language-button ${activeContentLanguage === languageCode ? 'active' : ''}`}
               >
                 {label[activeInterfaceLanguage] ?? languageCode}
-                <span
-                  onClick={event => {
-                    event.preventDefault()
-                    throw new Error('Not yet implemented')
-                  }}
-                  className="remove-language"
-                >
-                  <Icon icon="iconoir:xmark" />
-                </span>
+                {Object.keys(localAllowedLanguages).length > 1 ? (
+                  <span
+                    onClick={event => {
+                      event.stopPropagation()
+                      const languagesCopy = { ...languages }
+                      delete languagesCopy[languageCode]
+                      const nextActiveContentLanguage = Object.keys(languagesCopy)[0]
+                      for (const quad of [...data]) {
+                        if (quad.object.termType === 'Literal' && quad.object.language === languageCode) {
+                          data.delete(quad)
+                        }
+                      }
+                      setLanguages(languagesCopy)
+                      setActiveContentLanguage(nextActiveContentLanguage)
+                    }}
+                    className="remove-language"
+                  >
+                    <Icon icon="iconoir:xmark" />
+                  </span>
+                ) : null}
               </button>
             ))}
             {isCreatingLanguage ? (
               <AddLanguage
-                callback={(language?: { label: string; code: string }) => {
+                callback={(language?: { labels: Record<string, string>; code: string }) => {
                   setIsCreatingLanguage(false)
-                  // if (language) {
-                  //   setLanguages({ ...languages, [language.code]: language.label })
-                  //   setActiveContentLanguage(language.code)
-                  // }
+                  if (language) {
+                    setLanguages({ ...languages, [language.code]: language.labels })
+                    setActiveContentLanguage(language.code)
+                  }
                 }}
               />
             ) : null}

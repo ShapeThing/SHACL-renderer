@@ -3,3 +3,7 @@ add-language = Content taal toevoegen
 save = opslaan
 optional = optioneel
 pick-an-option = - Selecteer een optie -
+label-in-language = Label in het {$language}
+language-code = Taal code
+cancel = Annuleren
+label-in-the-language = Label in de taal zelf

@@ -1,6 +1,6 @@
 import { Icon } from '@iconify-icon/react'
 import { language } from '@rdfjs/score'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
 import { sh, stsr } from '../core/namespaces'
@@ -37,10 +37,6 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
       .join('')
   }
 
-  useEffect(() => {
-    if (expanded) wrapper.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }, [expanded])
-
   return groupHasContents(props.group, props.shapePointer) ? (
     <div
       ref={wrapper}
@@ -48,7 +44,13 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
       className={`collapsible-group ${localName} ${expanded ? 'expanded' : ''}`}
       data-term={props.group.term.value}
     >
-      <button className="title" onClick={() => setExpanded(!expanded)}>
+      <button
+        className="title"
+        onClick={() => {
+          setExpanded(!expanded)
+          wrapper.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }}
+      >
         <Icon className="iconify" icon={expanded ? 'cuida:caret-down-outline' : 'cuida:caret-right-outline'} />
         {label}
       </button>

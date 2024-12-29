@@ -13,7 +13,7 @@ type Props = {
  */
 export default function LanguageSelector({ value, onChange }: Props) {
   const { languageMode } = useContext(mainContext)
-  const { languages, setLanguages, setActiveContentLanguage } = useContext(languageContext)
+  const { languages, setLanguages, setActiveContentLanguage, activeInterfaceLanguage } = useContext(languageContext)
 
   const localAllowedLanguages = { ...languages }
   if (!(value in localAllowedLanguages)) localAllowedLanguages[value] = { [value]: value }
@@ -33,7 +33,7 @@ export default function LanguageSelector({ value, onChange }: Props) {
       >
         {Object.entries(localAllowedLanguages).map(([key, label]) => (
           <option key={key} value={key}>
-            {key}
+            {label[activeInterfaceLanguage]}
           </option>
         ))}
         <option value={'_add_language'}>- Add a language -</option>
@@ -41,12 +41,12 @@ export default function LanguageSelector({ value, onChange }: Props) {
 
       {isCreatingLanguage ? (
         <AddLanguage
-          callback={(language?: { label: string; code: string }) => {
+          callback={(language?: { labels: Record<string, string>; code: string }) => {
             setIsCreatingLanguage(false)
             if (language) {
-              // onChange(language.code)
-              // setLanguages({ ...languages, [language.code]: language.label })
-              // setActiveContentLanguage(language.code)
+              onChange(language.code)
+              setLanguages({ ...languages, [language.code]: language.labels })
+              setActiveContentLanguage(language.code)
             }
           }}
         />
