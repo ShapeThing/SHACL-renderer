@@ -40,7 +40,6 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
   return groupHasContents(props.group, props.shapePointer) ? (
     <div
       ref={wrapper}
-      // style={{ '--primary-rgb': '117, 0, 0', '--secondary-rgb': '151, 140, 151' } as any}
       className={`collapsible-group ${localName} ${expanded ? 'expanded' : ''}`}
       data-term={props.group.term.value}
     >

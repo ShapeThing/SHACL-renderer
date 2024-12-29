@@ -8,10 +8,21 @@
     margin-block-start: 1.2em;
   }
 
+  >.group-description {
+    color: var(--primary);
+    margin-block-end: 1.2em;
+    line-height: 1.6;
+  }
+
   &.horizontal>.group-inner {
     gap: 1em;
     display: flex;
     flex-direction: row;
+    --default-input-max-width: 100%;
+
+    .property {
+      margin-bottom: 0;
+    }
   }
 
   &:not(.horizontal) {
@@ -27,6 +38,10 @@
     }
   }
 
+}
+
+.group:last-child {
+  margin-bottom: 0;
 }
 
 .collapsible-group {

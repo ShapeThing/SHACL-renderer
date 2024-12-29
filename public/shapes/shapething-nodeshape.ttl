@@ -131,6 +131,7 @@
 
 <#base>
   sh:name "Base information"@en, "Basis informatie"@nl ;
+  sh:description "In this form, you create a shape. This shape will be used to create data with a form and also to display it."@en, "In dit formulier maak je een vorm. Deze vorm wordt gebruikt om data te maken middels formulieren en ook om het weer te geven."@nl ;
 	a sh:PropertyGroup ;
 	sh:order 1 .
 

@@ -42,10 +42,10 @@ export default function PropertyElement({
 
   return (
     <div className={`property ${cssClass ?? ''}`.trim()} data-term={property?.values.join(':')}>
-      <label>
+      <label className="label">
         {label}
         {showColon ? ': ' : ''}
-        {optional ? (
+        {mode === 'edit' && optional ? (
           <em className="optional">
             (<Localized id="optional">optional</Localized>)
           </em>

@@ -4,7 +4,7 @@ import { Grapoi } from 'grapoi'
 import { ReactNode, useContext } from 'react'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
-import { rdf, sh } from '../core/namespaces'
+import { rdf, rdfs, sh } from '../core/namespaces'
 import { getElementHelpers } from './NodeShape'
 
 export type PropertyGroupProps = {
@@ -62,10 +62,14 @@ export default function PropertyGroup(props: PropertyGroupProps) {
   const { data: dataset } = useContext(mainContext)
   const properties = getProperties({ ...props, dataset })
   const label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value
+  const description = props.group
+    .out([sh('description'), rdfs('comment')])
+    .best(language([activeInterfaceLanguage])).value
 
   return groupHasContents(props.group, props.shapePointer) ? (
     <div className={`group ${localName} ${props.className ?? ''}`} data-term={props.group.term.value}>
       {label ? <h3 className="title">{label}</h3> : null}
+      {description ? <div className="group-description">{description}</div> : null}
       <div className="group-inner">{properties}</div>
     </div>
   ) : null
