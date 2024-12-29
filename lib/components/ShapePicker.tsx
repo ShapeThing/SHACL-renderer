@@ -10,7 +10,6 @@ export default function ShapePicker() {
   const modeLabels: Record<Settings['mode'], string> = {
     edit: 'Select a form',
     facet: 'Select facets',
-    'inline-edit': 'Select a form',
     view: 'Select a view'
   }
 

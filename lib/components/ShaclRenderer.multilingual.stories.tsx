@@ -6,17 +6,31 @@ export default {
   argTypes: {}
 }
 
+const languages = {
+  en: {
+    en: 'English',
+    de: 'Englisch',
+    nl: 'Engels'
+  },
+  nl: {
+    nl: 'Nederlands',
+    de: 'Niederländisch',
+    en: 'Dutch'
+  },
+  de: {
+    en: 'German',
+    nl: 'Duits',
+    de: 'Deutsch'
+  }
+}
+
 export const MultilingualWithTabs = {
   args: {
     mode: 'edit',
     data: new URL('/shapes/multilingual.ttl#data', location.origin),
     shapes: new URL('/shapes/multilingual.ttl#default', location.origin),
     languageMode: 'tabs',
-    contentLanguages: {
-      en: 'English',
-      nl: 'Dutch',
-      de: 'German'
-    }
+    contentLanguages: languages
   } as ShaclRendererProps
 }
 
@@ -26,11 +40,7 @@ export const MultilingualIndividual = {
     data: new URL('/shapes/multilingual.ttl#data', location.origin),
     shapes: new URL('/shapes/multilingual.ttl#default', location.origin),
     languageMode: 'individual',
-    contentLanguages: {
-      en: 'English',
-      nl: 'Dutch',
-      de: 'German'
-    }
+    contentLanguages: languages
   } as ShaclRendererProps
 }
 
