@@ -84,7 +84,11 @@ export default function PropertyShapeEditModeNestedPredicateList(props: Property
   // }, [items])
 
   return (
-    <PropertyElement cssClass={errors?.length ? 'has-error' : ''} property={props.property}>
+    <PropertyElement
+      cssClass={errors?.length ? 'has-error' : ''}
+      property={props.property}
+      suffix={<AddButtons property={props.property} items={items} addTerm={addObject} />}
+    >
       <div className="editors">
         <ReactSortable
           filter="input,.list-group,.form-control"
@@ -127,8 +131,6 @@ export default function PropertyShapeEditModeNestedPredicateList(props: Property
               )
             })}
         </ReactSortable>
-
-        <AddButtons property={props.property} items={items} addTerm={addObject} />
       </div>
     </PropertyElement>
   )

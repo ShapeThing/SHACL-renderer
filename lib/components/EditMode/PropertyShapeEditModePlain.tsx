@@ -60,7 +60,11 @@ export default function PropertyShapeEditModePlain(props: PropertyShapeEditModeP
   }, [items])
 
   return (
-    <PropertyElement cssClass={errors?.length ? 'has-error' : ''} property={props.property}>
+    <PropertyElement
+      cssClass={errors?.length ? 'has-error' : ''}
+      property={props.property}
+      suffix={<AddButtons property={props.property} items={items} addTerm={addObject} />}
+    >
       <div className="editors">
         {[...items].sort(sortBySortableState(sortableState)).map((item: Grapoi, index: number) => {
           const errorMessages = getErrorMessages(errors ?? [], item.term, jsonLdContext)
@@ -91,7 +95,6 @@ export default function PropertyShapeEditModePlain(props: PropertyShapeEditModeP
             />
           )
         })}
-        <AddButtons property={props.property} items={items} addTerm={addObject} />
       </div>
     </PropertyElement>
   )

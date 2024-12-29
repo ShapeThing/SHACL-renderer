@@ -78,15 +78,17 @@
 .
 
 <#name>
-	a sh:PropertyGroup ;
+  sh:name "Name"@en, "Naam"@nl ;
+	a sh:PropertyGroup, stsr:HorizontalPropertyGroup ;
+
 	sh:order 1 .
 
 <#street-and-housenumber>
-	a sh:PropertyGroup ;
+	a sh:PropertyGroup, stsr:HorizontalPropertyGroup ;
 	sh:order 2 .
 
 <#world>
-	a sh:PropertyGroup ;
+	a sh:PropertyGroup, stsr:HorizontalPropertyGroup ;
 	sh:order 3 .
 
 

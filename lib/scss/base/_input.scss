@@ -1,11 +1,23 @@
 .input {
   border: 1px solid var(--secondary);
   padding: 8px;
-  flex: 1 1 auto;
   border-radius: var(--input-radius);
   transition: box-shadow var(--easing) var(--speed);
   resize: vertical;
   background-color: white;
+
+  &:not(textarea):not([type="checkbox"]) {
+    max-width: var(--default-input-max-width);
+    margin-right: auto;
+  }
+
+  &:not([size]) {
+    flex: 1 1 auto;
+  }
+
+  &[size] {
+    margin-right: auto;
+  }
 
   &:focus {
     outline: none;

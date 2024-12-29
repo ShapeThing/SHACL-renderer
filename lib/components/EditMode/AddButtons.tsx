@@ -15,7 +15,7 @@ type AddButtonsProps = {
 }
 
 export function AddButtons({ property, items, addTerm }: AddButtonsProps) {
-  const { activeContentLanguage } = useContext(languageContext)
+  const { activeInterfaceLanguage } = useContext(languageContext)
   const uniqueLang = property.out(sh('uniqueLang')).term?.value === 'true'
   const maxCount = property.out(sh('maxCount')).value
     ? parseInt(property.out(sh('maxCount')).value.toString())
@@ -33,7 +33,7 @@ export function AddButtons({ property, items, addTerm }: AddButtonsProps) {
           .out(sh('name'))
           // We must remove labels from the base pointer.
           .filter(item => !property.out(sh('name')).terms.some(term => term.equals(item.term)))
-          .best(language([activeContentLanguage, '', '*'])).value
+          .best(language([activeInterfaceLanguage, '', '*'])).value
       }))
     : []
 

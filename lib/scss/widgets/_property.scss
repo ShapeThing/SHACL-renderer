@@ -1,6 +1,13 @@
 .property {
   flex: 1 1 auto;
 
+  .optional {
+    line-height: 1.5;
+    margin-left: .5em;
+    font-size: .8em;
+    color: var(--primary);
+  }
+
   .plus-options {
     display: flex;
     gap: .5em;

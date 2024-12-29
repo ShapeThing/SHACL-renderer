@@ -77,14 +77,22 @@ export const ShapesGraph = {
   } as ShaclRendererProps
 }
 
+const languageLabels = {
+  en: {
+    nl: 'Engels',
+    en: 'English'
+  },
+  nl: {
+    en: 'Dutch',
+    nl: 'Nederlands'
+  }
+}
+
 export const ShapeThingNodeShape = {
   args: {
     mode: 'edit',
     shapes: new URL('/shapes/shapething-nodeshape.ttl', location.origin),
-    contentLanguages: {
-      en: 'English',
-      nl: 'Dutch'
-    }
+    contentLanguages: languageLabels
   } as ShaclRendererProps
 }
 
@@ -95,14 +103,8 @@ export const ShapeThingNodeShapeData = {
     data: new URL('/shapes/shapething-person.ttl', location.origin),
     activeInterfaceLanguage: 'nl',
     activeContentLanguage: 'nl',
-    contentLanguages: {
-      en: 'English',
-      nl: 'Dutch'
-    },
-    interfaceLanguages: {
-      en: 'English',
-      nl: 'Dutch'
-    }
+    contentLanguages: languageLabels,
+    interfaceLanguages: languageLabels
   } as ShaclRendererProps
 }
 

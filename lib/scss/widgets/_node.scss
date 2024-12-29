@@ -11,6 +11,11 @@
   flex: 1 1 auto;
 }
 
+.node-description {
+  margin-bottom: 2em;
+  color: var(--primary);
+}
+
 .shacl-renderer[data-mode='view'] {
   >.node {
     margin-bottom: .5em;

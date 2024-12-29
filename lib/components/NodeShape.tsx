@@ -5,12 +5,14 @@ import { ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, rdfs, sh } from '../core/namespaces'
 import CollapsiblePropertyGroup from './CollapsiblePropertyGroup'
+import HorizontalPropertyGroup from './HorizontalPropertyGroup'
 import PropertyGroup from './PropertyGroup'
 import PropertyShape from './PropertyShape'
 
 const propertyGroupTypes = {
   _default: PropertyGroup,
-  CollapsiblePropertyGroup
+  CollapsiblePropertyGroup,
+  HorizontalPropertyGroup
 }
 
 export const getElementHelpers = ({
@@ -104,7 +106,7 @@ export default function NodeShape() {
 
   return (
     <div className="node" data-term={shapePointer.values}>
-      {description && ['edit'].includes(mode) ? <div>{description}</div> : null}
+      {description && ['edit'].includes(mode) ? <div className="node-description">{description}</div> : null}
       {formElements}
     </div>
   )

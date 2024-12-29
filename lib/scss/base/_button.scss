@@ -20,6 +20,11 @@
     font-size: .6em;
   }
 
+  &.big {
+    padding: 12px 18px;
+    font-size: 1.1em;
+  }
+
   &.primary {
     color: white;
     background-color: var(--primary);

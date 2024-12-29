@@ -3,7 +3,6 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  min-height: 54px;
 
   >.button {
     align-self: flex-start;
@@ -15,7 +14,10 @@
   font-style: italic;
   color: gray;
   line-height: 1.6;
-  margin-bottom: .5em;
+}
+
+.field-description+.plus-options {
+  margin-top: .4em;
 }
 
 .editor {
@@ -29,7 +31,7 @@
   margin-bottom: 6px;
 
   >.node+.button {
-    margin-inline-start: 4px;
+    margin-inline-start: .7em;
   }
 
   [data-mode='inline-edit'] & {
@@ -46,7 +48,7 @@
   >.button {
     align-self: center;
     margin-bottom: auto;
-    margin-top: 5px;
+    margin-top: 7px;
   }
 
   &.delete-animation {

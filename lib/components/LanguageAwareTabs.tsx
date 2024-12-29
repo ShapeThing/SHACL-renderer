@@ -14,12 +14,21 @@ export default function LanguageAwareTabs({ children }: Props) {
   const { languageMode, mode, interfaceLanguages } = useContext(mainContext)
   const [isCreatingLanguage, setIsCreatingLanguage] = useState(false)
 
-  const { usedLanguageCodes, activeContentLanguage, setActiveContentLanguage, languages, setLanguages } =
-    useContext(languageContext)
+  const {
+    activeInterfaceLanguage,
+    usedLanguageCodes,
+    activeContentLanguage,
+    setActiveContentLanguage,
+    languages,
+    setLanguages
+  } = useContext(languageContext)
   const localAllowedLanguages = { ...languages }
 
   for (const usedLanguageCode of usedLanguageCodes) {
-    if (!(usedLanguageCode in localAllowedLanguages)) localAllowedLanguages[usedLanguageCode] = usedLanguageCode
+    if (!(usedLanguageCode in localAllowedLanguages))
+      localAllowedLanguages[usedLanguageCode] = {
+        [usedLanguageCode]: usedLanguageCode
+      }
   }
 
   return ((languageMode === 'individual' || mode === 'facet') && Object.keys(interfaceLanguages).length <= 1) ||
@@ -36,7 +45,7 @@ export default function LanguageAwareTabs({ children }: Props) {
                 onClick={() => setActiveContentLanguage(languageCode)}
                 className={`language-button ${activeContentLanguage === languageCode ? 'active' : ''}`}
               >
-                {label}
+                {label[activeInterfaceLanguage] ?? languageCode}
                 <span
                   onClick={event => {
                     event.preventDefault()
@@ -52,10 +61,10 @@ export default function LanguageAwareTabs({ children }: Props) {
               <AddLanguage
                 callback={(language?: { label: string; code: string }) => {
                   setIsCreatingLanguage(false)
-                  if (language) {
-                    setLanguages({ ...languages, [language.code]: language.label })
-                    setActiveContentLanguage(language.code)
-                  }
+                  // if (language) {
+                  //   setLanguages({ ...languages, [language.code]: language.label })
+                  //   setActiveContentLanguage(language.code)
+                  // }
                 }}
               />
             ) : null}

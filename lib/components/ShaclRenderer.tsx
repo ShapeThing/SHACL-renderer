@@ -60,7 +60,7 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any,
               {props.children ? (
                 props.children(submit)
               ) : ['edit', 'inline-edit'].includes(context.mode) ? (
-                <button onClick={submit} className="button primary">
+                <button onClick={submit} className="button primary big">
                   <Localized id="save">Save</Localized>
                 </button>
               ) : null}

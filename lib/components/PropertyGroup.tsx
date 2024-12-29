@@ -12,6 +12,7 @@ export type PropertyGroupProps = {
   nodeDataPointer: Grapoi
   facetSearchDataPointer: Grapoi
   shapePointer: Grapoi
+  className?: string
 }
 
 export const groupHasContents = (group: Grapoi, shapePointer: Grapoi) => {
@@ -63,7 +64,7 @@ export default function PropertyGroup(props: PropertyGroupProps) {
   const label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value
 
   return groupHasContents(props.group, props.shapePointer) ? (
-    <div className={`group ${localName}`} data-term={props.group.term.value}>
+    <div className={`group ${localName} ${props.className ?? ''}`} data-term={props.group.term.value}>
       {label ? <h3 className="title">{label}</h3> : null}
       <div className="group-inner">{properties}</div>
     </div>

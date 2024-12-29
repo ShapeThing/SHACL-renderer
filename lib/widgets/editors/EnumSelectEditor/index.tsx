@@ -1,3 +1,4 @@
+import { Localized } from '@fluent/react'
 import factory from '@rdfjs/data-model'
 import { language } from '@rdfjs/score'
 import { DatasetCore, NamedNode, Quad_Object, Quad_Subject, Term } from '@rdfjs/types'
@@ -71,7 +72,7 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
     >
       {!term.value ? (
         <option disabled value={''}>
-          - Pick an option -
+          <Localized id="pick-an-option">- Pick an option -</Localized>
         </option>
       ) : null}
       {options.length ? (

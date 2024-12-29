@@ -16,7 +16,7 @@ export default function LanguageSelector({ value, onChange }: Props) {
   const { languages, setLanguages, setActiveContentLanguage } = useContext(languageContext)
 
   const localAllowedLanguages = { ...languages }
-  if (!(value in localAllowedLanguages)) localAllowedLanguages[value] = value
+  if (!(value in localAllowedLanguages)) localAllowedLanguages[value] = { [value]: value }
   const [isCreatingLanguage, setIsCreatingLanguage] = useState(false)
 
   return languageMode === 'individual' ? (
@@ -33,7 +33,7 @@ export default function LanguageSelector({ value, onChange }: Props) {
       >
         {Object.entries(localAllowedLanguages).map(([key, label]) => (
           <option key={key} value={key}>
-            {label}
+            {key}
           </option>
         ))}
         <option value={'_add_language'}>- Add a language -</option>
@@ -44,9 +44,9 @@ export default function LanguageSelector({ value, onChange }: Props) {
           callback={(language?: { label: string; code: string }) => {
             setIsCreatingLanguage(false)
             if (language) {
-              onChange(language.code)
-              setLanguages({ ...languages, [language.code]: language.label })
-              setActiveContentLanguage(language.code)
+              // onChange(language.code)
+              // setLanguages({ ...languages, [language.code]: language.label })
+              // setActiveContentLanguage(language.code)
             }
           }}
         />

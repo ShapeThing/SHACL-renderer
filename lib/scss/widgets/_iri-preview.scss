@@ -7,6 +7,9 @@
     align-items: center;
     border-radius: var(--input-radius);
     background-color: white;
+    max-width: var(--default-input-max-width);
+    width: 100%;
+    margin-right: auto;
 
     &.search-result {
         cursor: pointer;
@@ -37,6 +40,7 @@
         display: block;
         border-top-left-radius: var(--input-radius);
         border-bottom-left-radius: var(--input-radius);
+        margin-right: .5em;
 
         &.has-error {
             display: none;

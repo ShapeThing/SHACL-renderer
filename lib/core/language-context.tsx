@@ -7,8 +7,8 @@ export const languageContext = createContext<{
   activeContentLanguage?: string
   usedLanguageCodes: string[]
   activeInterfaceLanguage: string
-  languages: Record<string, string>
-  setLanguages: React.Dispatch<React.SetStateAction<Record<string, string>>>
+  languages: Record<string, Record<string, string>>
+  setLanguages: React.Dispatch<React.SetStateAction<Record<string, Record<string, string>>>>
   setActiveContentLanguage: (languageCode: string) => void
   setActiveInterfaceLanguage: (languageCode: string) => void
 }>({
@@ -36,7 +36,7 @@ export default function LanguageProvider({ children }: Props) {
     localizationBundles
   } = useContext(mainContext)
   const usedLanguageCodes = dataPointer ? getUsedLanguageCodes(shapePointer, dataPointer) : []
-  const [languages, setLanguages] = useState<Record<string, string>>(languagesSetting)
+  const [languages, setLanguages] = useState<Record<string, Record<string, string>>>(languagesSetting)
   const [activeContentLanguage, setActiveContentLanguage] = useState(
     givenActiveContentLanguage ?? usedLanguageCodes[0] ?? Object.keys(languagesSetting)[0]
   )

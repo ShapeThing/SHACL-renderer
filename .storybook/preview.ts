@@ -1,4 +1,4 @@
-import '@fontsource/roboto/latin-400.css'
+import '@fontsource/roboto/latin.css'
 import type { Preview } from '@storybook/react'
 import '../lib/scss/style.scss'
 

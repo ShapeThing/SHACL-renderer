@@ -23,6 +23,7 @@
     sh:order 1;
 		sh:uniqueLang true ;
     sh:group <#base> ;
+		sh:maxLength 30 ;
     sh:description "De gebruiksvriendelijke naam"@nl, "A user friendly name"@en ;
     sh:path sh:name ;
     sh:datatype rdf:langString ;
@@ -134,13 +135,13 @@
 	sh:order 1 .
 
 <#properties>
-  sh:name "Properties"@en, "Eigenschappen"@nl ;
+  sh:name "Properties and name pattern"@en, "Eigenschappen en naam patroon"@nl ;
 	a sh:PropertyGroup ;
 	sh:order 2 .
 
 <#propertyShapeGroup>
 	a sh:PropertyGroup, stsr:CollapsiblePropertyGroup;
-  stsr:groupLabelPath ( "Eigenschap: "@nl "Property: "@en sh:name ) ;
+  stsr:groupLabelPath ( sh:name ) ;
 	sh:order 1 .
 
 <#propertyShape>

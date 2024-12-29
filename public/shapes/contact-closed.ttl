@@ -63,9 +63,7 @@
 
   sh:property [
     sh:name "Knows"@en ;
-    sh:description """Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-
-Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
+    sh:description """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
     sh:path schema:knows ;
     sh:maxCount 4 ;
     stsr:endpoint <https://dbpedia.org/sparql>;
@@ -154,7 +152,8 @@ Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
 .
 
 <#name>
-	a sh:PropertyGroup ;
+  sh:name "Name"@en, "Naam"@nl ;
+	a sh:PropertyGroup, stsr:HorizontalPropertyGroup ;
 	sh:order 1 .
 
 <#street-and-housenumber>
@@ -175,7 +174,7 @@ Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
 
     sh:property [
         sh:name "Street"@en ;
-        sh:group <#street-and-housenumber> ;
+        # sh:group <#street-and-housenumber> ;
         sh:path schema:streetAddress ;
         faker:generator faker:location.street ;
         sh:datatype xsd:string ;
@@ -186,7 +185,7 @@ Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
     sh:property [
         sh:name "Postal code"@en ;
         sh:path schema:postalCode ;
-        sh:group <#street-and-housenumber> ;
+        # sh:group <#street-and-housenumber> ;
         faker:generator faker:location.zipCode ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
@@ -195,7 +194,7 @@ Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
 
     sh:property [
         sh:name "Locality"@en ;
-        sh:group <#world> ;
+        # sh:group <#world> ;
         sh:path schema:addressLocality ;
         faker:generator faker:location.city ;
         sh:datatype xsd:string ;
@@ -205,7 +204,7 @@ Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
 
     sh:property [
         sh:name "Region"@en ;
-        sh:group <#world> ;
+        # sh:group <#world> ;
         sh:path schema:addressRegion ;
         faker:generator faker:location.state ;
         sh:datatype xsd:string ;
@@ -217,7 +216,7 @@ Cras sem lacus, mollis eget velit vel, tempus lobortis ex.""" ;
         sh:name "Country"@en ;
         sh:path schema:addressCountry ;
         faker:generator faker:location.country ;
-        sh:group <#world> ;
+        # sh:group <#world> ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
         sh:maxCount 1 ;

@@ -20,7 +20,7 @@ export default function InterfaceLanguagePicker() {
       >
         {Object.entries(interfaceLanguages).map(([languageCode, label]) => (
           <option key={languageCode} value={languageCode}>
-            {label}
+            {label[activeInterfaceLanguage] ?? languageCode}
           </option>
         ))}
       </select>
