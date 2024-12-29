@@ -52,6 +52,8 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
   const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
   const options = getOptions(property, dataset, property.ptrs[0].dataset)
 
+  // TODO add a way to clear the queries cache
+
   return (
     <select
       className="input"

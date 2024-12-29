@@ -25,6 +25,7 @@
   background-color: rgba(var(--primary-rgb), 0.07);
   padding: 0.5em;
   gap: 0.5em;
+  margin-bottom: 6px;
 
   >.node+.button {
     margin-inline-start: 4px;
@@ -66,7 +67,7 @@
     justify-content: center;
     cursor: grab;
     align-items: center;
-    width: 20px;
+    width: 40px;
   }
 
   &.sortable-ghost {

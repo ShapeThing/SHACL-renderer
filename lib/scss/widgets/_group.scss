@@ -21,6 +21,7 @@
     font-weight: 300;
     font-size: .9em;
     margin: 0;
+    border-radius: var(--input-radius);
     position: sticky;
     top: -1px;
     z-index: 100;
@@ -65,11 +66,14 @@
   }
 }
 
-.editor.details {
-  padding: 0;
+.sortable .editor {
+  padding-left: 0;
 
-  >.button {
-    margin-inline-end: 1em;
-    margin-top: .75em;
+  &.details {
+    padding-block: 0;
+
+    >.button {
+      margin-top: .75em;
+    }
   }
 }

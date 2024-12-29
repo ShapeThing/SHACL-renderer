@@ -83,6 +83,7 @@ export default function PropertyShapeEditModeNestedPredicateList(props: Property
           filter="input,.list-group,.form-control"
           preventOnFilter={false}
           list={sortableState}
+          className="sortable"
           setList={setSortableState}
         >
           {[...items]

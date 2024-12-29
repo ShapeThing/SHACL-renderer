@@ -69,6 +69,7 @@ export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditMod
         <ReactSortable
           filter="input,.list-group,.form-control"
           preventOnFilter={false}
+          className="sortable"
           list={sortableState}
           setList={setSortableState}
         >
