@@ -54,6 +54,7 @@
     "@rdfjs/formats": "^4.0.0",
     "@rdfjs/namespace": "^2.0.1",
     "@rdfjs/score": "^0.1.2",
+    "@react-hook/resize-observer": "^2.0.2",
     "color-parse": "^2.0.2",
     "d2l-fetch": "^2.6.0",
     "d2l-fetch-dedupe": "^2.1.0",

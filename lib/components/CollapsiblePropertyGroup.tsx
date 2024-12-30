@@ -1,6 +1,7 @@
 import { Icon } from '@iconify-icon/react'
 import { language } from '@rdfjs/score'
-import { useContext, useRef, useState } from 'react'
+import useResizeObserver from '@react-hook/resize-observer'
+import { useContext, useLayoutEffect, useRef, useState } from 'react'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
 import { sh, stsr } from '../core/namespaces'
@@ -11,9 +12,22 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
   const localName = props.group.term.value.split(/\/|#/g).pop()
   const { data: dataset } = useContext(mainContext)
   const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   const properties = getProperties({ ...props, dataset })
   const [expanded, setExpanded] = useState(false)
   const wrapper = useRef<HTMLDivElement>(null)
+  const content = useRef<HTMLDivElement>(null)
+  const [height, setHeight] = useState(0)
+
+  useLayoutEffect(() => {
+    if (content.current?.getBoundingClientRect().height) setHeight(content.current.getBoundingClientRect().height)
+  }, [content])
+
+  useResizeObserver(content, entry => {
+    if (entry.contentRect.height && !isTransitioning) {
+      setHeight(entry.contentRect.height)
+    }
+  })
 
   const groupLabelPath = props.group.out(stsr('groupLabelPath')).list()
   let label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName
@@ -40,21 +54,37 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
   return groupHasContents(props.group, props.shapePointer) ? (
     <div
       ref={wrapper}
-      className={`collapsible-group ${localName} ${expanded ? 'expanded' : ''}`}
+      className={`collapsible-group ${localName} ${expanded || !height ? 'expanded' : ''} ${height ? 'processed' : ''}`}
       data-term={props.group.term.value}
     >
       <button
         className="title"
         onClick={() => {
-          setExpanded(!expanded)
-          wrapper.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          setIsTransitioning(true)
+          setTimeout(() => {
+            setExpanded(!expanded)
+            wrapper.current?.querySelector('.collapsible-group-contents')?.addEventListener(
+              'transitionend',
+              () => {
+                setIsTransitioning(false)
+                wrapper.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              },
+              { once: true }
+            )
+          })
         }}
       >
         <Icon className="iconify" icon={expanded ? 'cuida:caret-down-outline' : 'cuida:caret-right-outline'} />
         {label}
       </button>
       {/* We render this always, if we would only render when needed, Suspense items would trigger a re-render which conflict with expanding. */}
-      <div className="collapsible-group-contents">{properties}</div>
+      <div
+        ref={content}
+        style={height && (isTransitioning || !expanded) ? { maxHeight: expanded ? height : 0 } : {}}
+        className="collapsible-group-contents"
+      >
+        {properties}
+      </div>
     </div>
   ) : null
 }

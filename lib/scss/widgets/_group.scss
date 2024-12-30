@@ -87,8 +87,19 @@
   }
 
   .collapsible-group-contents {
-    padding: .5em;
-    display: none;
+    transition: max-height .5s ease-in-out;
+
+    >*:first-child {
+      padding-top: .5em;
+    }
+
+    >*:last-child {
+      padding-bottom: .5em;
+    }
+  }
+
+  &.processed .collapsible-group-contents {
+    overflow: hidden;
   }
 
   &.expanded {

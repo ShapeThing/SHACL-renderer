@@ -1,10 +1,11 @@
 import { Localized } from '@fluent/react'
+import { Icon } from '@iconify-icon/react/dist/iconify.mjs'
 import { language } from '@rdfjs/score'
 import { Grapoi } from 'grapoi'
 import { Fragment, ReactNode, useContext } from 'react'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
-import { rdfs, sh } from '../core/namespaces'
+import { rdf, rdfs, sh } from '../core/namespaces'
 
 type PropertyElementProps = {
   property?: Grapoi
@@ -37,21 +38,23 @@ export default function PropertyElement({
     ?.value?.split('\n')
 
   const minCount = property?.out(sh('minCount')).value ? parseInt(property?.out(sh('minCount')).value) : undefined
-
   const optional = !((minCount ?? 0) > 0)
+  const uniqueLang = property?.out(sh('uniqueLang')).term?.value === 'true'
+  const isLanguageDataType = property?.out(sh('datatype')).term?.equals(rdf('langString'))
 
   return (
     <div className={`property ${cssClass ?? ''}`.trim()} data-term={property?.values.join(':')}>
       <label className="label">
         {label}
         {showColon ? ': ' : ''}
+        {mode === 'edit' && (uniqueLang || isLanguageDataType) ? (
+          <Icon className="multilingual" icon="mdi:language" />
+        ) : null}
         {mode === 'edit' && optional ? (
           <em className="optional">
             (<Localized id="optional">optional</Localized>)
           </em>
-        ) : (
-          ''
-        )}
+        ) : null}
       </label>
       {children}
       {mode === 'edit' && descriptionLines?.length ? (
