@@ -5,6 +5,7 @@ import { ReactNode, useContext } from 'react'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
 import { rdf, rdfs, sh } from '../core/namespaces'
+import { nonNullable } from '../helpers/nonNullable'
 import { getElementHelpers } from './NodeShape'
 
 export type PropertyGroupProps = {
@@ -49,6 +50,7 @@ export const getProperties = ({
 
   const formElements: ReactNode[] = [
     ...[...groupLevelGroups.map(mapGroup), ...groupLevelProperties.map(mapProperty)]
+      .filter(nonNullable)
       .sort((a, b) => a[0] - b[0])
       .map(([_order, element]) => element)
   ]

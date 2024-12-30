@@ -4,7 +4,6 @@ import { Suspense, useContext, useEffect, useState } from 'react'
 import { fetchContext } from '../core/fetchContext'
 import LanguageProvider from '../core/language-context'
 import { MainContext, MainContextInput, MainContextProvider, initContext } from '../core/main-context'
-import { rdf, sh } from '../core/namespaces'
 import ValidationContextProvider from '../core/validation/validation-context'
 import { cleanUpDataset } from '../helpers/cleanUpDataset'
 import { createCidFromProps } from '../helpers/createCidFromProps'
@@ -12,6 +11,7 @@ import { wrapPromise } from '../helpers/wrapPromise'
 import LanguageAwareTabs from './LanguageAwareTabs'
 import NodeShape from './NodeShape'
 import ShapePicker from './ShapePicker'
+import SubjectPicker from './SubjectPicker'
 export * from '../core/namespaces'
 
 export type ShaclRendererProps = MainContextInput
@@ -23,9 +23,6 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any,
   if (!contextCache.has(cid)) contextCache.set(cid, wrapPromise(initContext({ ...props, fetch })))
   const context: MainContext = contextCache.get(cid).read()
   const [, setCounter] = useState(0)
-
-  const shapePointers = context.shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
-  const showShapePicker = shapePointers.terms.length > 1 && !context.targetClass
 
   const submit = async () => {
     cleanUpDataset(context.data)
@@ -54,7 +51,8 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any,
       <LanguageProvider>
         <ValidationContextProvider>
           <LanguageAwareTabs>
-            {showShapePicker ? <ShapePicker /> : null}
+            <ShapePicker />
+            <SubjectPicker />
             <NodeShape {...context} key="root" />
             <div className="actions">
               {props.children ? (

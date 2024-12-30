@@ -7,3 +7,4 @@ label-in-language = Label in {$language}
 language-code = Language code
 cancel = Cancel
 label-in-the-language = Label in the language itself
+select-subject = Select subject

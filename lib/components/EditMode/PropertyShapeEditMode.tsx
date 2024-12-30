@@ -36,7 +36,7 @@ export const sortBySortableState = (sortableState: any[]) => (a: Grapoi, b: Grap
 
 export const getErrorMessages = (errors: any[], term: Term, jsonLdContext: JsonLdContextNormalized) => {
   const itemErrors = errors?.filter((error: any) => error.value?.term.equals(term)) ?? []
-  return itemErrors.flatMap(error =>
+  const messages = itemErrors.flatMap(error =>
     error.message
       .map((message: any) => message.value)
       .map((message: string) => {
@@ -48,6 +48,8 @@ export const getErrorMessages = (errors: any[], term: Term, jsonLdContext: JsonL
         return message
       })
   )
+
+  return messages
 }
 
 export const useEmptyTerm = (items: Grapoi, property: Grapoi) => {

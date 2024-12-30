@@ -58,6 +58,7 @@
   .errors {
     width: 100%;
     font-size: 0.8em;
+    padding: .5em;
     color: var(--danger);
   }
 
@@ -69,7 +70,8 @@
     display: flex;
     justify-content: center;
     cursor: grab;
-    align-items: center;
+    align-items: start;
+    margin-top: 8px;
     width: 40px;
   }
 

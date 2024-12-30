@@ -72,7 +72,7 @@
     dash:abstract true ;
     sh:targetClass schema:PostalAddress ;
     sh:closed true ;
-
+    sh:name "Address"@en, "Adres"@nl ;
   	sh:ignoredProperties (rdf:type) ;
 
     sh:property [

@@ -17,6 +17,8 @@
   sh:targetClass sh:NodeShape ;
   sh:closed true ;
 
+  sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type dash:abstract ) ;
+
   sh:property [
     sh:name "Name"@en, "Naam"@nl ;
     sh:minCount 1;
@@ -150,7 +152,7 @@
   a sh:NodeShape ;
   dash:abstract true ;
 
-  sh:ignoredProperties ( faker:generator sh:in ) ;
+  sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type sh:node sh:nodeKind rdf:nil ) ;
 
   sh:property [
     sh:name "Name"@en, "Naam"@nl ;
@@ -175,7 +177,7 @@
     sh:order 8;
     sh:description "Het gewicht van de eigenschap, grotere waarden wegen meer en worden dus lager getoond."@nl, "The order of the property, bigger values weigh more and will be shown lower."@en ;
     sh:group <#propertyShapeGroup> ;
-    sh:datatype xsd:decimal ;
+    sh:datatype xsd:integer ;
     sh:path sh:order ;
   ];
 
@@ -262,7 +264,7 @@
     sh:order 5;
     sh:path sh:datatype ;
     sh:in (
-      xsd:string xsd:float rdf:langString
+      xsd:string xsd:float rdf:langString xsd:date
     ) ;
   ];
 .

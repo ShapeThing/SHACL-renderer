@@ -50,6 +50,7 @@ export type MainContext = {
   activeContentLanguage?: string
   activeInterfaceLanguage?: string
   setShapeSubject: (iri: string) => void
+  setSubject: (subject: NamedNode) => void
   originalInput: MainContextInput
 } & Settings
 
@@ -72,6 +73,7 @@ export const mainContext = createContext<MainContext>({
   contentLanguages: {},
   interfaceLanguages: { en: { en: 'English' } },
   setShapeSubject: (_iri: string) => null,
+  setSubject: (_term: NamedNode) => null,
   originalInput: null as unknown as MainContextInput,
   localizationBundles: null as unknown as Record<string, FluentBundle>
 })
@@ -275,6 +277,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}) }),
     mode,
     setShapeSubject: (_iri: string) => null,
+    setSubject: (_term: NamedNode) => null,
     originalInput,
     ...settings
   }
@@ -287,7 +290,11 @@ export function MainContextProvider({ children, context: givenContext }: MainCon
     initContext({ ...givenContext.originalInput, shapeSubject: new URL(iri) }).then(setContext)
   }
 
+  const setSubject = (subject: NamedNode) => {
+    initContext({ ...givenContext.originalInput, subject }).then(setContext)
+  }
+
   return context ? (
-    <mainContext.Provider value={{ ...context, setShapeSubject }}>{children}</mainContext.Provider>
+    <mainContext.Provider value={{ ...context, setShapeSubject, setSubject }}>{children}</mainContext.Provider>
   ) : null
 }

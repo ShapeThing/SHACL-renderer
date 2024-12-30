@@ -58,6 +58,7 @@
     font-size: .9em;
     margin: 0;
     z-index: 100;
+    height: 54px;
     display: flex;
     align-items: center;
     width: 100%;
@@ -66,7 +67,9 @@
     color: var(--text);
 
     .iconify {
+      transition: all .3s ease-in-out;
       margin-right: .3em;
+      transform: translateY(1px);
     }
   }
 
@@ -81,7 +84,7 @@
       color: var(--primary);
 
       .iconify {
-        transform: translateY(1px);
+        transform: rotate(90deg) translateY(1px);
       }
     }
   }
@@ -118,10 +121,24 @@
 
   &.details {
     gap: 0;
-    padding-block: 0;
 
     >.button {
-      margin-top: .75em;
+      margin-top: 9px;
     }
+  }
+}
+
+.editor.details {
+  .collapsible-group {
+    margin-block: -.5em;
+  }
+
+  &.has-error .collapsible-group {
+    margin-block-end: 0;
+  }
+
+  .errors {
+    padding-left: 0;
+    margin-left: 40px;
   }
 }

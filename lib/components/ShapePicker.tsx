@@ -5,7 +5,7 @@ import { mainContext, Settings } from '../core/main-context'
 import { dash, rdf, rdfs, sh, xsd } from './ShaclRenderer'
 
 export default function ShapePicker() {
-  const { shapesPointer, shapePointer, mode, setShapeSubject, shapeSubject } = useContext(mainContext)
+  const { shapesPointer, shapePointer, mode, setShapeSubject, shapeSubject, targetClass } = useContext(mainContext)
 
   const modeLabels: Record<Settings['mode'], string> = {
     edit: 'Select a form',
@@ -18,11 +18,12 @@ export default function ShapePicker() {
   // TODO not super sure about this. The ShapePicker hides shapes that are used in the current hierarchy.
   const activeShapeParentTerms = shapePointer.terms.filter(term => !shapeSubject.equals(term))
   const shapePointers = shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
+  const showShapePicker = shapePointers.terms.length > 1 && !targetClass
   const validShapes = shapePointers
     .filter(shapePointer => !activeShapeParentTerms.some(term => term.equals(shapePointer.term)))
     .filter(shapePointer => !shapePointer.out(dash('abstract'), dataFactory.literal('true', xsd('boolean'))).value)
 
-  return validShapes.ptrs.length > 1 ? (
+  return showShapePicker && validShapes.ptrs.length > 1 ? (
     <div className="shape-picker property">
       <label>{modeLabel}</label>
       <div className="editor">
