@@ -70,7 +70,7 @@ export const getElementHelpers = ({
 }
 
 export default function NodeShape() {
-  const { shapePointer, mode, dataPointer, facetSearchDataPointer, data: dataset } = useContext(mainContext)
+  const { shapePointer, mode, dataPointer, facetSearchDataPointer, data: dataset, shapes } = useContext(mainContext)
 
   const properties: Grapoi = shapePointer.out(sh('property'))
   const groups = [...shapePointer.node().hasOut(rdf('type'), sh('PropertyGroup'))]
@@ -100,8 +100,8 @@ export default function NodeShape() {
       factory.quad(propertyIri, rdf('type'), sh('PropertyShape')),
       factory.quad(propertyIri, sh('path'), predicate)
     ]
-    for (const quad of quads) dataset.add(quad)
-    return grapoi({ dataset, factory, term: propertyIri })
+    for (const quad of quads) shapes.add(quad)
+    return grapoi({ dataset: shapes, factory, term: propertyIri })
   })
 
   const { mapGroup, mapProperty } = getElementHelpers({ shapePointer, dataPointer, facetSearchDataPointer, dataset })

@@ -1,0 +1,44 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
+@prefix stf: <http://ontology.shapething.com/facet#> .
+@prefix dbc: <http://dbpedia.org/resource/Category:> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix faker: <https://fakerjs.dev/> .
+@prefix app: <http://localhost:6006/> .
+
+<>
+  a sh:NodeShape ;
+  sh:targetClass sh:NodeShape ;
+  sh:closed true  ;
+  
+  sh:ignoredProperties ( rdf:type );
+
+  sh:property [
+    sh:name "Name pattern"@en, "Naam patroon"@nl ;
+    sh:minCount 1;
+    sh:path ( stsr:filenameSuggestion [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+    sh:description "De naam van het bestand wordt gegenereerd uit de volgende waarden."@nl, "The file name is generated from the following values."@en ;
+
+		sh:or (
+			[
+				sh:datatype xsd:string ;
+        dash:editor dash:TextFieldEditor ;
+        sh:nodeKind sh:Literal ;
+        sh:name "Text"@en, "Tekst"@nl ;
+			]
+			[
+        sh:nodeKind sh:IRI ;
+        sh:name "Reference"@en, "Referentie"@nl ;
+        dash:editor dash:EnumSelectEditor ;
+        sh:in ( schema:Female schema:Male ) ;
+			]
+		) ;
+  ];
+
+.

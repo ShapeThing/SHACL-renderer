@@ -19,17 +19,7 @@
 
   sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type dash:abstract ) ;
 
-  sh:property [
-    sh:name "Name"@en, "Naam"@nl ;
-    sh:minCount 1;
-    sh:order 1;
-		sh:uniqueLang true ;
-    sh:group <#base> ;
-		sh:maxLength 30 ;
-    sh:description "De gebruiksvriendelijke naam"@nl, "A user friendly name"@en ;
-    sh:path sh:name ;
-    sh:datatype rdf:langString ;
-  ];
+  sh:property <#property/name> ;
 
   sh:property [
     sh:name "Target"@en, "Doel"@nl ;
@@ -128,6 +118,38 @@
 			]
 		) ;
   ];
+
+.
+
+
+<#property/name>
+  sh:name "Name"@en, "Naam"@nl ;
+  sh:minCount 1;
+  sh:order 1;
+  sh:uniqueLang true ;
+  sh:group <#base> ;
+  sh:maxLength 30 ;
+  sh:description "De gebruiksvriendelijke naam"@nl, "A user friendly name"@en ;
+  sh:path sh:name ;
+  sh:datatype rdf:langString ;
+.
+
+<#property/order>
+  sh:name "Order"@en, "Gewicht"@nl ;
+  sh:maxCount 1;
+  sh:order 8;
+  sh:description "Het gewicht van de eigenschap, grotere waarden wegen meer en worden dus lager getoond."@nl, "The order of the property, bigger values weigh more and will be shown lower."@en ;
+  sh:group <#propertyShapeGroup> ;
+  sh:datatype xsd:integer ;
+  sh:path sh:order ;
+.
+
+
+<#groupShape>
+  a sh:NodeShape ;
+  sh:targetClass sh:PropertyGroup ;
+
+  sh:property <#property/name> ;
 
 .
 

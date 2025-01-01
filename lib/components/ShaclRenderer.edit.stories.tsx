@@ -116,3 +116,11 @@ export const ShapeThingNodeShapeData = {
 //     shapeSubject: new URL('http://www.w3.org/ns/shacl-shacl#ShapeShape')
 //   } as ShaclRendererProps
 // }
+
+export const MixedObjects = {
+  args: {
+    mode: 'edit',
+    shapes: new URL('/shapes/mixed-objects.ttl', location.origin),
+    data: new URL('/shapes/mixed-objects-data.ttl', location.origin)
+  } as ShaclRendererProps
+}
