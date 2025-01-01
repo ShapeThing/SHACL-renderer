@@ -8,3 +8,6 @@ language-code = Taal code
 cancel = Annuleren
 label-in-the-language = Label in de taal zelf
 select-subject = Selecteer onderwerp
+create-type = Maak een nieuwe {$type}
+edit = Bewerk {$type} "{$thing}"
+action = Actie

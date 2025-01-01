@@ -16,6 +16,7 @@
   a sh:NodeShape ;
   sh:targetClass sh:NodeShape ;
   sh:closed true ;
+  sh:name "Shape"@en, "Vorm"@nl ;
 
   sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type dash:abstract ) ;
 
@@ -148,6 +149,7 @@
 <#groupShape>
   a sh:NodeShape ;
   sh:targetClass sh:PropertyGroup ;
+  sh:name "Group"@en, "Groep"@nl ;
 
   sh:property <#property/name> ;
 
@@ -173,6 +175,7 @@
   sh:closed true ;
   a sh:NodeShape ;
   dash:abstract true ;
+  sh:name "Property"@en, "Eigenschap"@nl ;
 
   sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type sh:node sh:nodeKind rdf:nil ) ;
 

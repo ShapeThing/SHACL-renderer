@@ -8,3 +8,6 @@ language-code = Language code
 cancel = Cancel
 label-in-the-language = Label in the language itself
 select-subject = Select subject
+create-type = Create a new {$type}
+edit = Edit {$type} "{$thing}"
+action = Action

@@ -10,13 +10,14 @@ import { createCidFromProps } from '../helpers/createCidFromProps'
 import { wrapPromise } from '../helpers/wrapPromise'
 import LanguageAwareTabs from './language/LanguageAwareTabs'
 import NodeShape from './NodeShape'
+import ActionPicker from './various/ActionPicker'
 export * from '../core/namespaces'
 
 export type ShaclRendererProps = MainContextInput
 
-function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any, any> }) {
+function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<string, any> }) {
   const { contextCache } = props
-  const cid = createCidFromProps(props)
+  const cid = createCidFromProps(props) // TODO this complicates re-using the Component with a different context via the ActionPicker.
   const { fetch } = useContext(fetchContext)
   if (!contextCache.has(cid)) contextCache.set(cid, wrapPromise(initContext({ ...props, fetch })))
   const context: MainContext = contextCache.get(cid).read()
@@ -49,6 +50,7 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any,
       <LanguageProvider>
         <ValidationContextProvider>
           <LanguageAwareTabs>
+            <ActionPicker contextCache={contextCache} />
             <NodeShape {...context} key="root" />
             <div className="actions">
               {props.children ? (
@@ -67,8 +69,7 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any,
 }
 
 export default function ShaclRenderer(props: ShaclRendererProps) {
-  // TODO there is a bug with changing the context. Pass setContextCache so it can be cleared.
-  const [contextCache, _setContextCache] = useState(new Map())
+  const [contextCache] = useState<Map<string, any>>(new Map())
 
   return (
     <div data-mode={props.mode} className="shacl-renderer">
