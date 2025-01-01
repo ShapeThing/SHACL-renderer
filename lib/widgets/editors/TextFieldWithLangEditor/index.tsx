@@ -1,7 +1,7 @@
 import factory from '@rdfjs/data-model'
 import { Literal } from '@rdfjs/types'
 
-import LanguageSelector from '../../../components/LanguageSelector'
+import LanguageSelector from '../../../components/language/LanguageSelector'
 import { dash, sh } from '../../../core/namespaces'
 import { WidgetProps } from '../../widgets-context'
 

@@ -2,11 +2,11 @@ import { language } from '@rdfjs/score'
 import { DatasetCore } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { ReactNode, useContext } from 'react'
-import { languageContext } from '../core/language-context'
-import { mainContext } from '../core/main-context'
-import { rdf, rdfs, sh } from '../core/namespaces'
-import { nonNullable } from '../helpers/nonNullable'
-import { getElementHelpers } from './NodeShape'
+import { languageContext } from '../../core/language-context'
+import { mainContext } from '../../core/main-context'
+import { rdf, rdfs, sh } from '../../core/namespaces'
+import { nonNullable } from '../../helpers/nonNullable'
+import { getElementHelpers } from '../NodeShape'
 
 export type PropertyGroupProps = {
   group: Grapoi

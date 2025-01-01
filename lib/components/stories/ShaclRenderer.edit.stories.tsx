@@ -1,4 +1,4 @@
-import ShaclRenderer, { ShaclRendererProps, schema } from './ShaclRenderer'
+import ShaclRenderer, { ShaclRendererProps, schema } from '../ShaclRenderer'
 
 export default {
   title: 'SHACL Renderer/Form',

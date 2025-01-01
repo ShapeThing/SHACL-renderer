@@ -1,7 +1,7 @@
 import { Localized } from '@fluent/react'
 import { Dispatch, SetStateAction, useContext, useState } from 'react'
-import { languageContext } from '../core/language-context'
-import { mainContext } from '../core/main-context'
+import { languageContext } from '../../core/language-context'
+import { mainContext } from '../../core/main-context'
 
 type Props = {
   callback: (language?: { labels: Record<string, string>; code: string }) => void

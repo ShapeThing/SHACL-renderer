@@ -8,10 +8,8 @@ import ValidationContextProvider from '../core/validation/validation-context'
 import { cleanUpDataset } from '../helpers/cleanUpDataset'
 import { createCidFromProps } from '../helpers/createCidFromProps'
 import { wrapPromise } from '../helpers/wrapPromise'
-import LanguageAwareTabs from './LanguageAwareTabs'
+import LanguageAwareTabs from './language/LanguageAwareTabs'
 import NodeShape from './NodeShape'
-import ShapePicker from './ShapePicker'
-import SubjectPicker from './SubjectPicker'
 export * from '../core/namespaces'
 
 export type ShaclRendererProps = MainContextInput
@@ -51,8 +49,6 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any,
       <LanguageProvider>
         <ValidationContextProvider>
           <LanguageAwareTabs>
-            <ShapePicker />
-            <SubjectPicker />
             <NodeShape {...context} key="root" />
             <div className="actions">
               {props.children ? (
@@ -71,6 +67,7 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<any,
 }
 
 export default function ShaclRenderer(props: ShaclRendererProps) {
+  // TODO there is a bug with changing the context. Pass setContextCache so it can be cleared.
   const [contextCache, _setContextCache] = useState(new Map())
 
   return (

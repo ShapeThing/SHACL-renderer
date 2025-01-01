@@ -1,8 +1,8 @@
 import { Localized } from '@fluent/react'
 import { Icon } from '@iconify-icon/react'
 import { ReactNode, useContext, useState } from 'react'
-import { languageContext } from '../core/language-context'
-import { mainContext } from '../core/main-context'
+import { languageContext } from '../../core/language-context'
+import { mainContext } from '../../core/main-context'
 import AddLanguage from './AddLanguage'
 import InterfaceLanguagePicker from './InterfaceLanguagePicker'
 

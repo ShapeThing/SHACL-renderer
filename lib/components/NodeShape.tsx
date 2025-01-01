@@ -5,9 +5,9 @@ import { ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, rdfs, sh } from '../core/namespaces'
 import { nonNullable } from '../helpers/nonNullable'
-import CollapsiblePropertyGroup from './CollapsiblePropertyGroup'
-import HorizontalPropertyGroup from './HorizontalPropertyGroup'
-import PropertyGroup from './PropertyGroup'
+import CollapsiblePropertyGroup from './groups/CollapsiblePropertyGroup'
+import HorizontalPropertyGroup from './groups/HorizontalPropertyGroup'
+import PropertyGroup from './groups/PropertyGroup'
 import PropertyShape from './PropertyShape'
 
 const propertyGroupTypes = {

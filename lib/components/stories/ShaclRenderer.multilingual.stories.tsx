@@ -1,4 +1,4 @@
-import ShaclRenderer, { ShaclRendererProps } from './ShaclRenderer'
+import ShaclRenderer, { ShaclRendererProps } from '../ShaclRenderer'
 
 export default {
   title: 'SHACL Renderer/Multilingual',
