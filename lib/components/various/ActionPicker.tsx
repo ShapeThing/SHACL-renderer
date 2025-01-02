@@ -6,7 +6,7 @@ import { groupBy } from 'lodash-es'
 import { Dispatch, SetStateAction, useContext } from 'react'
 import { languageContext } from '../../core/language-context'
 import { initContext, MainContext, mainContext } from '../../core/main-context'
-import { rdf, rdfs, schema, sh, stsr } from '../../core/namespaces'
+import { dash, rdf, rdfs, schema, sh, stsr } from '../../core/namespaces'
 
 type Action = {
   type: 'create-type' | 'edit'
@@ -30,7 +30,11 @@ export default function ActionPicker({ setContext }: { setContext: Dispatch<SetS
   const { activeInterfaceLanguage } = useContext(languageContext)
   const context = useContext(mainContext)
   const { dataPointer, shapesPointer, originalInput } = context
-  const allShapes = shapesPointer.node().hasOut(rdf('type'), sh('NodeShape'))
+  const allShapes = shapesPointer
+    .node()
+    .hasOut(rdf('type'), sh('NodeShape'))
+    .filter(pointer => pointer.out(dash('abstract')).term?.value !== 'true')
+
   const hasShapes = !!allShapes.ptrs.length
   const mainShapes = allShapes.filter(shape => !shape.hasOut(rdf('type'), stsr('SubShape')).term)
   const subShapes = allShapes.filter(shape => !!shape.hasOut(rdf('type'), stsr('SubShape')).term)
@@ -87,7 +91,9 @@ export default function ActionPicker({ setContext }: { setContext: Dispatch<SetS
             ...context.originalInput,
             shapeSubject: shapeSubject ?? context.originalInput.shapeSubject,
             subject: dataTerm ? factory.namedNode(dataTerm) : context.originalInput.subject
-          }).then(setContext)
+          }).then(context => {
+            setContext(context)
+          })
         }}
       >
         {Object.entries(groupedActions).map(([groupLabel, actions]) => {

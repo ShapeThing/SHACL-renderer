@@ -1,0 +1,14 @@
+.action-picker {
+    display: flex;
+    gap: .5em;
+    justify-content: end;
+    align-items: center;
+
+    .label {
+        font-size: .8em;
+    }
+
+    select {
+        max-width: 300px;
+    }
+}

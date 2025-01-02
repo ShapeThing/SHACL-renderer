@@ -17,8 +17,7 @@
   a sh:NodeShape ;
   sh:targetClass stsr:Shape ;
   sh:name "Shape"@en, "Vorm"@nl ;
-
-  sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type dash:abstract ) ;
+  sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type sh:ignoredProperties ) ;
 
   sh:property [
     sh:path rdf:type ;
@@ -90,11 +89,31 @@
 
 .
 
+<#sub-shape>
+  a sh:NodeShape ;
+  sh:targetClass stsr:SubShape ;
+  sh:name "Sub shape"@en, "Subvorm"@nl ;
+
+  sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type dash:abstract sh:ignoredProperties ) ;
+
+  sh:property [
+    sh:path rdf:type ;
+    sh:hasValue stsr:SubShape ;
+  ];
+
+  sh:property [
+    sh:path rdf:type ;
+    sh:hasValue sh:NodeShape ;
+  ];
+
+  sh:property <#property/name> ;
+.
 
 <#node-shape>
   a sh:NodeShape ;
   sh:targetClass sh:NodeShape ;
-  sh:name "Shape"@en, "Vorm"@nl ;
+  sh:name "SHACL Shape"@en, "SHACL Vorm"@nl ;
+  dash:abstract true ;
 
   sh:property [
     sh:name "Target"@en, "Doel"@nl ;
@@ -172,16 +191,20 @@
 
   sh:property <#property/name> ;
 
+  sh:property [
+    sh:path rdf:type ;
+    sh:hasValue sh:PropertyGroup ;
+  ];
 .
 
 <#base>
   sh:name "Base information"@en, "Basis informatie"@nl ;
-  sh:description "In this form, you create a shape. This shape will be used to create data with a form and also to display it."@en, "In dit formulier maak je een vorm. Deze vorm wordt gebruikt om data te maken middels formulieren en ook om het weer te geven."@nl ;
+#  sh:description "In this form, you create a shape. This shape will be used to create data with a form and also to display it."@en, "In dit formulier maak je een vorm. Deze vorm wordt gebruikt om data te maken middels formulieren en ook om het weer te geven."@nl ;
 	a sh:PropertyGroup ;
 	sh:order 1 .
 
 <#properties>
-  sh:name "Properties and name pattern"@en, "Eigenschappen en naam patroon"@nl ;
+  sh:name "Properties"@en, "Eigenschappen"@nl ;
 	a sh:PropertyGroup ;
 	sh:order 2 .
 

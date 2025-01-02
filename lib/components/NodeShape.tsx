@@ -27,10 +27,14 @@ export const getElementHelpers = ({
   dataPointer: Grapoi
   dataset: DatasetCore
 }) => {
-  const ignoredProperties = shapePointer.out(sh('ignoredProperties')).isList()
-    ? /** @ts-ignore */
-      [...shapePointer.out(sh('ignoredProperties')).list()].map(pointer => pointer.term)
-    : []
+  const hasValuePredicates = shapePointer.out(sh('property')).hasOut(sh('hasValue')).out(sh('path')).terms
+  const ignoredProperties = [
+    ...(shapePointer.out(sh('ignoredProperties')).isList()
+      ? /** @ts-ignore */
+        [...shapePointer.out(sh('ignoredProperties')).list()].map(pointer => pointer.term)
+      : []),
+    ...hasValuePredicates
+  ]
 
   const mapGroup = (group: Grapoi) => {
     const groupType = group.out(rdf('type')).filter(pointer => !pointer.term.equals(sh('PropertyGroup')))
@@ -43,7 +47,7 @@ export const getElementHelpers = ({
     return [
       parseInt(group.out(sh('order')).value as string) ?? 0,
       <Element
-        key={group.term.value}
+        key={group.term.value + shapePointer.values.join(',')}
         shapePointer={shapePointer}
         facetSearchDataPointer={facetSearchDataPointer}
         nodeDataPointer={dataPointer}
@@ -52,20 +56,20 @@ export const getElementHelpers = ({
     ] as [number, ReactNode]
   }
 
-  const mapProperty = (property: Grapoi) =>
-    ignoredProperties.some(term => term.equals(property.out(sh('path')).term))
+  const mapProperty = (property: Grapoi) => {
+    return ignoredProperties.some(term => term.equals(property.out(sh('path')).term))
       ? null
       : ([
           parseFloat(property.out(sh('order')).value as string) ?? 0,
           <PropertyShape
             dataset={dataset}
-            key={property.term.value}
+            key={property.term.value + shapePointer.values.join(',')}
             facetSearchDataPointer={facetSearchDataPointer}
             nodeDataPointer={dataPointer}
             property={property}
           />
         ] as [number, ReactNode])
-
+  }
   return { mapGroup, mapProperty }
 }
 

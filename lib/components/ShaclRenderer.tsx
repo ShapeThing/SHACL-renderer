@@ -37,6 +37,7 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextResource: any }
   }
 
   useEffect(() => {
+    // TODO migrate over to filter out the untouched terms in the view mode.
     if (!['edit', 'inline-edit'].includes(context.mode)) {
       cleanUpDataset(context.data)
       setCounter(counter => counter + 1)
