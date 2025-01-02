@@ -4,7 +4,7 @@ import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
-import { ReactNode, createContext, useState } from 'react'
+import { ReactNode, createContext } from 'react'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import { rdf, rdfs, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
@@ -196,9 +196,9 @@ const getShapes = async (
   }
 }
 
-export const createLocalizationBundles = async (languageCodes: string[]) => {
+export const createLocalizationBundles = async (languageCodes: string[], fetch?: (typeof globalThis)['fetch']) => {
   const translations = languageCodes.map(languageCode =>
-    fetch(`/translations/${languageCode}/shacl-renderer.ftl`)
+    (fetch ?? globalThis['fetch'])(`/translations/${languageCode}/shacl-renderer.ftl`)
       .then(response => response.text())
       .then(translation => new FluentResource(translation))
       .then(resource => {
@@ -231,7 +231,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
   } = originalInput
   let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject, fetch)
 
-  const localizationBundles = await createLocalizationBundles(Object.keys(interfaceLanguages ?? { en: true }))
+  const localizationBundles = await createLocalizationBundles(Object.keys(interfaceLanguages ?? { en: true }), fetch)
 
   const shapesGraph = dataPointer.out(sh('shapesGraph')).term
   const shapesUrl = !shapes && shapesGraph?.value ? new URL(shapesGraph.value, location.toString()) : undefined
@@ -283,18 +283,6 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
   }
 }
 
-export function MainContextProvider({ children, context: givenContext }: MainContextProviderProps) {
-  const [context, setContext] = useState(givenContext)
-
-  const setShapeSubject = (iri: string) => {
-    initContext({ ...givenContext.originalInput, shapeSubject: new URL(iri) }).then(setContext)
-  }
-
-  const setSubject = (subject: NamedNode) => {
-    initContext({ ...givenContext.originalInput, subject }).then(setContext)
-  }
-
-  return context ? (
-    <mainContext.Provider value={{ ...context, setShapeSubject, setSubject }}>{children}</mainContext.Provider>
-  ) : null
+export function MainContextProvider({ children, context }: MainContextProviderProps) {
+  return context ? <mainContext.Provider value={{ ...context }}>{children}</mainContext.Provider> : null
 }

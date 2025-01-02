@@ -3,10 +3,10 @@ import factory from '@rdfjs/data-model'
 import { language } from '@rdfjs/score'
 import { Grapoi } from 'grapoi'
 import { groupBy } from 'lodash-es'
-import { useContext } from 'react'
+import { Dispatch, SetStateAction, useContext } from 'react'
 import { languageContext } from '../../core/language-context'
-import { mainContext } from '../../core/main-context'
-import { dash, rdf, rdfs, schema, sh } from '../../core/namespaces'
+import { initContext, MainContext, mainContext } from '../../core/main-context'
+import { rdf, rdfs, schema, sh, stsr } from '../../core/namespaces'
 
 type Action = {
   type: 'create-type' | 'edit'
@@ -26,16 +26,17 @@ const getLabel = (pointer?: Grapoi, activeInterfaceLanguage?: string): string =>
   return pointer.term?.value?.split(/\/|\#/g).pop() ?? ''
 }
 
-export default function ActionPicker({ contextCache }: { contextCache: Map<string, any> }) {
+export default function ActionPicker({ setContext }: { setContext: Dispatch<SetStateAction<MainContext>> }) {
   const { activeInterfaceLanguage } = useContext(languageContext)
-
-  const { dataPointer, shapesPointer, originalInput, setShapeSubject, setSubject } = useContext(mainContext)
+  const context = useContext(mainContext)
+  const { dataPointer, shapesPointer, originalInput } = context
   const allShapes = shapesPointer.node().hasOut(rdf('type'), sh('NodeShape'))
   const hasShapes = !!allShapes.ptrs.length
-  const mainShapes = allShapes.filter(shape => !shape.hasOut(dash('abstract')).term?.value)
-  const subShapes = allShapes.filter(shape => !!shape.hasOut(dash('abstract')).term?.value)
+  const mainShapes = allShapes.filter(shape => !shape.hasOut(rdf('type'), stsr('SubShape')).term)
+  const subShapes = allShapes.filter(shape => !!shape.hasOut(rdf('type'), stsr('SubShape')).term)
 
   const targetClasses = allShapes.out(sh('targetClass')).terms
+
   const subjects = hasShapes
     ? dataPointer.node().hasOut(rdf('type'), targetClasses)
     : dataPointer
@@ -54,7 +55,9 @@ export default function ActionPicker({ contextCache }: { contextCache: Map<strin
     const subjectsForShape = subjects.filter(
       pointer => pointer.hasOut(rdf('type'), mainShape.out(sh('targetClass')).term).term
     )
-    for (const data of subjectsForShape) actions.push({ type: 'edit', shape: mainShape, data })
+    for (const data of subjectsForShape) {
+      actions.push({ type: 'edit', shape: mainShape, data })
+    }
   }
 
   for (const subShape of subShapes) {
@@ -69,7 +72,8 @@ export default function ActionPicker({ contextCache }: { contextCache: Map<strin
     }
   }
 
-  const groupedActions = groupBy(actions, action => getLabel(action.shape, activeInterfaceLanguage))
+  const dedupedActions = [...new Map(actions.map(action => [actionId(action), action])).values()]
+  const groupedActions = groupBy(dedupedActions, action => getLabel(action.shape, activeInterfaceLanguage))
 
   return (
     <div className="action-picker">
@@ -78,12 +82,12 @@ export default function ActionPicker({ contextCache }: { contextCache: Map<strin
       </label>
       <select
         onChange={event => {
-          const [actionType, shapeTerm, dataTerm] = event.target.value.split('||')
-          contextCache.clear() // TODO cache is still not functioning correctly.
-          if (shapeTerm) setShapeSubject(shapeTerm)
-          if (dataTerm) setSubject(factory.namedNode(dataTerm))
-
-          console.log(actionType, shapeTerm, dataTerm)
+          const [_actionType, shapeSubject, dataTerm] = event.target.value.split('||')
+          initContext({
+            ...context.originalInput,
+            shapeSubject: shapeSubject ?? context.originalInput.shapeSubject,
+            subject: dataTerm ? factory.namedNode(dataTerm) : context.originalInput.subject
+          }).then(setContext)
         }}
       >
         {Object.entries(groupedActions).map(([groupLabel, actions]) => {

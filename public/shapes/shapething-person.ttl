@@ -9,7 +9,7 @@
 @prefix app: <http://localhost:6006/> .
 
 <>
-  a sh:NodeShape ;
+  a sh:NodeShape, stsr:Shape ;
   sh:targetClass schema:Person ;
   sh:closed true ;
   sh:name "Persoon"@nl, "Person"@en ;
@@ -68,8 +68,7 @@
 .
 
 <#addressShape>
-    a sh:NodeShape ;
-    dash:abstract true ;
+    a sh:NodeShape, stsr:SubShape ;
     sh:targetClass schema:PostalAddress ;
     sh:closed true ;
     sh:name "Address"@en, "Adres"@nl ;

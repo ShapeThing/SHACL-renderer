@@ -12,15 +12,89 @@
 @prefix faker: <https://fakerjs.dev/> .
 @prefix app: <http://localhost:6006/> .
 
+
 <>
   a sh:NodeShape ;
-  sh:targetClass sh:NodeShape ;
-  sh:closed true ;
+  sh:targetClass stsr:Shape ;
   sh:name "Shape"@en, "Vorm"@nl ;
 
   sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type dash:abstract ) ;
 
+  sh:property [
+    sh:path rdf:type ;
+    sh:hasValue stsr:Shape ;
+  ];
+
+  sh:property [
+    sh:path rdf:type ;
+    sh:hasValue sh:NodeShape ;
+  ];
+
   sh:property <#property/name> ;
+
+  sh:property [
+    sh:name "Stem"@en, "Stam"@nl ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:order 3;
+    sh:group <#base> ;
+    sh:description "Het gedeelte na het domein wordt gebruikt voor het maken van de mappenstructuur."@nl, "The section after the domain is used for creating the folder structure."@en ;
+    sh:path dash:stem ;
+    dash:editor dash:URIEditor ;
+  ];
+
+  sh:property [
+    sh:name "Icon"@en, "Icoon"@nl ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:order 4;
+    sh:group <#base> ;
+    sh:path stsr:icon ;
+    sh:datatype <https://iconify.design> ;
+  ];
+
+  sh:property [
+    sh:name "Name pattern"@en, "Naam patroon"@nl ;
+    sh:minCount 1;
+    sh:order 10 ;
+    sh:group <#properties>;
+    sh:path ( stsr:filenameSuggestion [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+    sh:description "De naam van het bestand wordt gegenereerd uit de volgende waarden."@nl, "The file name is generated from the following values."@en ;
+
+		sh:or (
+			[
+				sh:datatype xsd:string ;
+        dash:editor dash:TextFieldEditor ;
+        sh:nodeKind sh:Literal ;
+        sh:name "Text"@en, "Tekst"@nl ;
+			]
+			[
+        sh:nodeKind sh:IRI ;
+        sh:name "Reference"@en, "Referentie"@nl ;
+        dash:editor dash:EnumSelectEditor ;
+        sh:in [
+          sh:select """
+            prefix sh: <http://www.w3.org/ns/shacl#>
+
+            SELECT distinct ?value ?label
+            WHERE {
+              ?property ^sh:property ?node .
+              ?property sh:path ?value .
+              ?property sh:name ?label .
+            }
+            """ ;
+        ] ;
+			]
+		) ;
+  ];
+
+.
+
+
+<#node-shape>
+  a sh:NodeShape ;
+  sh:targetClass sh:NodeShape ;
+  sh:name "Shape"@en, "Vorm"@nl ;
 
   sh:property [
     sh:name "Target"@en, "Doel"@nl ;
@@ -55,30 +129,10 @@
   ];
 
   sh:property [
-    sh:name "Stem"@en, "Stam"@nl ;
-    sh:minCount 1;
-    sh:maxCount 1;
-    sh:order 3;
-    sh:group <#base> ;
-    sh:description "Het gedeelte na het domein wordt gebruikt voor het maken van de mappenstructuur."@nl, "The section after the domain is used for creating the folder structure."@en ;
-    sh:path dash:stem ;
-    dash:editor dash:URIEditor ;
-  ];
-
-  sh:property [
-    sh:name "Icon"@en, "Icoon"@nl ;
-    sh:minCount 1;
-    sh:maxCount 1;
-    sh:order 4;
-    sh:group <#base> ;
-    sh:path stsr:icon ;
-    sh:datatype <https://iconify.design> ;
-  ];
-
-  sh:property [
     sh:name "Properties"@en, "Eigenschappen"@nl ;
     sh:minCount 1;
     sh:group <#properties>;
+    sh:order 9;
     sh:path sh:property ;
     stsr:nestedOrder sh:order ;
     sh:nodeKind sh:BlankNode ;
@@ -86,42 +140,7 @@
     sh:node <#propertyShape>;
   ];
 
-  sh:property [
-    sh:name "Name pattern"@en, "Naam patroon"@nl ;
-    sh:minCount 1;
-    sh:group <#properties>;
-    sh:path ( stsr:filenameSuggestion [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
-    sh:description "De naam van het bestand wordt gegenereerd uit de volgende waarden."@nl, "The file name is generated from the following values."@en ;
-
-		sh:or (
-			[
-				sh:datatype xsd:string ;
-        dash:editor dash:TextFieldEditor ;
-        sh:nodeKind sh:Literal ;
-        sh:name "Text"@en, "Tekst"@nl ;
-			]
-			[
-        sh:nodeKind sh:IRI ;
-        sh:name "Reference"@en, "Referentie"@nl ;
-        dash:editor dash:EnumSelectEditor ;
-        sh:in [
-          sh:select """
-            prefix sh: <http://www.w3.org/ns/shacl#>
-
-            SELECT distinct ?value ?label
-            WHERE {
-              ?property ^sh:property ?node .
-              ?property sh:path ?value .
-              ?property sh:name ?label .
-            }
-            """ ;
-        ] ;
-			]
-		) ;
-  ];
-
 .
-
 
 <#property/name>
   sh:name "Name"@en, "Naam"@nl ;
@@ -173,8 +192,7 @@
 
 <#propertyShape>
   sh:closed true ;
-  a sh:NodeShape ;
-  dash:abstract true ;
+  a sh:NodeShape, stsr:SubShape ;
   sh:name "Property"@en, "Eigenschap"@nl ;
 
   sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type sh:node sh:nodeKind rdf:nil ) ;
@@ -298,3 +316,6 @@ xsd:string rdfs:label "Text"@en, "Tekst"@nl .
 xsd:integer rdfs:label "Integer"@en, "Nummer"@nl .
 xsd:decimal rdfs:label "Decimal"@en, "Decimaal"@nl .
 rdf:langString rdfs:label "Multilingual text"@en, "Meertalige tekst"@nl .
+
+stsr:Shape rdfs:subClassOf sh:NodeShape .
+stsr:SubShape rdfs:subClassOf sh:NodeShape .

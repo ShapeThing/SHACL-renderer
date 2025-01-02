@@ -92,6 +92,7 @@ export default function NodeShape() {
       .filter(quad => !usedPredicates.includes(quad.predicate.value))
       .map(quad => [quad.predicate.value, quad.predicate])
   )
+
   const propertiesWithoutShapes: Grapoi[] = [...predicatesWithoutShapes.values()].map(predicate => {
     const propertyIri = factory.namedNode(`int:${predicate.value}`)
 

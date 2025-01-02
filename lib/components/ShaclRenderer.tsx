@@ -1,12 +1,11 @@
 import { Localized } from '@fluent/react'
 import { write } from '@jeswr/pretty-turtle/dist'
-import { Suspense, useContext, useEffect, useState } from 'react'
+import { Suspense, useContext, useEffect, useMemo, useState } from 'react'
 import { fetchContext } from '../core/fetchContext'
 import LanguageProvider from '../core/language-context'
 import { MainContext, MainContextInput, MainContextProvider, initContext } from '../core/main-context'
 import ValidationContextProvider from '../core/validation/validation-context'
 import { cleanUpDataset } from '../helpers/cleanUpDataset'
-import { createCidFromProps } from '../helpers/createCidFromProps'
 import { wrapPromise } from '../helpers/wrapPromise'
 import LanguageAwareTabs from './language/LanguageAwareTabs'
 import NodeShape from './NodeShape'
@@ -15,12 +14,11 @@ export * from '../core/namespaces'
 
 export type ShaclRendererProps = MainContextInput
 
-function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<string, any> }) {
-  const { contextCache } = props
-  const cid = createCidFromProps(props) // TODO this complicates re-using the Component with a different context via the ActionPicker.
-  const { fetch } = useContext(fetchContext)
-  if (!contextCache.has(cid)) contextCache.set(cid, wrapPromise(initContext({ ...props, fetch })))
-  const context: MainContext = contextCache.get(cid).read()
+function ShaclRendererInner(props: ShaclRendererProps & { contextResource: any }) {
+  const givenContext: MainContext = props.contextResource.read()
+
+  const [context, setContext] = useState(givenContext)
+
   const [, setCounter] = useState(0)
 
   const submit = async () => {
@@ -50,7 +48,7 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<stri
       <LanguageProvider>
         <ValidationContextProvider>
           <LanguageAwareTabs>
-            <ActionPicker contextCache={contextCache} />
+            <ActionPicker setContext={setContext} />
             <NodeShape key="root" />
             <div className="actions">
               {props.children ? (
@@ -69,12 +67,13 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<stri
 }
 
 export default function ShaclRenderer(props: ShaclRendererProps) {
-  const [contextCache] = useState<Map<string, any>>(new Map())
+  const { fetch } = useContext(fetchContext)
+  const contextResource = useMemo(() => wrapPromise(initContext({ ...props, fetch })), [])
 
   return (
     <div data-mode={props.mode} className="shacl-renderer">
       <Suspense>
-        <ShaclRendererInner {...props} contextCache={contextCache} />
+        <ShaclRendererInner contextResource={contextResource} {...props} />
       </Suspense>
     </div>
   )
