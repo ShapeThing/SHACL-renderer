@@ -23,7 +23,7 @@ const getLabel = (pointer?: Grapoi, activeInterfaceLanguage?: string): string =>
     ?.out([sh('name'), rdfs('label'), schema('name')])
     .best(language([activeInterfaceLanguage, '', '*']))?.value
   if (label) return label
-  return pointer.term?.split(/\/|\#/g).pop() ?? ''
+  return pointer.term?.value?.split(/\/|\#/g).pop() ?? ''
 }
 
 export default function ActionPicker({ contextCache }: { contextCache: Map<string, any> }) {

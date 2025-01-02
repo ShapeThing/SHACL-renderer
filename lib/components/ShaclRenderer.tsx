@@ -51,7 +51,7 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextCache: Map<stri
         <ValidationContextProvider>
           <LanguageAwareTabs>
             <ActionPicker contextCache={contextCache} />
-            <NodeShape {...context} key="root" />
+            <NodeShape key="root" />
             <div className="actions">
               {props.children ? (
                 props.children(submit)

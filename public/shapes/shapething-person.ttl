@@ -15,7 +15,7 @@
   sh:name "Persoon"@nl, "Person"@en ;
   dash:stem <../Mensen> ;
   stsr:icon "stash:person"^^<https://iconify.design> ;
-  stsr:filenameSuggestion ( schema:givenName " - " schema:familyName ) ;
+  stsr:filenameSuggestion ( schema:givenName " " schema:familyName ) ;
 
   sh:property [
     sh:name "Voornaam"@nl, "Given name"@en ;

@@ -26,7 +26,7 @@ type PropertyShapeEditModeProps = {
 }
 
 export default function PropertyShapeEditModeNestedPredicateList(props: PropertyShapeEditModeProps) {
-  const { nodeDataPointer, errors, path } = props
+  const { nodeDataPointer, errors, path, property } = props
   const { jsonLdContext } = useContext(mainContext)
   const { validate } = useContext(validationContext)
 
@@ -49,7 +49,11 @@ export default function PropertyShapeEditModeNestedPredicateList(props: Property
       newState.forEach((item: any, index: number) => {
         const pointer = nodeDataPointer.node(item.term)
         pointer.deleteOut(sh('order'))
-        pointer.addOut(sh('order'), factory.literal((index + 1).toString(), xsd('decimal')))
+
+        const nestedOrderPredicate = props.property.out(stsr('nestedOrder')).term
+        const datatype =
+          property.node().hasOut(sh('path'), nestedOrderPredicate).out(sh('datatype')).term ?? xsd('decimal')
+        pointer.addOut(sh('order'), factory.literal((index + 1).toString(), datatype))
       })
       const newItems = nodeDataPointer.executeAll(path)
 
