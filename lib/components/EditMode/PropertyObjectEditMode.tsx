@@ -5,8 +5,9 @@ import { Suspense, useContext, useEffect, useState } from 'react'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { AdditionalWidgetConfiguration, widgetsContext } from '../../widgets/widgets-context'
+import AdditionalButtons from './AdditionalButtons'
 
-type PropertyObjectEditModeProps = {
+export type PropertyObjectEditModeProps = {
   property: Grapoi
   data: Grapoi
   facetSearchData: Grapoi
@@ -73,6 +74,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
               setTerm={setTerm}
             />
           </Suspense>
+          <AdditionalButtons {...props} />
           {alwaysShowRemove || (!itemIsRequired && items.ptrs.length > 0 && data.term.value) || errors?.length ? (
             <button
               className="button icon remove-object"

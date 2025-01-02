@@ -263,7 +263,8 @@
     sh:order 7;
     sh:group <#propertyShapeGroup> ;
     sh:path sh:node ;
-    stsr:hiddenWhen sh:datatype ;
+    # stsr:hiddenWhen sh:datatype ;
+    sh:class stsr:SubShape ;
 
     sh:in [
       sh:select """
@@ -362,7 +363,7 @@
   sh:property [
     sh:name "Data type"@en, "Data type"@nl ;
     sh:group <#propertyShapeGroup> ;
-    stsr:hiddenWhen sh:node ;
+    # stsr:hiddenWhen sh:node ;
     sh:maxCount 1;
     sh:description "Het datatype van deze eigenschap. Dit is handig voor de overzichtelijkheid en data kwaliteit."@nl, "The data type of this property. This is helpful for overviews and data quality."@en ;
     sh:order 5;

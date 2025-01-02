@@ -96,4 +96,6 @@
 
 [data-mode="edit"] .actions {
   flex-direction: row-reverse;
+  position: sticky;
+  bottom: .5em;
 }

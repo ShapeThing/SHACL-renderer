@@ -11,3 +11,4 @@ select-subject = Select subject
 create-type = Create a new {$type}
 edit = Edit {$type} "{$thing}"
 action = Action
+close = Close
