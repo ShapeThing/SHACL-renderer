@@ -1,11 +1,13 @@
 import { Localized } from '@fluent/react'
 import { Icon } from '@iconify-icon/react/dist/iconify.mjs'
 import { language } from '@rdfjs/score'
+import { Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import { Fragment, ReactNode, useContext } from 'react'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
-import { rdf, rdfs, sh } from '../core/namespaces'
+import { rdf, rdfs, sh, stsr } from '../core/namespaces'
+import { TouchableTerm } from '../helpers/touchableRdf'
 
 type PropertyElementProps = {
   property?: Grapoi
@@ -24,7 +26,7 @@ export default function PropertyElement({
   suffix,
   label: givenLabel
 }: PropertyElementProps) {
-  const { mode } = useContext(mainContext)
+  const { mode, dataPointer } = useContext(mainContext)
   const { activeInterfaceLanguage } = useContext(languageContext)
 
   const label =
@@ -42,8 +44,18 @@ export default function PropertyElement({
   const uniqueLang = property?.out(sh('uniqueLang')).term?.value === 'true'
   const isLanguageDataType = property?.out(sh('datatype')).term?.equals(rdf('langString'))
 
+  const hiddenWhenPredicate = property?.out(stsr('hiddenWhen')).term
+
+  const mustBeHidden = hiddenWhenPredicate
+    ? dataPointer.out(hiddenWhenPredicate).terms.filter((term: Term) => (term as TouchableTerm).touched !== false)
+        .length
+    : false
+
   return (
-    <div className={`property ${cssClass ?? ''}`.trim()} data-term={property?.values.join(':')}>
+    <div
+      className={`property ${mustBeHidden ? 'hidden' : 'expanded'} ${cssClass ?? ''}`.trim()}
+      data-term={property?.values.join(':')}
+    >
       <label className="label">
         {label}
         {showColon ? ': ' : ''}

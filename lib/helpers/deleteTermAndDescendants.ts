@@ -12,7 +12,8 @@ export const deleteTermAndDescendants = (item: Grapoi) => {
     return [...descendants, ...[...descendants].flatMap((quad: Quad) => findDescendants(quad.object))]
   }
 
-  const allDescendants = findDescendants(quad.object)
-  for (const descendent of allDescendants) dataset.delete(descendent)
-  dataset.delete(quad)
+  if (quad.object.termType === 'BlankNode') {
+    const allDescendants = findDescendants(quad.object)
+    for (const descendent of allDescendants) dataset.delete(descendent)
+  }
 }

@@ -68,6 +68,7 @@ export const useEmptyTerm = (items: Grapoi, property: Grapoi) => {
 
 export default function PropertyShapeEditMode(props: PropertyShapeEditModeProps) {
   const { path } = props
+
   const isRdfList = isOrderedList(path)
 
   if (isRdfList) return <PropertyShapeEditModeRdfList {...props} />

@@ -195,6 +195,15 @@
     sh:path rdf:type ;
     sh:hasValue sh:PropertyGroup ;
   ];
+
+  sh:property [
+    sh:name "Order"@en, "Gewicht"@nl ;
+    sh:maxCount 1;
+    sh:group <#base> ;  
+    sh:description "Het gewicht van de eigenschap, grotere waarden wegen meer en worden dus lager getoond."@nl, "The order of the property, bigger values weigh more and will be shown lower."@en ;
+    sh:datatype xsd:integer ;
+    sh:path sh:order ;
+  ] ;
 .
 
 <#base>
@@ -254,14 +263,16 @@
     sh:order 7;
     sh:group <#propertyShapeGroup> ;
     sh:path sh:node ;
+    stsr:hiddenWhen sh:datatype ;
 
     sh:in [
       sh:select """
         prefix sh: <http://www.w3.org/ns/shacl#>
-
+        prefix stsr: <http://ontology.shapething.com/shacl-renderer#>
+        
         SELECT distinct ?value ?label
         WHERE {
-          ?value a sh:NodeShape .
+          ?value a stsr:SubShape .
           optional {
             ?value sh:name ?name .
           }
@@ -351,6 +362,7 @@
   sh:property [
     sh:name "Data type"@en, "Data type"@nl ;
     sh:group <#propertyShapeGroup> ;
+    stsr:hiddenWhen sh:node ;
     sh:maxCount 1;
     sh:description "Het datatype van deze eigenschap. Dit is handig voor de overzichtelijkheid en data kwaliteit."@nl, "The data type of this property. This is helpful for overviews and data quality."@en ;
     sh:order 5;
