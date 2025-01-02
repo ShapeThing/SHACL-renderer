@@ -6,6 +6,7 @@ import { Grapoi } from 'grapoi'
 import { Store } from 'n3'
 import { useContext, useEffect } from 'react'
 import { languageContext } from '../../../core/language-context'
+import { mainContext } from '../../../core/main-context'
 import { rdfs, sh } from '../../../core/namespaces'
 import { wrapPromise } from '../../../helpers/wrapPromise'
 import { WidgetProps } from '../../widgets-context'
@@ -50,6 +51,7 @@ const getOptions = (property: Grapoi, dataset: DatasetCore, shapesDataset: Datas
 }
 
 export default function EnumSelectEditor({ property, term, setTerm, dataset }: WidgetProps) {
+  const { subject } = useContext(mainContext)
   const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
   const options = getOptions(property, dataset, property.ptrs[0].dataset)
 
@@ -76,18 +78,20 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
         </option>
       ) : null}
       {options.length ? (
-        options.map((term: Term) => {
-          const label = property
-            .node(term)
-            .out([sh('name'), rdfs('label')])
-            .best(language([activeInterfaceLanguage, activeContentLanguage, '', '*'])).value
+        options
+          .filter((term: Term) => !term.equals(subject))
+          .map((term: Term) => {
+            const label = property
+              .node(term)
+              .out([sh('name'), rdfs('label')])
+              .best(language([activeInterfaceLanguage, activeContentLanguage, '', '*'])).value
 
-          return (
-            <option key={term.value} value={term.value}>
-              {label ?? term.value.split(/\#|\//g).pop()!}
-            </option>
-          )
-        })
+            return (
+              <option key={term.value} value={term.value}>
+                {label ?? term.value.split(/\#|\//g).pop()!}
+              </option>
+            )
+          })
       ) : (
         <option>Loading...</option>
       )}

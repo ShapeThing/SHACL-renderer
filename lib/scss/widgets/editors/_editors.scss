@@ -10,10 +10,10 @@
 }
 
 .field-description {
-  font-size: 13px;
-  font-style: italic;
-  color: gray;
+  font-size: 15px;
+  color: var(--gray-dark);
   line-height: 1.6;
+  margin-bottom: 10px;
 }
 
 .field-description+.plus-options {

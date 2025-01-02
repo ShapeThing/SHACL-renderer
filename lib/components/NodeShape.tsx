@@ -27,6 +27,8 @@ export const getElementHelpers = ({
   dataPointer: Grapoi
   dataset: DatasetCore
 }) => {
+  const keyPrefix = shapePointer.values.join(',') + ':' + dataPointer.values.join(',') + ':'
+
   const hasValuePredicates = shapePointer.out(sh('property')).hasOut(sh('hasValue')).out(sh('path')).terms
   const ignoredProperties = [
     ...(shapePointer.out(sh('ignoredProperties')).isList()
@@ -47,7 +49,7 @@ export const getElementHelpers = ({
     return [
       parseInt(group.out(sh('order')).value as string) ?? 0,
       <Element
-        key={group.term.value + shapePointer.values.join(',')}
+        key={keyPrefix + group.term.value}
         shapePointer={shapePointer}
         facetSearchDataPointer={facetSearchDataPointer}
         nodeDataPointer={dataPointer}
@@ -63,7 +65,7 @@ export const getElementHelpers = ({
           parseFloat(property.out(sh('order')).value as string) ?? 0,
           <PropertyShape
             dataset={dataset}
-            key={property.term.value + shapePointer.values.join(',')}
+            key={keyPrefix + property.term.value}
             facetSearchDataPointer={facetSearchDataPointer}
             nodeDataPointer={dataPointer}
             property={property}

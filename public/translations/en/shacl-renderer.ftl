@@ -1,5 +1,5 @@
 interface-language = Interface language
-add-language = Add content language
+add-language = Add language
 save = save
 optional = optional
 pick-an-option = - Pick an option -

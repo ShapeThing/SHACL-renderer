@@ -56,7 +56,6 @@ export default function PropertyElement({
           </em>
         ) : null}
       </label>
-      {children}
       {mode === 'edit' && descriptionLines?.length ? (
         <span className="field-description">
           {descriptionLines.map(line => (
@@ -67,6 +66,7 @@ export default function PropertyElement({
           ))}
         </span>
       ) : null}
+      {children}
       {suffix}
     </div>
   )

@@ -218,7 +218,7 @@
   a sh:NodeShape, stsr:SubShape ;
   sh:name "Property"@en, "Eigenschap"@nl ;
 
-  sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type sh:node sh:nodeKind rdf:nil ) ;
+  sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type sh:nodeKind rdf:nil ) ;
 
   sh:property [
     sh:name "Name"@en, "Naam"@nl ;
@@ -245,6 +245,32 @@
     sh:group <#propertyShapeGroup> ;
     sh:datatype xsd:integer ;
     sh:path sh:order ;
+  ];
+
+  sh:property [
+    sh:name "Sub shape"@en, "Sub vorm"@nl ;
+    sh:maxCount 1;
+    sh:description "Het sub formulier dat getoond moet worden."@nl, "The sub form that has to be shown."@en ;
+    sh:order 7;
+    sh:group <#propertyShapeGroup> ;
+    sh:path sh:node ;
+
+    sh:in [
+      sh:select """
+        prefix sh: <http://www.w3.org/ns/shacl#>
+
+        SELECT distinct ?value ?label
+        WHERE {
+          ?value a sh:NodeShape .
+          optional {
+            ?value sh:name ?name .
+          }
+          bind(coalesce(?name, strafter(str(?value), "#"), strafter(str(?value), "/")) as ?label)
+        }
+        """ ;
+    ] ;
+
+
   ];
 
   # sh:property [
@@ -301,7 +327,7 @@
 
   sh:property [
     sh:name "Group"@en, "Groep"@nl ;
-    sh:description "Wil je deze eigenschap in een groep tonen?"@nl, "Do you want to show this property in a group?"@en ;
+    sh:description "Dit toont de eigenschap in een groep samen met andere eigenschappen."@nl, "This shows the property in a group together with other properties."@en ;
     sh:group <#propertyShapeGroup> ;
     sh:maxCount 1;
     sh:order 6;
@@ -326,7 +352,7 @@
     sh:name "Data type"@en, "Data type"@nl ;
     sh:group <#propertyShapeGroup> ;
     sh:maxCount 1;
-    sh:description "Het datatype van deze eigenschap. Dit is handig voor overzicht en data kwaliteit."@nl, "The data type of this property. This is helpful for overviews and data quality."@en ;
+    sh:description "Het datatype van deze eigenschap. Dit is handig voor de overzichtelijkheid en data kwaliteit."@nl, "The data type of this property. This is helpful for overviews and data quality."@en ;
     sh:order 5;
     sh:path sh:datatype ;
     sh:in (

@@ -79,7 +79,13 @@ export default function LanguageAwareTabs({ children }: Props) {
                 }}
               />
             ) : null}
-            <button className="add-language button outline secondary small" onClick={() => setIsCreatingLanguage(true)}>
+            <button
+              className={`add-language button outline secondary small ${
+                Object.keys(interfaceLanguages).length <= 1 ? 'end' : ''
+              }`}
+              onClick={() => setIsCreatingLanguage(true)}
+            >
+              <Icon icon="iconoir:plus" />
               <Localized id="add-language">Add language</Localized>
             </button>
           </>

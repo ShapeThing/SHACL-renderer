@@ -31,6 +31,7 @@
 
 .shacl-renderer {
   color: var(--text);
+  margin-inline: auto;
 
   &.loading {
     opacity: 0;
@@ -57,7 +58,7 @@
 
   --gray: #ccc;
   --gray-light: #eee;
-  --gray-dark: #999;
+  --gray-dark: #6d6d6d;
 
   --text: #141414;
 

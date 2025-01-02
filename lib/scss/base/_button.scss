@@ -40,8 +40,10 @@
     background-color: var(--secondary);
     border: 1px solid var(--secondary);
 
-    iconify-icon {
-      color: white;
+    &:not(.outline) {
+      iconify-icon {
+        color: white;
+      }
     }
 
     &.outline {

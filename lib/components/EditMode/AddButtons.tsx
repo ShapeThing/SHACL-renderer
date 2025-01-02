@@ -21,10 +21,6 @@ export function AddButtons({ property, items, addTerm }: AddButtonsProps) {
     ? parseInt(property.out(sh('maxCount')).value.toString())
     : Infinity
 
-  if (items.ptrs.length >= maxCount || uniqueLang) {
-    return null
-  }
-
   const expandedOptions = property.out(sh('or')).isList()
     ? allLogicalPointers(property).map(option => ({
         term: option.terms.at(-1)!,
@@ -39,6 +35,10 @@ export function AddButtons({ property, items, addTerm }: AddButtonsProps) {
 
   const createEmptyTerm = useEmptyTerm(items, property)
 
+  if (items.ptrs.length >= maxCount || uniqueLang) {
+    return null
+  }
+
   return (
     <div className="plus-options">
       {expandedOptions.length ? (
@@ -49,14 +49,14 @@ export function AddButtons({ property, items, addTerm }: AddButtonsProps) {
               const emptyTerm = createEmptyTerm(expandedOption.pointer)
               if (emptyTerm) addTerm(emptyTerm)
             }}
-            className="button icon secondary add-object"
+            className="button icon secondary outline add-object"
           >
             <Icon icon="iconoir:plus" /> <span>{expandedOption.label}</span>
           </button>
         ))
       ) : (
         <button
-          className="button icon secondary add-object"
+          className="button icon secondary outline add-object"
           onClick={() => {
             const emptyTerm = createEmptyTerm()
             if (emptyTerm) addTerm(emptyTerm)

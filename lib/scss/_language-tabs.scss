@@ -47,6 +47,10 @@
 
 .add-language {
     margin-inline-start: 1em;
+
+    &.end {
+        margin-left: auto;
+    }
 }
 
 .add-language-dialog {

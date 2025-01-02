@@ -48,8 +48,8 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextResource: any }
     <MainContextProvider context={context}>
       <LanguageProvider>
         <ValidationContextProvider>
+          <ActionPicker setContext={setContext} />
           <LanguageAwareTabs>
-            <ActionPicker setContext={setContext} />
             <NodeShape key="root" />
             <div className="actions">
               {props.children ? (

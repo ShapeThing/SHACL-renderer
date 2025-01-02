@@ -104,7 +104,11 @@ export const ShapeThingNodeShapeData = {
     activeInterfaceLanguage: 'nl',
     activeContentLanguage: 'nl',
     contentLanguages: languageLabels,
-    interfaceLanguages: languageLabels
+    interfaceLanguages: {
+      nl: {
+        nl: 'Nederlands'
+      }
+    }
   } as ShaclRendererProps
 }
 
