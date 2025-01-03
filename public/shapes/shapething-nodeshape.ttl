@@ -344,6 +344,7 @@
     sh:maxCount 1;
     sh:order 6;
     sh:path sh:group ;
+    sh:class sh:PropertyGroup ;
     sh:in [
       sh:select """
         prefix sh: <http://www.w3.org/ns/shacl#>
