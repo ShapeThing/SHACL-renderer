@@ -1,5 +1,4 @@
 import { Localized } from '@fluent/react'
-import { Icon } from '@iconify-icon/react/dist/iconify.mjs'
 import factory from '@rdfjs/data-model'
 import { BlankNode, NamedNode } from '@rdfjs/types'
 import { ReactNode, useContext, useState } from 'react'
@@ -7,6 +6,7 @@ import { createPortal } from 'react-dom'
 import { mainContext } from '../../core/main-context'
 import { dash, rdf, sh } from '../../core/namespaces'
 import ShaclRenderer from '../ShaclRenderer'
+import Icon from '../various/Icon'
 import { PropertyObjectEditModeProps } from './PropertyObjectEditMode'
 
 export default function AdditionalButtons({ property, data, setTerm }: PropertyObjectEditModeProps) {
@@ -71,6 +71,7 @@ export default function AdditionalButtons({ property, data, setTerm }: PropertyO
                 shapeSubject={shapeSubject?.value}
                 onSubmit={(_data, _prefixes, _dataPointer, context) => {
                   setTerm(context.subject)
+                  console.log(context.subject)
                 }}
               >
                 {submit => {
@@ -93,6 +94,7 @@ export default function AdditionalButtons({ property, data, setTerm }: PropertyO
                         onClick={() => {
                           setPopupResource(undefined)
                           setShapeSubject(undefined)
+                          // TODO cleanup term
                         }}
                       >
                         <Localized id="cancel">Cancel</Localized>

@@ -1,4 +1,3 @@
-import { Icon } from '@iconify-icon/react'
 import { language } from '@rdfjs/score'
 import useResizeObserver from '@react-hook/resize-observer'
 import { useContext, useLayoutEffect, useRef, useState } from 'react'
@@ -6,6 +5,7 @@ import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
 import { sh, stsr } from '../../core/namespaces'
 import { nonNullable } from '../../helpers/nonNullable'
+import Icon from '../various/Icon'
 import { getProperties, groupHasContents, PropertyGroupProps } from './PropertyGroup'
 
 export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {

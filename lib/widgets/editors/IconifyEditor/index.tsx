@@ -1,6 +1,6 @@
-import { Icon } from '@iconify-icon/react'
 import factory from '@rdfjs/data-model'
 import { useContext, useEffect, useRef, useState } from 'react'
+import Icon from '../../../components/various/Icon'
 import { fetchContext } from '../../../core/fetchContext'
 import { stsr } from '../../../core/namespaces'
 import { WidgetProps } from '../../widgets-context'

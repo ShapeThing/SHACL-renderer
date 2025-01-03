@@ -93,6 +93,7 @@
   a sh:NodeShape ;
   sh:targetClass stsr:SubShape ;
   sh:name "Sub shape"@en, "Subvorm"@nl ;
+	sh:nodeKind sh:IRI ;
 
   sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type dash:abstract sh:ignoredProperties ) ;
 
@@ -188,6 +189,7 @@
   a sh:NodeShape ;
   sh:targetClass sh:PropertyGroup ;
   sh:name "Group"@en, "Groep"@nl ;
+	sh:nodeKind sh:IRI ;
 
   sh:property <#property/name> ;
 

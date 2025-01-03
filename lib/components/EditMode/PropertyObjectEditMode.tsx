@@ -1,10 +1,11 @@
-import { Icon } from '@iconify-icon/react'
 import type { Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
 import { Suspense, useContext, useEffect, useState } from 'react'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import { TouchableTerm } from '../../helpers/touchableRdf'
 import { AdditionalWidgetConfiguration, widgetsContext } from '../../widgets/widgets-context'
+import Icon from '../various/Icon'
 import AdditionalButtons from './AdditionalButtons'
 
 export type PropertyObjectEditModeProps = {
@@ -91,7 +92,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
             </button>
           ) : null}
 
-          {errors?.length ? (
+          {errors?.length && (data.term as TouchableTerm).touched !== false ? (
             <span className="errors" dangerouslySetInnerHTML={{ __html: errors.join('\n') }}></span>
           ) : null}
         </div>

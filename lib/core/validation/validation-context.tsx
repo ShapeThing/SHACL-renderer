@@ -21,10 +21,15 @@ export default function ValidationContextProvider({ children }: { children: Reac
   const { data, shapes: originalShapes, shapePointer: originalShapePointer, mode } = useContext(mainContext)
   const { fetch } = useContext(fetchContext)
 
-  // When we validate we need to have a copy of the dataset so we can have support
-  // for triples that do not exist in our shapes dataset or our content dataset
-  const validate = useCallback(
-    debounce(async () => {
+  const [validateOnNextTick, setValidateOnNextTick] = useState(true)
+
+  useEffect(() => {
+    if (!validateOnNextTick) return
+    setValidateOnNextTick(false)
+    ;(async () => {
+      // When we validate we need to have a copy of the dataset so we can have support
+      // for triples that do not exist in our shapes dataset or our content dataset
+
       const shapes = datasetFactory.dataset([...originalShapes])
       const validator = new Validator(shapes, { factory })
       const shapePointer = grapoi({ dataset: shapes, factory, terms: originalShapePointer.terms })
@@ -48,6 +53,12 @@ export default function ValidationContextProvider({ children }: { children: Reac
         })
       )
       setReport(report)
+    })()
+  }, [validateOnNextTick])
+
+  const validate = useCallback(
+    debounce(async () => {
+      setValidateOnNextTick(true)
     }, 100),
     []
   )

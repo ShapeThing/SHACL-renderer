@@ -7,6 +7,7 @@ import { Settings, mainContext } from '../core/main-context'
 import { dash, sh, stf, stsr } from '../core/namespaces'
 import { validationContext } from '../core/validation/validation-context'
 import parsePath from '../helpers/parsePath'
+import { TouchableTerm } from '../helpers/touchableRdf'
 import PropertyShapeEditMode from './EditMode/PropertyShapeEditMode'
 import PropertyShapeFacetMode from './FacetMode/PropertyShapeFacetMode'
 import PropertyShapeViewMode from './ViewMode/PropertyShapeViewMode'
@@ -51,7 +52,15 @@ export default function PropertyShape(props: PropertyShapeProps) {
   const { report } = useContext(validationContext)
   const errors =
     (report?.results as any)?.filter((result: { path: unknown; focusNode: Grapoi }) => {
-      return isEqual(result.path, path) && props.nodeDataPointer.term.equals(result.focusNode.term)
+      const isMatch = isEqual(result.path, path) && props.nodeDataPointer.term.equals(result.focusNode.term)
+
+      if (path?.length === 1 && path[0]?.predicates.length === 1) {
+        const termsPointer = props.nodeDataPointer.out(path[0].predicates[0])
+        const usableTerms = termsPointer.terms.filter(term => (term as TouchableTerm).touched !== false)
+        if (!usableTerms.length) return false
+      }
+
+      return isMatch
     }) ?? []
 
   useEffect(() => {

@@ -1,4 +1,3 @@
-import { Icon } from '@iconify-icon/react'
 import { language } from '@rdfjs/score'
 import { Term } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
@@ -6,6 +5,7 @@ import { useContext } from 'react'
 import { languageContext } from '../../core/language-context'
 import { sh } from '../../core/namespaces'
 import { allLogicalPointers } from '../../helpers/allLogicalPointers'
+import Icon from '../various/Icon'
 import { useEmptyTerm } from './PropertyShapeEditMode'
 
 type AddButtonsProps = {

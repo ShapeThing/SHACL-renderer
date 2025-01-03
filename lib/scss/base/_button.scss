@@ -10,7 +10,7 @@
   padding: 10px;
   transition: background-color var(--easing) var(--speed), color var(--easing) var(--speed);
 
-  iconify-icon {
+  .iconify {
     font-size: 1.5em;
     color: var(--secondary);
   }
@@ -30,7 +30,7 @@
     background-color: var(--primary);
     border: 1px solid var(--primary);
 
-    iconify-icon {
+    .iconify {
       color: white;
     }
   }
@@ -41,7 +41,7 @@
     border: 1px solid var(--secondary);
 
     &:not(.outline) {
-      iconify-icon {
+      .iconify {
         color: white;
       }
     }
@@ -55,7 +55,7 @@
 
   &.active,
   &:hover {
-    iconify-icon {
+    .iconify {
       color: var(--primary);
     }
 
@@ -72,7 +72,7 @@
     min-width: 20px;
     height: 20px;
 
-    iconify-icon {
+    .iconify {
       transition: color .3s ease-in-out;
     }
 

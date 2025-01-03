@@ -46,6 +46,7 @@
     "@fontsource/roboto": "^5.1.0",
     "@hydrofoil/shape-to-query": "^0.13.1",
     "@iconify-icon/react": "^2.1.0",
+    "@iconify/icons-iconoir": "^1.2.30",
     "@iconify/react": "^5.0.2",
     "@jeswr/pretty-turtle": "^1.5.0",
     "@rdfjs/data-model": "^2.0.2",
