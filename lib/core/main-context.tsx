@@ -21,7 +21,7 @@ export type MainContextInput = {
   interfaceLanguages?: Record<string, Record<string, string>>
   cacheId?: string
   context?: Record<string, string>
-  onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>, dataPointer: Grapoi) => void
+  onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>, dataPointer: Grapoi, context: MainContext) => void
   children?: (submit: () => void) => ReactNode
   fetch?: (typeof globalThis)['fetch']
 } & Settings

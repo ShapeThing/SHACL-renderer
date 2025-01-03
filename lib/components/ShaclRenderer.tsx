@@ -9,6 +9,7 @@ import { cleanUpDataset } from '../helpers/cleanUpDataset'
 import { wrapPromise } from '../helpers/wrapPromise'
 import LanguageAwareTabs from './language/LanguageAwareTabs'
 import NodeShape from './NodeShape'
+import { prefixes } from './ShaclRenderer'
 export * from '../core/namespaces'
 
 export type ShaclRendererProps = MainContextInput
@@ -27,12 +28,15 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextResource: any }
     cleanUpDataset(context.data)
 
     if (props.onSubmit) {
-      await props.onSubmit(context.data, context.jsonLdContext.getContextRaw(), context.dataPointer)
+      await props.onSubmit(context.data, context.jsonLdContext.getContextRaw(), context.dataPointer, context)
     }
     // For now this is helpful for debugging.
     else {
       const turtle = await write([...context.data], {
-        prefixes: context.jsonLdContext.getContextRaw()
+        prefixes: {
+          ...prefixes,
+          ...context.jsonLdContext.getContextRaw()
+        }
       })
       console.log(turtle)
     }

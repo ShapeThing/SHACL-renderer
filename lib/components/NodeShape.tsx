@@ -29,7 +29,8 @@ export const getElementHelpers = ({
 }) => {
   const keyPrefix = shapePointer.values.join(',') + ':' + dataPointer.values.join(',') + ':'
 
-  const hasValuePredicates = shapePointer.out(sh('property')).hasOut(sh('hasValue')).out(sh('path')).terms
+  const hasValuePredicatePointers = shapePointer.out(sh('property')).hasOut(sh('hasValue'))
+  const hasValuePredicates = hasValuePredicatePointers.out(sh('path')).terms
   const ignoredProperties = [
     ...(shapePointer.out(sh('ignoredProperties')).isList()
       ? /** @ts-ignore */
@@ -37,6 +38,12 @@ export const getElementHelpers = ({
       : []),
     ...hasValuePredicates
   ]
+
+  for (const hasValuePredicatePointer of hasValuePredicatePointers) {
+    const predicate = hasValuePredicatePointer.out(sh('path')).term
+    const object = hasValuePredicatePointer.out(sh('hasValue'))
+    dataPointer.addOut(predicate, object)
+  }
 
   const mapGroup = (group: Grapoi) => {
     const groupType = group.out(rdf('type')).filter(pointer => !pointer.term.equals(sh('PropertyGroup')))

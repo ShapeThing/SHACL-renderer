@@ -74,7 +74,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
               setTerm={setTerm}
             />
           </Suspense>
-          <AdditionalButtons {...props} />
+          <AdditionalButtons {...props} setTerm={setTerm} />
           {alwaysShowRemove || (!itemIsRequired && items.ptrs.length > 0 && data.term.value) || errors?.length ? (
             <button
               className="button icon remove-object"

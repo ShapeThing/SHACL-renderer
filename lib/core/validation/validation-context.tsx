@@ -37,16 +37,16 @@ export default function ValidationContextProvider({ children }: { children: Reac
       await resolveDynamicShacl(shapePointer, dataset)
 
       const report = await validator.validate({ dataset }, shapePointer)
-      // console.log(
-      //   report.results.map((result: any) => {
-      //     return {
-      //       path: result.path,
-      //       focusNode: result.focusNode?.value,
-      //       value: result.value?.value,
-      //       message: result.message[0]?.value
-      //     }
-      //   })
-      // )
+      console.log(
+        report.results.map((result: any) => {
+          return {
+            path: result.path,
+            focusNode: result.focusNode?.value,
+            value: result.value?.value,
+            message: result.message[0]?.value
+          }
+        })
+      )
       setReport(report)
     }, 100),
     []

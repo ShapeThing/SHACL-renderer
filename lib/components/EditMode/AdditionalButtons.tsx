@@ -9,7 +9,7 @@ import { dash, rdf, sh } from '../../core/namespaces'
 import ShaclRenderer from '../ShaclRenderer'
 import { PropertyObjectEditModeProps } from './PropertyObjectEditMode'
 
-export default function AdditionalButtons({ property, data }: PropertyObjectEditModeProps) {
+export default function AdditionalButtons({ property, data, setTerm }: PropertyObjectEditModeProps) {
   const [popupResource, setPopupResource] = useState<NamedNode | BlankNode>()
   const [shapeSubject, setShapeSubject] = useState<NamedNode>()
 
@@ -67,15 +67,24 @@ export default function AdditionalButtons({ property, data }: PropertyObjectEdit
                 key={popupResource?.value + ':' + shapeSubject?.value}
                 {...originalInput}
                 data={dataset}
-                // data={popupResource?.value ? originalInput.data : undefined}
-                // languageMode="individual"
                 subject={popupResource ?? factory.blankNode()}
                 shapeSubject={shapeSubject?.value}
+                onSubmit={(_data, _prefixes, _dataPointer, context) => {
+                  setTerm(context.subject)
+                }}
               >
                 {submit => {
                   return (
                     <>
-                      <button onClick={submit} className="button primary">
+                      <button
+                        onClick={() => {
+                          submit()
+                          setPopupResource(undefined)
+                          setShapeSubject(undefined)
+                          // TODO somehow we need a refresh of data.
+                        }}
+                        className="button primary"
+                      >
                         <Localized id="save">Save</Localized>
                       </button>
 
