@@ -28,9 +28,6 @@ export default function EditNestedNodeButton({
 
   if (!shapes.length || widgetItem.meta.iri.equals(dash('DetailsEditor'))) return null
 
-  const localDataset = datasetFactory.dataset(outAll(data))
-  const initialQuads = outAll(data)
-
   return (
     <>
       <button
@@ -48,11 +45,13 @@ export default function EditNestedNodeButton({
                 key={shapes.flatMap(shape => shape.terms).join(',')}
                 {...originalInput}
                 prefixes={jsonLdContext.getContextRaw()}
-                data={localDataset}
+                data={datasetFactory.dataset(outAll(data))}
                 subject={data.term}
                 shapeSubject={shapes[0].term.value}
-                onSubmit={() => {
+                onSubmit={localDataset => {
                   const localQuads = [...localDataset]
+                  const initialQuads = outAll(data)
+
                   const deletions = initialQuads.filter(
                     initialQuad => !localQuads.some(localQuad => localQuad.equals(initialQuad))
                   )
