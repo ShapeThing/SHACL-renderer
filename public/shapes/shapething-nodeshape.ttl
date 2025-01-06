@@ -29,7 +29,17 @@
     sh:hasValue sh:NodeShape ;
   ];
 
-  sh:property <#property/name> ;
+  sh:property [
+    sh:name "Shape name"@en, "Vorm naam"@nl ;
+    sh:minCount 1;
+    sh:order 1;
+    sh:uniqueLang true ;
+    sh:group <#base> ;
+    sh:maxLength 30 ;
+    sh:description "De gebruiksvriendelijke naam voor de vorm"@nl, "A user friendly name for the shape"@en ;
+    sh:path sh:name ;
+    sh:datatype rdf:langString ;
+  ] ;
 
   sh:property [
     sh:name "Stem"@en, "Stam"@nl ;
@@ -232,7 +242,7 @@
   sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type sh:nodeKind rdf:nil ) ;
 
   sh:property [
-    sh:name "Name"@en, "Naam"@nl ;
+    sh:name "Property name"@en, "Eigenschap naam"@nl ;
     sh:minCount 1;
     sh:order 1;
 		sh:uniqueLang true ;

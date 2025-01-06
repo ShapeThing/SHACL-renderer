@@ -35,6 +35,24 @@
     }
   }
 
+  &.danger {
+    color: white;
+    background-color: var(--danger);
+    border: 1px solid var(--danger);
+
+    &:not(.outline) {
+      .iconify {
+        color: white;
+      }
+    }
+
+    &.outline {
+      background-color: transparent;
+      border: 1px solid rgba(var(--danger-rgb), .4);
+      color: var(--danger);
+    }
+  }
+
   &.secondary {
     color: white;
     background-color: var(--secondary);
@@ -91,6 +109,7 @@
 .actions {
   display: flex;
   gap: 10px;
+  margin-top: 2em;
   max-width: var(--max-width);
 }
 
@@ -98,4 +117,8 @@
   flex-direction: row-reverse;
   position: sticky;
   bottom: .5em;
+
+  .delete-resource {
+    margin-right: auto;
+  }
 }

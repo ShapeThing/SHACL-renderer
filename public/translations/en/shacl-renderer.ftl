@@ -1,6 +1,6 @@
 interface-language = Interface language
 add-language = Add language
-save = save
+save = Save
 optional = optional
 pick-an-option = - Pick an option -
 label-in-language = Label in {$language}
@@ -14,3 +14,4 @@ action = Action
 close = Close
 subject = Subject
 subject-editor-description = The IRI of this resource
+delete = Delete

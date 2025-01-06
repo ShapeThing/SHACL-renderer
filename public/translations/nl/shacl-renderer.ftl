@@ -1,6 +1,6 @@
 interface-language = Interface taal
 add-language = Taal toevoegen
-save = opslaan
+save = Opslaan
 optional = optioneel
 pick-an-option = - Selecteer een optie -
 label-in-language = Label in het {$language}
@@ -14,3 +14,4 @@ action = Actie
 close = Sluiten
 subject = Onderwerp
 subject-editor-description = De IRI van dit onderwerp
+delete = Verwijderen

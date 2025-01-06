@@ -50,7 +50,7 @@ const getOptions = (property: Grapoi, dataset: DatasetCore, shapesDataset: Datas
   }
 }
 
-export default function EnumSelectEditor({ property, term, setTerm, dataset, data }: WidgetProps) {
+export default function EnumSelectEditor({ property, term, setTerm, dataset }: WidgetProps) {
   const { updates, dataPointer } = useContext(mainContext)
   const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
   useEffect(() => {
