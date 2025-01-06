@@ -11,6 +11,8 @@
   a sh:NodeShape ;
   sh:targetClass schema:Person ;
 
+  sh:nodeKind sh:IRI ;
+
   sh:property [
     sh:name "Given name"@en ;
     sh:group <#name> ;
@@ -78,7 +80,7 @@
 .
 
 <#name>
-  sh:name "Name"@en, "Naam"@nl ;
+  # sh:name "Name"@en, "Naam"@nl ;
 	a sh:PropertyGroup, stsr:HorizontalPropertyGroup ;
 
 	sh:order 1 .
@@ -95,6 +97,8 @@
 <#addressShape>
     a sh:NodeShape ;
     sh:targetClass schema:PostalAddress ;
+
+    sh:nodeKind sh:BlankNode ;
 
     sh:property [
         sh:name "Street"@en ;

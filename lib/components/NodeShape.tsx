@@ -9,6 +9,7 @@ import CollapsiblePropertyGroup from './groups/CollapsiblePropertyGroup'
 import HorizontalPropertyGroup from './groups/HorizontalPropertyGroup'
 import PropertyGroup from './groups/PropertyGroup'
 import PropertyShape from './PropertyShape'
+import SubjectEditor from './SubjectEditor'
 
 const propertyGroupTypes = {
   _default: PropertyGroup,
@@ -136,6 +137,7 @@ export default function NodeShape() {
   return (
     <div className="node" data-term={shapePointer.values}>
       {description && ['edit'].includes(mode) ? <div className="node-description">{description}</div> : null}
+      <SubjectEditor />
       {formElements}
     </div>
   )

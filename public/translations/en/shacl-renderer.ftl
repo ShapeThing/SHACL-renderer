@@ -12,3 +12,5 @@ create-type = Create a new {$type}
 edit = Edit {$type} "{$thing}"
 action = Action
 close = Close
+subject = Subject
+subject-editor-description = The IRI of this resource

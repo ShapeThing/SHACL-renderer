@@ -10,6 +10,7 @@ export const resolveRdfInput = async (
 ): Promise<{
   dataset: DatasetCore
   prefixes: Record<string, string>
+  containsRelativeReferences?: boolean
 }> => {
   const dummyDataset = datasetFactory.dataset()
   if (input?.constructor && input?.constructor === dummyDataset.constructor)
@@ -18,6 +19,7 @@ export const resolveRdfInput = async (
       prefixes: {}
     }
 
+  let containsRelativeReferences = false
   let originalUrl: string | undefined = undefined
   if (input instanceof URL) {
     originalUrl = input.toString()
@@ -30,6 +32,8 @@ export const resolveRdfInput = async (
       if (!['text/turtle'].includes(response.headers.get('content-type')?.split(';')[0] ?? ''))
         throw new Error('Unexpected mime type')
       input = await response.text()
+
+      if (input.includes('<>')) containsRelativeReferences = true
     }
   }
 
@@ -54,7 +58,8 @@ export const resolveRdfInput = async (
 
     return {
       dataset: datasetFactory.dataset(quads),
-      prefixes: parser._prefixes
+      prefixes: parser._prefixes,
+      containsRelativeReferences
     }
   }
 

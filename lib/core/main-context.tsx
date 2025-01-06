@@ -1,13 +1,16 @@
 import { FluentBundle, FluentResource } from '@fluent/bundle'
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
-import type { BlankNode, DatasetCore, NamedNode } from '@rdfjs/types'
+import type { BlankNode, DatasetCore, NamedNode, Quad_Subject } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
-import { ReactNode, createContext } from 'react'
+import { ReactNode, createContext, useReducer } from 'react'
+import { renameSubject as renameSubjectFull } from '../helpers/renameSubject'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import { rdf, rdfs, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
+
+const NO_SUBJECT_GIVEN = factory.namedNode('urn:no-subject-given')
 
 export type MainContextInput = {
   shapes?: URL | DatasetCore | string
@@ -49,9 +52,9 @@ export type MainContext = {
   interfaceLanguages: Record<string, Record<string, string>>
   activeContentLanguage?: string
   activeInterfaceLanguage?: string
-  setShapeSubject: (iri: string) => void
-  setSubject: (subject: NamedNode) => void
   originalInput: MainContextInput
+  containsRelativeReferences?: boolean
+  renameSubject: (newSubject: Quad_Subject) => void
 } & Settings
 
 // The default context because react needs it this way.
@@ -72,8 +75,7 @@ export const mainContext = createContext<MainContext>({
   languageMode: 'tabs',
   contentLanguages: {},
   interfaceLanguages: { en: { en: 'English' } },
-  setShapeSubject: (_iri: string) => null,
-  setSubject: (_term: NamedNode) => null,
+  renameSubject: () => null,
   originalInput: null as unknown as MainContextInput,
   localizationBundles: null as unknown as Record<string, FluentBundle>
 })
@@ -103,14 +105,15 @@ const getData = async (
   if (!subject && firstQuad) {
     subject = firstQuad.subject as NamedNode
   } else if (!subject) {
-    subject = factory.blankNode()
+    subject = NO_SUBJECT_GIVEN
   }
 
   return {
     dataPointer: grapoi({ dataset, factory, term: subject }),
     prefixes: resolvedData?.prefixes,
     subject,
-    dataset
+    dataset,
+    containsRelativeReferences: resolvedData?.containsRelativeReferences
   }
 }
 
@@ -229,7 +232,13 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     fetch = globalThis['fetch'],
     ...settings
   } = originalInput
-  let { dataset, dataPointer, prefixes, subject: finalSubject } = await getData(data, subject, fetch)
+  let {
+    dataset,
+    dataPointer,
+    prefixes,
+    subject: finalSubject,
+    containsRelativeReferences
+  } = await getData(data, subject, fetch)
 
   const localizationBundles = await createLocalizationBundles(Object.keys(interfaceLanguages ?? { en: true }), fetch)
 
@@ -258,10 +267,19 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     dataPointer = grapoi({ dataset, factory, term: shapePointer.term })
   }
 
+  // The order of Shapes and data are intertwined. We now have the shapes so we will set the subject definitive.
+  if (finalSubject?.equals(NO_SUBJECT_GIVEN) || finalSubject.termType === 'BlankNode') {
+    const nodeKind = shapePointer.out(sh('nodeKind')).term
+    if (nodeKind?.equals(sh('IRI'))) finalSubject = factory.namedNode('')
+    if (nodeKind?.equals(sh('BlankNode'))) finalSubject = factory.blankNode('subject')
+    dataPointer = dataPointer.node(finalSubject)
+  }
+
   return {
     shapes: resolvedShapes,
     data: dataset,
     dataPointer,
+    containsRelativeReferences,
     subject: finalSubject,
     targetClass,
     facetSearchData: facetSearchDataset,
@@ -276,13 +294,21 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     interfaceLanguages: interfaceLanguages ?? { en: { en: 'English' } },
     jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}) }),
     mode,
-    setShapeSubject: (_iri: string) => null,
-    setSubject: (_term: NamedNode) => null,
+    renameSubject: () => null,
     originalInput,
     ...settings
   }
 }
 
 export function MainContextProvider({ children, context }: MainContextProviderProps) {
-  return context ? <mainContext.Provider value={{ ...context }}>{children}</mainContext.Provider> : null
+  const [, forceUpdate] = useReducer(x => x + 1, 0)
+
+  const renameSubject = (newSubject: Quad_Subject) => {
+    console.log(newSubject)
+    renameSubjectFull(context.data, context.subject, newSubject)
+    context.dataPointer = context.dataPointer.node(newSubject)
+    context.subject = newSubject as NamedNode
+    forceUpdate()
+  }
+  return context ? <mainContext.Provider value={{ ...context, renameSubject }}>{children}</mainContext.Provider> : null
 }

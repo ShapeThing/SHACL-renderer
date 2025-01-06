@@ -11,11 +11,13 @@ import { TouchableTerm } from '../helpers/touchableRdf'
 
 type PropertyElementProps = {
   property?: Grapoi
-  label?: string
+  label?: string | ReactNode
   children: ReactNode
   showColon?: true
   cssClass?: string
+  description?: ReactNode
   suffix?: ReactNode
+  required?: true
 }
 
 export default function PropertyElement({
@@ -24,6 +26,8 @@ export default function PropertyElement({
   property,
   showColon,
   suffix,
+  required,
+  description,
   label: givenLabel
 }: PropertyElementProps) {
   const { mode, dataPointer } = useContext(mainContext)
@@ -40,7 +44,7 @@ export default function PropertyElement({
     ?.value?.split('\n')
 
   const minCount = property?.out(sh('minCount')).value ? parseInt(property?.out(sh('minCount')).value) : undefined
-  const optional = !((minCount ?? 0) > 0)
+  const optional = required ? false : !((minCount ?? 0) > 0)
   const uniqueLang = property?.out(sh('uniqueLang')).term?.value === 'true'
   const isLanguageDataType = property?.out(sh('datatype')).term?.equals(rdf('langString'))
 
@@ -68,6 +72,7 @@ export default function PropertyElement({
           </em>
         ) : null}
       </label>
+      {description ? <span className="field-description">{description}</span> : null}
       {mode === 'edit' && descriptionLines?.length ? (
         <span className="field-description">
           {descriptionLines.map(line => (

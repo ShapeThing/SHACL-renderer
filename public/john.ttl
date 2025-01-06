@@ -3,7 +3,7 @@
 @prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
-<>
+<#john>
   a schema:Person ;
   schema:givenName "Hendrik", "Jan" ;
   schema:familyName "Doe" ;

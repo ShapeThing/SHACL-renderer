@@ -5,7 +5,12 @@ import { WidgetMeta } from '../../widgets-context'
 
 export default {
   iri: dash('DetailsEditor'),
-  createTerm: () => factory.blankNode(),
+  createTerm: ({}, property) => {
+    const nodeKind = property?.out(sh('nodeKind')).term
+    if (nodeKind.equals(sh('IRI'))) return factory.namedNode('')
+    if (nodeKind.equals(sh('BlankNode'))) return factory.blankNode()
+    return factory.blankNode()
+  },
   score: (data?: Grapoi, property?: Grapoi) => {
     // Does not conform to spec.
     if (data && data.term && data.term.termType === 'BlankNode') {

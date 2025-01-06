@@ -17,7 +17,7 @@ export const CreateWithShape = {
 export const EditWithShape = {
   args: {
     mode: 'edit',
-    data: new URL('/john.ttl', location.origin),
+    data: new URL('/john.ttl#john', location.origin),
     shapes: new URL('/shapes/contact-closed.ttl', location.origin),
     targetClass: schema('Person')
   } as ShaclRendererProps
@@ -56,7 +56,7 @@ export const Inheritance = {
 export const EditWithoutShape = {
   args: {
     mode: 'edit',
-    data: new URL('/john.ttl', location.origin),
+    data: new URL('/john.ttl#john', location.origin),
     targetClass: schema('Person')
   } as ShaclRendererProps
 }

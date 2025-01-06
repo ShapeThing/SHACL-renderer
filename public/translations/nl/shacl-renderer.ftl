@@ -12,3 +12,5 @@ create-type = Maak een nieuwe {$type}
 edit = Bewerk {$type} "{$thing}"
 action = Actie
 close = Sluiten
+subject = Onderwerp
+subject-editor-description = De IRI van dit onderwerp

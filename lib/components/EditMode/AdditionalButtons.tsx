@@ -5,11 +5,18 @@ import { ReactNode, useContext, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { mainContext } from '../../core/main-context'
 import { dash, rdf, sh } from '../../core/namespaces'
+import { cleanUpDataset } from '../../helpers/cleanUpDataset'
+import { WidgetItem } from '../../widgets/widgets-context'
 import ShaclRenderer from '../ShaclRenderer'
 import Icon from '../various/Icon'
 import { PropertyObjectEditModeProps } from './PropertyObjectEditMode'
 
-export default function AdditionalButtons({ property, data, setTerm }: PropertyObjectEditModeProps) {
+export default function AdditionalButtons({
+  property,
+  data,
+  setTerm,
+  widgetItem
+}: PropertyObjectEditModeProps & { widgetItem: WidgetItem }) {
   const [popupResource, setPopupResource] = useState<NamedNode | BlankNode>()
   const [shapeSubject, setShapeSubject] = useState<NamedNode>()
 
@@ -23,11 +30,11 @@ export default function AdditionalButtons({ property, data, setTerm }: PropertyO
       .map(valueClass => property.node().hasOut(sh('targetClass'), valueClass))
       .filter(pointer => !pointer.hasOut(dash('abstract')).term)
 
-    if (shapes.length) {
+    if (shapes.length && !widgetItem.meta.iri.equals(dash('DetailsEditor'))) {
       buttons.push(
         <button
           className="button icon"
-          key="edit-resource"
+          key={`edit-resource:${shapes.map(shape => shape.term.value).join(',')}`}
           onClick={() => {
             setPopupResource(data.term)
             if (shapes[0]?.term) setShapeSubject(shapes[0].term)
@@ -43,11 +50,11 @@ export default function AdditionalButtons({ property, data, setTerm }: PropertyO
 
   if (shClass && !data.term.value) {
     const shape = property.node().hasOut(sh('targetClass'), shClass)
-    if (shape.term) {
+    if (shape.term && !widgetItem.meta.iri.equals(dash('DetailsEditor'))) {
       buttons.push(
         <button
           className="button icon"
-          key="edit-resource"
+          key={`create-resource:${shape.term.value}`}
           onClick={() => {
             setShapeSubject(shape.term)
           }}
@@ -71,7 +78,6 @@ export default function AdditionalButtons({ property, data, setTerm }: PropertyO
                 shapeSubject={shapeSubject?.value}
                 onSubmit={(_data, _prefixes, _dataPointer, context) => {
                   setTerm(context.subject)
-                  console.log(context.subject)
                 }}
               >
                 {submit => {
@@ -82,7 +88,7 @@ export default function AdditionalButtons({ property, data, setTerm }: PropertyO
                           submit()
                           setPopupResource(undefined)
                           setShapeSubject(undefined)
-                          // TODO somehow we need a refresh of data.
+                          cleanUpDataset(dataset)
                         }}
                         className="button primary"
                       >
@@ -94,7 +100,7 @@ export default function AdditionalButtons({ property, data, setTerm }: PropertyO
                         onClick={() => {
                           setPopupResource(undefined)
                           setShapeSubject(undefined)
-                          // TODO cleanup term
+                          cleanUpDataset(dataset)
                         }}
                       >
                         <Localized id="cancel">Cancel</Localized>
