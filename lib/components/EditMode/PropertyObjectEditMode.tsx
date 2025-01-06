@@ -6,7 +6,8 @@ import { scoreWidgets } from '../../core/scoreWidgets'
 import { TouchableTerm } from '../../helpers/touchableRdf'
 import { AdditionalWidgetConfiguration, widgetsContext } from '../../widgets/widgets-context'
 import Icon from '../various/Icon'
-import AdditionalButtons from './AdditionalButtons'
+import AddNestedNodeButton from './AddNestedNodeButton'
+import EditNestedNodeButton from './EditNestedNodeButton'
 
 export type PropertyObjectEditModeProps = {
   property: Grapoi
@@ -75,7 +76,10 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
               setTerm={setTerm}
             />
           </Suspense>
-          <AdditionalButtons {...props} setTerm={setTerm} widgetItem={widgetItem} />
+
+          <EditNestedNodeButton {...props} setTerm={setTerm} widgetItem={widgetItem} />
+          <AddNestedNodeButton {...props} setTerm={setTerm} widgetItem={widgetItem} />
+
           {alwaysShowRemove || (!itemIsRequired && items.ptrs.length > 0 && data.term.value) || errors?.length ? (
             <button
               className="button icon remove-object"

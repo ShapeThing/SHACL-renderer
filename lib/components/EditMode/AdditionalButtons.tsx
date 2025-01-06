@@ -20,7 +20,7 @@ export default function AdditionalButtons({
   const [popupResource, setPopupResource] = useState<NamedNode | BlankNode>()
   const [shapeSubject, setShapeSubject] = useState<NamedNode>()
 
-  const { originalInput, data: dataset } = useContext(mainContext)
+  const { originalInput, data: dataset, jsonLdContext, update } = useContext(mainContext)
   const buttons: ReactNode[] = []
 
   if (['BlankNode', 'NamedNode'].includes(data.term.termType)) {
@@ -73,25 +73,24 @@ export default function AdditionalButtons({
               <ShaclRenderer
                 key={popupResource?.value + ':' + shapeSubject?.value}
                 {...originalInput}
-                data={dataset}
+                prefixes={jsonLdContext.getContextRaw()}
+                data={undefined}
                 subject={popupResource ?? factory.blankNode()}
                 shapeSubject={shapeSubject?.value}
-                onSubmit={(_data, _prefixes, _dataPointer, context) => {
+                onSubmit={(innerDataset, _prefixes, _dataPointer, context) => {
+                  for (const quad of [...innerDataset]) dataset.add(quad)
                   setTerm(context.subject)
+                  setPopupResource(undefined)
+                  setShapeSubject(undefined)
+                  update()
+                  // TODO improve this, currently needed to let the enum widget refresh its options
+                  setTimeout(update, 200)
                 }}
               >
                 {submit => {
                   return (
                     <>
-                      <button
-                        onClick={() => {
-                          submit()
-                          setPopupResource(undefined)
-                          setShapeSubject(undefined)
-                          cleanUpDataset(dataset)
-                        }}
-                        className="button primary"
-                      >
+                      <button onClick={submit} className="button primary">
                         <Localized id="save">Save</Localized>
                       </button>
 
@@ -104,6 +103,10 @@ export default function AdditionalButtons({
                         }}
                       >
                         <Localized id="cancel">Cancel</Localized>
+                      </button>
+
+                      <button onClick={() => {}} className="button danger">
+                        <Localized id="delete">Delete</Localized>
                       </button>
                     </>
                   )

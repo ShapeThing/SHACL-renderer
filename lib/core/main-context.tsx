@@ -19,6 +19,7 @@ export type MainContextInput = {
   languageMode?: 'tabs' | 'individual'
   facetSearchData?: URL | DatasetCore | string
   subject?: NamedNode | BlankNode
+  prefixes?: Record<string, string>
   targetClass?: NamedNode
   contentLanguages?: Record<string, Record<string, string>>
   interfaceLanguages?: Record<string, Record<string, string>>
@@ -51,6 +52,8 @@ export type MainContext = {
   contentLanguages: Record<string, Record<string, string>>
   interfaceLanguages: Record<string, Record<string, string>>
   activeContentLanguage?: string
+  updates: number
+  update: () => void
   activeInterfaceLanguage?: string
   originalInput: MainContextInput
   containsRelativeReferences?: boolean
@@ -76,6 +79,8 @@ export const mainContext = createContext<MainContext>({
   contentLanguages: {},
   interfaceLanguages: { en: { en: 'English' } },
   renameSubject: () => null,
+  updates: 0,
+  update: () => null,
   originalInput: null as unknown as MainContextInput,
   localizationBundles: null as unknown as Record<string, FluentBundle>
 })
@@ -226,6 +231,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     targetClass: givenTargetClass,
     mode,
     languageMode,
+    prefixes: givenPrefixes,
     interfaceLanguages,
     shapeSubject: givenShapeSubject,
     contentLanguages,
@@ -292,8 +298,10 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     shapeSubject: factory.namedNode(shapeSubject.toString()),
     contentLanguages: contentLanguages ?? {},
     interfaceLanguages: interfaceLanguages ?? { en: { en: 'English' } },
-    jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}) }),
+    jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}), ...(givenPrefixes ?? {}) }),
     mode,
+    updates: 0,
+    update: () => null,
     renameSubject: () => null,
     originalInput,
     ...settings
@@ -301,13 +309,17 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
 }
 
 export function MainContextProvider({ children, context }: MainContextProviderProps) {
-  const [, forceUpdate] = useReducer(x => x + 1, 0)
+  const [updates, update] = useReducer(x => x + 1, 0)
 
   const renameSubject = (newSubject: Quad_Subject) => {
-    renameSubjectFull(context.data, context.subject, newSubject)
-    context.dataPointer = context.dataPointer.node(newSubject)
-    context.subject = newSubject as NamedNode
-    forceUpdate()
+    if (!newSubject.equals(context.subject)) {
+      renameSubjectFull(context.data, context.subject, newSubject)
+      context.dataPointer = context.dataPointer.node(newSubject)
+      context.subject = newSubject as NamedNode
+    }
+    update()
   }
-  return context ? <mainContext.Provider value={{ ...context, renameSubject }}>{children}</mainContext.Provider> : null
+  return context ? (
+    <mainContext.Provider value={{ ...context, renameSubject, updates, update }}>{children}</mainContext.Provider>
+  ) : null
 }
