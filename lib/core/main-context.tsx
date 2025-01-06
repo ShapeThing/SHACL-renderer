@@ -304,7 +304,6 @@ export function MainContextProvider({ children, context }: MainContextProviderPr
   const [, forceUpdate] = useReducer(x => x + 1, 0)
 
   const renameSubject = (newSubject: Quad_Subject) => {
-    console.log(newSubject)
     renameSubjectFull(context.data, context.subject, newSubject)
     context.dataPointer = context.dataPointer.node(newSubject)
     context.subject = newSubject as NamedNode
