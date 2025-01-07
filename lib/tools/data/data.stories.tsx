@@ -23,7 +23,7 @@ export default {
 
 export const withShape = {
   args: {
-    data: new URL('/john.ttl', location.origin),
+    data: new URL('/john.ttl#john', location.origin),
     shapes: new URL('/shapes/contact-closed.ttl', location.origin),
     context: { '@vocab': 'https://schema.org/' }
   }
@@ -31,7 +31,7 @@ export const withShape = {
 
 export const withoutShape = {
   args: {
-    data: new URL('/john.ttl', location.origin),
+    data: new URL('/john.ttl#john', location.origin),
     context: { '@vocab': 'https://schema.org/' }
   }
 }

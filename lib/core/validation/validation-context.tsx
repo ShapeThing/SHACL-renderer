@@ -25,6 +25,7 @@ export default function ValidationContextProvider({ children }: { children: Reac
 
   useEffect(() => {
     if (!validateOnNextTick) return
+    if (!['edit'].includes(mode)) return
     setValidateOnNextTick(false)
     ;(async () => {
       // When we validate we need to have a copy of the dataset so we can have support

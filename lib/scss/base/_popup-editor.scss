@@ -7,14 +7,24 @@
     width: 100vw;
     border: 2px solid var(--primary);
     max-width: calc(var(--max-width) - 3em);
-    box-shadow: 0 0 0 100vw rgba(black, .3);
     overflow: visible;
     max-height: calc(100vh - 6em);
+    animation: transitionIn .3s ease-in-out forwards;
 
     .shacl-renderer {
         height: 100%;
         padding: 2em;
         max-height: calc(100vh - 6em - 4px);
         overflow: auto;
+    }
+}
+
+@keyframes transitionIn {
+    0% {
+        box-shadow: 0 0 0 100vw rgba(black, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 100vw rgba(black, .3);
     }
 }

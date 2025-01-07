@@ -9,7 +9,7 @@ export default {
 export const withShape = {
   args: {
     mode: 'view',
-    data: new URL('/john.ttl', location.origin),
+    data: new URL('/john.ttl#john', location.origin),
     targetClass: schema('Person'),
     shapes: new URL('/shapes/contact-closed.ttl', location.origin)
   } as ShaclRendererProps
@@ -18,6 +18,6 @@ export const withShape = {
 export const withoutShape = {
   args: {
     mode: 'view',
-    data: new URL('/john.ttl', location.origin)
+    data: new URL('/john.ttl#john', location.origin)
   } as ShaclRendererProps
 }
