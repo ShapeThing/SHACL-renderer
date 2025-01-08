@@ -11,7 +11,7 @@ export const withShape = {
     mode: 'view',
     data: new URL('/john.ttl#john', location.origin),
     targetClass: schema('Person'),
-    shapes: new URL('/shapes/contact-closed.ttl', location.origin)
+    shapes: new URL('/shapes/contact-closed-view.ttl', location.origin)
   } as ShaclRendererProps
 }
 

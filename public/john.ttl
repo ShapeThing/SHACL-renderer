@@ -15,7 +15,7 @@
 
   schema:icon "line-md:buy-me-a-coffee-twotone"^^<https://iconify.design> ;
 
-  schema:selfReference <> ;
+  schema:selfReference <#john> ;
 
   schema:favoriteColor "#ff33ff"^^stsr:color ;
 

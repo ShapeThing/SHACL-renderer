@@ -14,20 +14,6 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
   const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const properties = getProperties({ ...props, dataset })
-  const [expanded, setExpanded] = useState(false)
-  const wrapper = useRef<HTMLDivElement>(null)
-  const content = useRef<HTMLDivElement>(null)
-  const [height, setHeight] = useState(0)
-
-  useLayoutEffect(() => {
-    if (content.current?.getBoundingClientRect().height) setHeight(content.current.getBoundingClientRect().height)
-  }, [content])
-
-  useResizeObserver(content, entry => {
-    if (entry.contentRect.height && !isTransitioning) {
-      setHeight(entry.contentRect.height)
-    }
-  })
 
   const groupLabelPath = props.group.out(stsr('groupLabelPath')).list()
   let label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName
@@ -50,6 +36,21 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
       })
       .join('')
   }
+
+  const [expanded, setExpanded] = useState(groupLabelPath && !label ? true : false)
+  const wrapper = useRef<HTMLDivElement>(null)
+  const content = useRef<HTMLDivElement>(null)
+  const [height, setHeight] = useState(0)
+
+  useLayoutEffect(() => {
+    if (content.current?.getBoundingClientRect().height) setHeight(content.current.getBoundingClientRect().height)
+  }, [content])
+
+  useResizeObserver(content, entry => {
+    if (entry.contentRect.height && !isTransitioning) {
+      setHeight(entry.contentRect.height)
+    }
+  })
 
   return groupHasContents(props.group, props.shapePointer) ? (
     <div

@@ -76,7 +76,13 @@ export default function EditNestedNodeButton({
                       <button className="secondary button outline" onClick={() => setOpen(false)}>
                         <Localized id="cancel">Cancel</Localized>
                       </button>
-                      <button className="danger button outline delete-resource" onClick={() => setOpen(false)}>
+                      <button
+                        className="danger button outline delete-resource"
+                        onClick={() => {
+                          console.log(outAll(data))
+                          setOpen(false)
+                        }}
+                      >
                         <Localized id="delete">Delete</Localized>
                       </button>
                     </>
