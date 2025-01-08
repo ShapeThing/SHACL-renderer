@@ -10,8 +10,6 @@
 @prefix wdt: <http://www.wikidata.org/prop/direct/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix faker: <https://fakerjs.dev/> .
-@prefix app: <http://localhost:6006/> .
-
 
 <>
   a sh:NodeShape ;

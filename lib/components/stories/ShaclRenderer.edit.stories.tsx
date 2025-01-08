@@ -77,50 +77,6 @@ export const ShapesGraph = {
   } as ShaclRendererProps
 }
 
-const languageLabels = {
-  en: {
-    nl: 'Engels',
-    en: 'English'
-  },
-  nl: {
-    en: 'Dutch',
-    nl: 'Nederlands'
-  }
-}
-
-export const ShapeThingNodeShape = {
-  args: {
-    mode: 'edit',
-    shapes: new URL('/shapes/shapething-nodeshape.ttl', location.origin),
-    contentLanguages: languageLabels
-  } as ShaclRendererProps
-}
-
-export const ShapeThingNodeShapeData = {
-  args: {
-    mode: 'edit',
-    shapes: new URL('/shapes/shapething-nodeshape.ttl', location.origin),
-    data: new URL('/shapes/shapething-person.ttl', location.origin),
-    activeInterfaceLanguage: 'nl',
-    activeContentLanguage: 'nl',
-    contentLanguages: languageLabels,
-    interfaceLanguages: {
-      nl: {
-        nl: 'Nederlands'
-      }
-    }
-  } as ShaclRendererProps
-}
-
-// export const FormShacl = {
-//   args: {
-//     mode: 'edit',
-//     data: new URL('/shapes/contact.ttl', location.origin),
-//     shapes: new URL('https://www.w3.org/ns/shacl-shacl'),
-//     shapeSubject: new URL('http://www.w3.org/ns/shacl-shacl#ShapeShape')
-//   } as ShaclRendererProps
-// }
-
 export const MixedObjects = {
   args: {
     mode: 'edit',

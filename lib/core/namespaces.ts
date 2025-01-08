@@ -12,6 +12,7 @@ export const stf = namespace('http://ontology.shapething.com/facet#')
 export const ed = namespace('https://editorjs.io/')
 export const owl = namespace('http://www.w3.org/2002/07/owl#')
 export const faker = namespace('https://fakerjs.dev/')
+export const app = namespace(location.origin + '/')
 
 export const prefixes = Object.fromEntries(
   Object.entries({
@@ -26,7 +27,8 @@ export const prefixes = Object.fromEntries(
     stf,
     ed,
     owl,
-    faker
+    faker,
+    app
   }).map(([alias, namespace]) => [alias, namespace('').value])
 )
 

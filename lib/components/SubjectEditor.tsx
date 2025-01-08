@@ -1,4 +1,5 @@
 import { Localized } from '@fluent/react'
+import factory from '@rdfjs/data-model'
 import { Quad_Subject } from '@rdfjs/types'
 import { useContext, useEffect, useState } from 'react'
 import { mainContext } from '../core/main-context'
@@ -12,7 +13,9 @@ export default function SubjectEditor() {
   if (mode !== 'edit') return null
   const nodeKind = shapePointer.out(sh('nodeKind')).term ?? sh('BlankNode')
 
-  const [localTerm, setLocalTerm] = useState(dataPointer.term)
+  const [localTerm, setLocalTerm] = useState(
+    dataPointer.term.value === 'urn:no-subject-given' ? factory.namedNode('') : dataPointer.term
+  )
 
   const description = <Localized id="subject-editor-description">The IRI of this resource</Localized>
 
