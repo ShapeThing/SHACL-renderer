@@ -7,7 +7,7 @@ import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import { ReactNode, createContext, useReducer } from 'react'
 import { renameSubject as renameSubjectFull } from '../helpers/renameSubject'
 import { getShapeSkeleton } from './getShapeSkeleton'
-import { rdf, rdfs, sh } from './namespaces'
+import { prefixes, rdf, rdfs, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
 
 const NO_SUBJECT_GIVEN = factory.namedNode('urn:no-subject-given')
@@ -113,9 +113,24 @@ const getData = async (
     subject = NO_SUBJECT_GIVEN
   }
 
+  const datasetPrefixes: Record<string, string> = {}
+  const temporaryJsonLdContext = new JsonLdContextNormalized(prefixes)
+  for (const quad of dataset) {
+    const terms = [quad.subject, quad.predicate, quad.object]
+    for (const term of terms) {
+      if (term.termType === 'NamedNode') {
+        const compactedIri = temporaryJsonLdContext.compactIri(term.value)
+        if (compactedIri !== term.value) {
+          const [prefix] = compactedIri.split(':')
+          datasetPrefixes[prefix] = prefixes[prefix]
+        }
+      }
+    }
+  }
+
   return {
     dataPointer: grapoi({ dataset, factory, term: subject }),
-    prefixes: resolvedData?.prefixes,
+    prefixes: { ...resolvedData?.prefixes, ...datasetPrefixes },
     subject,
     dataset,
     containsRelativeReferences: resolvedData?.containsRelativeReferences

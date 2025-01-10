@@ -32,7 +32,7 @@ export default function EditNestedNodeButton({
     <>
       <button
         className="button icon"
-        key={`edit-resource:${shapes.map(shape => shape.term.value).join(',')}`}
+        key={`edit-resource:${shapes.map(shape => shape.values.join(',')).join(',')}`}
         onClick={() => setOpen(true)}
       >
         <Icon icon="fluent:document-edit-16-regular" />

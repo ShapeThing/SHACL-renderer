@@ -7,16 +7,22 @@ import { Store } from 'n3'
 import { useContext, useEffect } from 'react'
 import { languageContext } from '../../../core/language-context'
 import { mainContext } from '../../../core/main-context'
-import { rdfs, sh } from '../../../core/namespaces'
+import { rdfs, sh, stsr } from '../../../core/namespaces'
 import { wrapPromise } from '../../../helpers/wrapPromise'
 import { WidgetProps } from '../../widgets-context'
 
 const queries: Map<string, any> = new Map()
+const { QueryEngine } = await import('@comunica/query-sparql')
+const engine = new QueryEngine()
 
-const processDynamicShacl = async (query: string, dataset: DatasetCore, shapesDataset: DatasetCore) => {
-  const { QueryEngine } = await import('@comunica/query-sparql')
-  const engine = new QueryEngine()
-  const response = await engine.queryBindings(query, { sources: [new Store([...dataset])] })
+const processDynamicShacl = async (
+  query: string,
+  dataset: DatasetCore,
+  shapesDataset: DatasetCore,
+  endpoint?: Term
+) => {
+  const sources: any = [endpoint ? endpoint.value : new Store([...dataset])]
+  const response = await engine.queryBindings(query, { sources })
   const bindings = await response.toArray()
 
   for (const binding of bindings) {
@@ -40,7 +46,8 @@ const getOptions = (property: Grapoi, dataset: DatasetCore, shapesDataset: Datas
 
   if (query) {
     if (!queries.has(query)) {
-      const promise = processDynamicShacl(query, dataset, shapesDataset)
+      const endpoint: Term | undefined = property.out(sh('in')).out(stsr('endpoint')).term
+      const promise = processDynamicShacl(query, dataset, shapesDataset, endpoint)
       queries.set(query, wrapPromise(promise))
     }
     return queries.get(query).read()
@@ -58,6 +65,25 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
   }, [activeInterfaceLanguage, activeContentLanguage, updates])
 
   const options = getOptions(property, dataset, property.ptrs[0].dataset)
+
+  const optionsObject = Object.fromEntries(
+    options
+      .map((term: Term) => {
+        const label =
+          dataPointer
+            .node(term)
+            .out([sh('name'), rdfs('label')])
+            .best(language([activeInterfaceLanguage, activeContentLanguage, '', '*'])).value ??
+          property
+            .node(term)
+            .out([sh('name'), rdfs('label')])
+            .best(language([activeInterfaceLanguage, activeContentLanguage, '', '*'])).value ??
+          term.value.split(/\#|\//g).pop()!
+
+        return [term.value, label]
+      })
+      .sort((a: [string, string], b: [string, string]) => a[1].localeCompare(b[1]))
+  )
 
   return (
     <select
@@ -77,15 +103,10 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
         </option>
       ) : null}
       {options.length ? (
-        options.map((term: Term) => {
-          const label = dataPointer
-            .node(term)
-            .out([sh('name'), rdfs('label')])
-            .best(language([activeInterfaceLanguage, activeContentLanguage, '', '*'])).value
-
+        Object.entries(optionsObject).map(([iri, label]) => {
           return (
-            <option key={term.value} value={term.value}>
-              {label ?? term.value.split(/\#|\//g).pop()!}
+            <option key={iri} value={iri}>
+              {label}
             </option>
           )
         })

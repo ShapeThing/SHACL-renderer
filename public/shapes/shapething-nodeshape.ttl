@@ -267,6 +267,14 @@
   ];
 
   sh:property [
+    sh:name "Required value"@en, "Verplichte waarde"@nl ;
+    sh:order 9;
+    sh:description "Een vaste waarde die altijd ingesteld moet zijn."@nl, "A fix value that always has to be set."@en ;
+    sh:group <#propertyShapeGroup> ;
+    sh:path sh:hasValue ;
+  ];
+
+  sh:property [
     sh:name "Sub shape"@en, "Sub vorm"@nl ;
     sh:maxCount 1;
     sh:description "Het sub formulier dat getoond moet worden."@nl, "The sub form that has to be shown."@en ;
