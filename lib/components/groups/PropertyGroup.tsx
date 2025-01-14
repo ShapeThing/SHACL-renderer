@@ -29,13 +29,15 @@ export const getProperties = ({
   group,
   dataset,
   facetSearchDataPointer,
-  nodeDataPointer
+  nodeDataPointer,
+  groupByUsage
 }: {
   shapePointer: Grapoi
   group: Grapoi
   dataset: DatasetCore
   facetSearchDataPointer: Grapoi
   nodeDataPointer: Grapoi
+  groupByUsage?: boolean
 }) => {
   const groups = [...shapePointer.node().hasOut(rdf('type'), sh('PropertyGroup'))]
   const groupLevelGroups = groups.filter(innerGroup => innerGroup.out(sh('group')).term?.equals(group.term))
@@ -48,21 +50,31 @@ export const getProperties = ({
     dataset
   })
 
-  const formElements: ReactNode[] = [
-    ...[...groupLevelGroups.map(mapGroup), ...groupLevelProperties.map(mapProperty)]
+  const formElements: [number, ReactNode, boolean, Grapoi][] = [
+    ...[...groupLevelGroups.map(mapGroup), ...groupLevelProperties.map((property: Grapoi) => mapProperty(property))]
       .filter(nonNullable)
       .sort((a, b) => a[0] - b[0])
-      .map(([_order, element]) => element)
   ]
 
-  return formElements
+  if (groupByUsage) {
+    return {
+      used: formElements
+        .filter(item => item[2] === true || parseInt(item[3].out(sh('minCount')).value ?? '0') > 0)
+        .map(([_order, element]) => element),
+      unused: formElements
+        .filter(item => !item[2] && parseInt(item[3].out(sh('minCount')).value ?? '0') === 0)
+        .map(([_order, _element, _used, property]) => property)
+    }
+  }
+
+  return formElements.map(([_order, element]) => element)
 }
 
 export default function PropertyGroup(props: PropertyGroupProps) {
   const { activeInterfaceLanguage } = useContext(languageContext)
   const localName = props.group.term.value.split(/\/|#/g).pop()
   const { data: dataset } = useContext(mainContext)
-  const properties = getProperties({ ...props, dataset })
+  const properties = getProperties({ ...props, dataset }) as ReactNode[]
   const label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value
   const description = props.group
     .out([sh('description'), rdfs('comment')])

@@ -44,13 +44,13 @@ export default function PropertyShapeEditModePlain(props: PropertyShapeEditModeP
   const addObject = (emptyTerm?: Term) => {
     if (!emptyTerm) return
 
-    const path = parsePath(props.property.out(sh('path')))
-    const firstPathPart = path?.at(0)
+    const path = parsePath(props.property.out(sh('path'))) // TODO support more complex paths
+    const firstPathPart = path?.at(-1)
     if (firstPathPart?.predicates && firstPathPart?.predicates?.length > 1)
       throw new Error('Alternative property paths are not yet supported')
     const [predicate] = firstPathPart?.predicates ?? []
     nodeDataPointer.addOut(predicate, emptyTerm)
-    setItems()
+    // setItems() // TODO here are render bugs.
   }
 
   const createEmptyTerm = useEmptyTerm(items, props.property)

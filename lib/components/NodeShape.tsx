@@ -5,7 +5,9 @@ import { ReactNode, useContext } from 'react'
 import { mainContext } from '../core/main-context'
 import { rdf, rdfs, sh } from '../core/namespaces'
 import { nonNullable } from '../helpers/nonNullable'
+import parsePath from '../helpers/parsePath'
 import CollapsiblePropertyGroup from './groups/CollapsiblePropertyGroup'
+import DrawerPropertyGroup from './groups/DrawerPropertyGroup'
 import HorizontalPropertyGroup from './groups/HorizontalPropertyGroup'
 import PropertyGroup from './groups/PropertyGroup'
 import PropertyShape from './PropertyShape'
@@ -14,7 +16,8 @@ import SubjectEditor from './SubjectEditor'
 const propertyGroupTypes = {
   _default: PropertyGroup,
   CollapsiblePropertyGroup,
-  HorizontalPropertyGroup
+  HorizontalPropertyGroup,
+  DrawerPropertyGroup
 }
 
 export const getElementHelpers = ({
@@ -67,6 +70,9 @@ export const getElementHelpers = ({
   }
 
   const mapProperty = (property: Grapoi) => {
+    const path = parsePath(property.out(sh('path')))
+    const items = dataPointer.executeAll(path)
+
     return ignoredProperties.some(term => term.equals(property.out(sh('path')).term))
       ? null
       : ([
@@ -77,8 +83,10 @@ export const getElementHelpers = ({
             facetSearchDataPointer={facetSearchDataPointer}
             nodeDataPointer={dataPointer}
             property={property}
-          />
-        ] as [number, ReactNode])
+          />,
+          items.ptrs.length > 0,
+          property
+        ] as [number, ReactNode, boolean, Grapoi])
   }
   return { mapGroup, mapProperty }
 }
@@ -91,11 +99,11 @@ export default function NodeShape() {
 
   const topLevelGroups = groups.filter(group => !group.hasOut(sh('group')).term)
   const topLevelProperties = [...properties.filter(pointer => !pointer.out(sh('group')).term)]
-  const usedPredicates = properties.map((property: Grapoi) => {
+  const usedPredicates = [...properties].flatMap((property: Grapoi) => {
     if (property.out(sh('path')).isList()) {
       /** @ts-ignore */
       const list = [...property.out(sh('path')).list()]
-      return list.map(i => i.term)[0].value
+      return list.flatMap(i => i.values)
     } else {
       return property.out(sh('path')).term.value
     }

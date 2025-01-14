@@ -92,7 +92,7 @@
     sh:group <#general> ;
 
     sh:in [
-      stsr:endpoint <../countries-skos.rdf> ;
+      stsr:endpoint <./countries.ttl> ;
       sh:select """
         prefix schema: <https://schema.org/>
         prefix skos: <http://www.w3.org/2004/02/skos/core#>

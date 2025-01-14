@@ -1,6 +1,6 @@
 import { language } from '@rdfjs/score'
 import useResizeObserver from '@react-hook/resize-observer'
-import { useContext, useLayoutEffect, useRef, useState } from 'react'
+import { ReactNode, useContext, useLayoutEffect, useRef, useState } from 'react'
 import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
 import { sh, stsr } from '../../core/namespaces'
@@ -13,7 +13,7 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
   const { data: dataset } = useContext(mainContext)
   const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const properties = getProperties({ ...props, dataset })
+  const properties = getProperties({ ...props, dataset }) as ReactNode[]
 
   const groupLabelPath = props.group.out(stsr('groupLabelPath')).list()
   let label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName

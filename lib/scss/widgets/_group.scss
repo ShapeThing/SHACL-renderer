@@ -143,3 +143,18 @@
     margin-left: 40px;
   }
 }
+
+.group.drawer {
+  .drawer-add-property {
+    flex-wrap: nowrap;
+
+    .button {
+      margin-top: 0;
+      padding-block: 8px;
+    }
+
+    select {
+      max-width: var(--default-input-max-width);
+    }
+  }
+}

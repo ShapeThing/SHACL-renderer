@@ -227,10 +227,15 @@
 	a sh:PropertyGroup ;
 	sh:order 2 .
 
-<#propertyShapeGroup>
+<#propertyShapeGroupWrapper>
 	a sh:PropertyGroup, stsr:CollapsiblePropertyGroup;
   stsr:groupLabelPath ( sh:name ) ;
 	sh:order 1 .
+
+<#propertyShapeGroup>
+  sh:group <#propertyShapeGroupWrapper> ;
+  a sh:PropertyGroup, stsr:DrawerPropertyGroup ;
+.
 
 <#propertyShape>
   sh:closed true ;
@@ -265,6 +270,38 @@
     sh:datatype xsd:integer ;
     sh:path sh:order ;
   ];
+
+  sh:property [
+    sh:name "List options"@en, "Lijst opties"@nl ;
+    sh:order 9;
+    sh:group <#propertyShapeGroup> ;
+    sh:path ( sh:in [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+
+		sh:or (
+			[
+				sh:datatype xsd:string ;
+        dash:editor dash:TextFieldEditor ;
+        sh:nodeKind sh:Literal ;
+        sh:name "Text"@en, "Tekst"@nl ;
+			]
+			[
+        sh:nodeKind sh:IRI ;
+        sh:name "Reference"@en, "Referentie"@nl ;
+        dash:editor dash:URIEditor ;
+			]
+		) ;
+  ];
+
+
+  sh:property [
+    sh:name "List query"@en, "Lijst query"@nl ;
+    sh:order 9;
+    sh:group <#propertyShapeGroup> ;
+    sh:path ( sh:in sh:select ) ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1;
+  ];
+
 
   sh:property [
     sh:name "Required value"@en, "Verplichte waarde"@nl ;

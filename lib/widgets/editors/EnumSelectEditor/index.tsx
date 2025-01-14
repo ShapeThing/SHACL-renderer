@@ -12,8 +12,6 @@ import { wrapPromise } from '../../../helpers/wrapPromise'
 import { WidgetProps } from '../../widgets-context'
 
 const queries: Map<string, any> = new Map()
-const { QueryEngine } = await import('@comunica/query-sparql')
-const engine = new QueryEngine()
 
 const processDynamicShacl = async (
   query: string,
@@ -21,6 +19,8 @@ const processDynamicShacl = async (
   shapesDataset: DatasetCore,
   endpoint?: Term
 ) => {
+  const { QueryEngine } = await import('@comunica/query-sparql')
+  const engine = new QueryEngine()
   const sources: any = [endpoint ? endpoint.value : new Store([...dataset])]
   const response = await engine.queryBindings(query, { sources })
   const bindings = await response.toArray()

@@ -1,6 +1,6 @@
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
-import { NamedNode } from '@rdfjs/types'
+import { NamedNode, Quad } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { useContext, useEffect, useRef, useState, useTransition } from 'react'
 import Icon from '../../../components/various/Icon'
@@ -45,7 +45,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
       searchTerm: isValidIri(search) ? '' : search
     }).then(quads => {
       setIsLoading(false)
-      const dataset = datasetFactory.dataset(quads)
+      const dataset = datasetFactory.dataset(quads as Quad[])
       setSearchInstances(grapoi({ dataset, factory }).out().in().distinct())
       setTimeout(() => searchResults.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
     })

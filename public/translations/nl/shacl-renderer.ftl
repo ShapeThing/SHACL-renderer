@@ -15,3 +15,5 @@ close = Sluiten
 subject = Onderwerp
 subject-editor-description = De IRI van dit onderwerp
 delete = Verwijderen
+add-a-property = Voeg een eigenschap toe
+add = Toevoegen

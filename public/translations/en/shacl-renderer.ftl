@@ -15,3 +15,5 @@ close = Close
 subject = Subject
 subject-editor-description = The IRI of this resource
 delete = Delete
+add-a-property = Add a property
+add = Add
