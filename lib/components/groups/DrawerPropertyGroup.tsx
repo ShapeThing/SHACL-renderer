@@ -7,6 +7,7 @@ import { Localized } from '@fluent/react'
 import { language } from '@rdfjs/score'
 import { Grapoi } from 'grapoi'
 import { rdfs, sh } from '../../core/namespaces'
+import { useEmptyTerm } from '../EditMode/PropertyShapeEditMode'
 import PropertyElement from '../PropertyElement'
 
 export default function DrawerPropertyGroup(props: PropertyGroupProps) {
@@ -17,6 +18,8 @@ export default function DrawerPropertyGroup(props: PropertyGroupProps) {
     used: ReactNode[]
     unused: Grapoi[]
   }
+
+  const createEmptyTerm = useEmptyTerm()
 
   const label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value
   const description = props.group
@@ -37,7 +40,8 @@ export default function DrawerPropertyGroup(props: PropertyGroupProps) {
                 value={''}
                 onChange={event => {
                   const selectedProperty = properties.unused[parseInt(event.target.value)]
-                  console.log(selectedProperty)
+                  const emptyTerm = createEmptyTerm(selectedProperty, props.nodeDataPointer)
+                  console.log(emptyTerm)
                 }}
               >
                 <option disabled value={''}>
@@ -57,7 +61,7 @@ export default function DrawerPropertyGroup(props: PropertyGroupProps) {
                 })}
               </select>
 
-              <button className="button secondary">
+              <button className="button primary">
                 <Localized id="add">Add</Localized>
               </button>
             </div>

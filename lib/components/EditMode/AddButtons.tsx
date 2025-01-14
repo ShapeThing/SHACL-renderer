@@ -33,7 +33,7 @@ export function AddButtons({ property, items, addTerm }: AddButtonsProps) {
       }))
     : []
 
-  const createEmptyTerm = useEmptyTerm(items, property)
+  const createEmptyTerm = useEmptyTerm()
 
   if (items.ptrs.length >= maxCount || uniqueLang) {
     return null
@@ -46,7 +46,7 @@ export function AddButtons({ property, items, addTerm }: AddButtonsProps) {
           <button
             key={expandedOption.term.value}
             onClick={() => {
-              const emptyTerm = createEmptyTerm(expandedOption.pointer)
+              const emptyTerm = createEmptyTerm(expandedOption.pointer, items)
               if (emptyTerm) addTerm(emptyTerm)
             }}
             className="button icon secondary outline add-object"
@@ -58,7 +58,7 @@ export function AddButtons({ property, items, addTerm }: AddButtonsProps) {
         <button
           className="button icon secondary outline add-object"
           onClick={() => {
-            const emptyTerm = createEmptyTerm()
+            const emptyTerm = createEmptyTerm(property, items)
             if (emptyTerm) addTerm(emptyTerm)
           }}
         >

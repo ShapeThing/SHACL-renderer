@@ -53,10 +53,10 @@ export default function PropertyShapeEditModePlain(props: PropertyShapeEditModeP
     // setItems() // TODO here are render bugs.
   }
 
-  const createEmptyTerm = useEmptyTerm(items, props.property)
+  const createEmptyTerm = useEmptyTerm()
 
   useEffect(() => {
-    if (items.ptrs.length === 0) addObject(createEmptyTerm())
+    if (items.ptrs.length === 0) addObject(createEmptyTerm(props.property, items))
   }, [items])
 
   return (

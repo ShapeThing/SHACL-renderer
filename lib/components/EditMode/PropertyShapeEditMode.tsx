@@ -52,14 +52,14 @@ export const getErrorMessages = (errors: any[], term: Term, jsonLdContext: JsonL
   return messages
 }
 
-export const useEmptyTerm = (items: Grapoi, property: Grapoi) => {
+export const useEmptyTerm = () => {
   const { editors } = useContext(widgetsContext)
   const { activeContentLanguage } = useContext(languageContext)
 
-  return (splitProperty?: Grapoi) => {
-    const widgetItem = scoreWidgets(editors, items, splitProperty ?? property, dash('editor'))
+  return (property: Grapoi, items: Grapoi) => {
+    const widgetItem = scoreWidgets(editors, items, property, dash('editor'))
     const emptyTerm = widgetItem?.meta.createTerm
-      ? widgetItem?.meta.createTerm({ activeContentLanguage }, splitProperty ?? property)
+      ? widgetItem?.meta.createTerm({ activeContentLanguage }, property)
       : null
     if (emptyTerm) (emptyTerm as TouchableTerm).touched = false
     return emptyTerm ? emptyTerm : undefined
