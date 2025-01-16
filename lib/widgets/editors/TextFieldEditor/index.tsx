@@ -8,7 +8,7 @@ export default function TextFieldEditor({ term, setTerm, property }: WidgetProps
 
   return multiLine ? (
     <textarea
-      rows={4}
+      rows={term.value?.split('\n').length ?? 4}
       maxLength={maxLength}
       className="input"
       value={term.value}

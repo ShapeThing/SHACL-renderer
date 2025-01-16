@@ -298,6 +298,7 @@
     sh:order 9;
     sh:group <#propertyShapeGroup> ;
     sh:path ( sh:in sh:select ) ;
+    dash:singleLine false ;
     sh:datatype xsd:string ;
     sh:maxCount 1;
   ];

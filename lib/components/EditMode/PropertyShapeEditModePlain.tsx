@@ -89,8 +89,10 @@ export default function PropertyShapeEditModePlain(props: PropertyShapeEditModeP
               errors={errorMessages}
               rerenderAfterManipulatingPointer={setItems}
               setTerm={(term: Term) => {
-                const [quad] = [...item.quads()]
-                if (quad.object.equals(term)) return
+                console.log([...item.quads()])
+                const quads = [...item.quads()]
+                const quad = quads.at(-1)
+                if (!quad || quad.object.equals(term)) return
                 dataset.delete(quad)
                 dataset.add(factory.quad(quad.subject, quad.predicate, term as Quad_Object, quad.graph))
                 setItems()

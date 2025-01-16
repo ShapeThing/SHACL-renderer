@@ -147,7 +147,8 @@
 .group.drawer {
 
   .drawer-add-property {
-    background-color: rgba(var(--primary-rgb), .35);
+    background-color: transparent;
+    padding-inline: 0;
     flex-wrap: nowrap;
 
     .button {

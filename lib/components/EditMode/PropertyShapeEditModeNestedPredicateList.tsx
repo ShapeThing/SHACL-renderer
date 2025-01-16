@@ -102,7 +102,7 @@ export default function PropertyShapeEditModeNestedPredicateList(props: Property
     >
       <div className="editors">
         <ReactSortable
-          filter="input,.list-group,.form-control"
+          filter="input,.list-group,.form-control,.input"
           preventOnFilter={false}
           list={sortableState}
           className="sortable"

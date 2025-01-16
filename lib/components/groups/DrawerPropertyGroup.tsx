@@ -36,7 +36,7 @@ export default function DrawerPropertyGroup(props: PropertyGroupProps) {
       <div className="group-inner">
         {properties.used}
 
-        <PropertyElement label={<Localized id="add-a-property">Add a property</Localized>}>
+        <PropertyElement required={true} label={<Localized id="add-a-property">Add a property</Localized>}>
           <div className="editors">
             <div className="editor drawer-add-property">
               <select
@@ -67,7 +67,7 @@ export default function DrawerPropertyGroup(props: PropertyGroupProps) {
               </select>
 
               <button
-                className="button primary"
+                className="button primary outline"
                 onClick={() => {
                   setSelectedPropertyIndex('')
                   setSelectedProperty(undefined)
