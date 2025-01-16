@@ -41,3 +41,28 @@
     display: none;
   }
 }
+
+.shacl-renderer[data-mode='view'] {
+  .term {
+    position: relative;
+
+    &.added {
+      color: rgb(16, 97, 16);
+    }
+
+    &.deleted {
+      color: var(--danger);
+
+      &:after {
+        position: absolute;
+        content: '';
+        display: block;
+        width: 100%;
+        left: 0;
+        height: 0px;
+        border-bottom: 2px solid var(--danger);
+        top: 50%;
+      }
+    }
+  }
+}

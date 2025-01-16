@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import { DiffableTerm } from '../../helpers/diffableTerm'
 import parsePath from '../../helpers/parsePath'
 import { wrapWithList } from '../../helpers/wrapWithList'
 import { widgetsContext } from '../../widgets/widgets-context'
@@ -20,7 +21,9 @@ export default function PropertyShapeViewMode(props: PropertyShapeInnerProps) {
           const widgetItem = scoreWidgets(viewers, data, property, dash('viewer'))
 
           return widgetItem && item.term.value ? (
-            <widgetItem.Component {...props} key={item.term.value} data={item} term={item.term} />
+            <span className={`${(item.term as DiffableTerm).diffState ?? ''} term`}>
+              <widgetItem.Component {...props} key={item.term.value} data={item} term={item.term} />
+            </span>
           ) : null
         }),
         property

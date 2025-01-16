@@ -14,8 +14,6 @@ export default function URIViewer({ term }: WidgetProps) {
 
   const prefix = jsonLdContext.compactIri(term.value).replace(labelPart, '')
 
-  console.log(term.value)
-
   return (
     <a href={term.value} title={term.value} target="_blank" className="uri">
       {prefix.includes('://') ? '' : <span className="uri-prefix">{prefix.substring(0, prefix.length - 1)}</span>}
