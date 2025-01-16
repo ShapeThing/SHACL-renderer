@@ -1,4 +1,4 @@
-import { DatasetCore } from '@rdfjs/types'
+import { DatasetCore, NamedNode } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
 import parsePath from '../../helpers/parsePath'
 import { sh, stsr } from '../namespaces'
@@ -19,13 +19,19 @@ export const fetchAdditionalData = async (
         .fetchDataAccordingToProperty
       const path = parsePath(property.out(sh('path')))
       const dataItemPointer = dataPointer.executeAll(path)
-      const additionalQuads = await fetchDataAccordingToProperty({
-        nodeShape: property,
-        term: dataItemPointer.term,
-        endpoint,
-        fetch
+      const terms = dataItemPointer.terms
+
+      const promises = terms.map(async term => {
+        const additionalQuads = await fetchDataAccordingToProperty({
+          nodeShape: property,
+          term: term as NamedNode,
+          endpoint,
+          fetch
+        })
+        for (const quad of additionalQuads) dataset.add(quad)
       })
-      for (const quad of additionalQuads) dataset.add(quad)
+
+      await Promise.allSettled(promises)
     }
   }
 }

@@ -13,7 +13,7 @@ import { useLanguageFilteredItems } from '../../hooks/useLanguageFilteredItems'
 import PropertyElement from '../PropertyElement'
 import { AddButtons } from './AddButtons'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
-import { getErrorMessages, sortBySortableState } from './PropertyShapeEditMode'
+import { getErrorMessages, sortBySortableState, useEmptyTerm } from './PropertyShapeEditMode'
 import { splitPointers } from './splitPointers'
 
 type PropertyShapeEditModeProps = {
@@ -29,8 +29,13 @@ export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditMod
   const { nodeDataPointer, errors, path } = props
   const { jsonLdContext } = useContext(mainContext)
   const { validate } = useContext(validationContext)
+  const createEmptyTerm = useEmptyTerm()
+  const [items, realSetItems] = useLanguageFilteredItems(() => {
+    const items = nodeDataPointer.executeAll(path)
+    if (items.ptrs.length === 0) addObject(createEmptyTerm(props.property, items))
+    return nodeDataPointer.executeAll(path)
+  })
 
-  const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
   const sortableState = items.map((item: Grapoi) => ({ id: JSON.stringify(item.term), term: item.term }))
 
   const setItems = () => {
@@ -80,11 +85,6 @@ export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditMod
 
     setItems()
   }
-
-  // const createEmptyTerm = useEmptyTerm(items, props.property)
-  // useEffect(() => {
-  //   if (items.ptrs.length === 0) addObject(createEmptyTerm())
-  // }, [items])
 
   return (
     <PropertyElement

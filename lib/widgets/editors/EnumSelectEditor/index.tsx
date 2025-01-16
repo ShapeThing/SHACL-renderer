@@ -13,6 +13,7 @@ import { WidgetProps } from '../../widgets-context'
 
 const queries: Map<string, any> = new Map()
 
+// TODO add a cache on the external data.
 const processDynamicShacl = async (
   query: string,
   dataset: DatasetCore,

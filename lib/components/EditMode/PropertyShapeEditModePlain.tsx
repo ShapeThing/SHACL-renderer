@@ -2,7 +2,7 @@ import factory from '@rdfjs/data-model'
 import type { Quad_Object, Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
 import type ValidationReport from 'rdf-validate-shacl/src/validation-report'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { mainContext } from '../../core/main-context'
 import { sh } from '../../core/namespaces'
 import { validationContext } from '../../core/validation/validation-context'
@@ -29,17 +29,7 @@ export default function PropertyShapeEditModePlain(props: PropertyShapeEditModeP
   const { nodeDataPointer, errors, path } = props
   const { jsonLdContext, data: dataset } = useContext(mainContext)
   const { validate } = useContext(validationContext)
-
-  const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
-  const sortableState = items.map((item: Grapoi) => ({ id: JSON.stringify(item.term), term: item.term }))
-
-  const setItems = () => {
-    const oldTerms = items.map((i: Grapoi) => i.term)
-    const newItems = nodeDataPointer.executeAll(path)
-    sortPointersStable(newItems, oldTerms)
-    realSetItems(newItems)
-    validate()
-  }
+  const createEmptyTerm = useEmptyTerm()
 
   const addObject = (emptyTerm?: Term) => {
     if (!emptyTerm) return
@@ -50,20 +40,37 @@ export default function PropertyShapeEditModePlain(props: PropertyShapeEditModeP
       throw new Error('Alternative property paths are not yet supported')
     const [predicate] = firstPathPart?.predicates ?? []
     nodeDataPointer.addOut(predicate, emptyTerm)
-    // setItems() // TODO here are render bugs.
   }
 
-  const createEmptyTerm = useEmptyTerm()
-
-  useEffect(() => {
+  const [items, realSetItems] = useLanguageFilteredItems(() => {
+    const items = nodeDataPointer.executeAll(path)
     if (items.ptrs.length === 0) addObject(createEmptyTerm(props.property, items))
-  }, [items])
+    return nodeDataPointer.executeAll(path)
+  })
+  const sortableState = items.map((item: Grapoi) => ({ id: JSON.stringify(item.term), term: item.term }))
+
+  const setItems = () => {
+    const oldTerms = items.map((i: Grapoi) => i.term)
+    const newItems = nodeDataPointer.executeAll(path)
+    sortPointersStable(newItems, oldTerms)
+    realSetItems(newItems)
+    validate()
+  }
 
   return (
     <PropertyElement
       cssClass={errors?.length ? 'has-error' : ''}
       property={props.property}
-      suffix={<AddButtons property={props.property} items={items} addTerm={addObject} />}
+      suffix={
+        <AddButtons
+          property={props.property}
+          items={items}
+          addTerm={(emptyTerm: Term) => {
+            addObject(emptyTerm)
+            setItems()
+          }}
+        />
+      }
     >
       <div className="editors">
         {[...items].sort(sortBySortableState(sortableState)).map((item: Grapoi, index: number) => {

@@ -13,7 +13,7 @@ import { useLanguageFilteredItems } from '../../hooks/useLanguageFilteredItems'
 import PropertyElement from '../PropertyElement'
 import { AddButtons } from './AddButtons'
 import PropertyObjectEditMode from './PropertyObjectEditMode'
-import { getErrorMessages } from './PropertyShapeEditMode'
+import { getErrorMessages, useEmptyTerm } from './PropertyShapeEditMode'
 import { splitPointers } from './splitPointers'
 
 type PropertyShapeEditModeProps = {
@@ -31,8 +31,23 @@ export default function PropertyShapeEditModeNestedPredicateList(props: Property
   const { validate } = useContext(validationContext)
 
   const nestedOrderPredicate = props.property.out(stsr('nestedOrder')).term
+  const createEmptyTerm = useEmptyTerm()
+  const addObject = (emptyTerm?: Term) => {
+    if (!emptyTerm) return
 
-  const [items, realSetItems] = useLanguageFilteredItems(() => nodeDataPointer.executeAll(path))
+    const path = parsePath(props.property.out(sh('path')))
+    const firstPathPart = path?.at(0)
+    if (firstPathPart?.predicates && firstPathPart?.predicates?.length > 1)
+      throw new Error('Alternative property paths are not yet supported')
+    const [predicate] = firstPathPart?.predicates ?? []
+    nodeDataPointer.addOut(predicate, emptyTerm)
+  }
+
+  const [items, realSetItems] = useLanguageFilteredItems(() => {
+    const items = nodeDataPointer.executeAll(path)
+    if (items.ptrs.length === 0) addObject(createEmptyTerm(props.property, items))
+    return nodeDataPointer.executeAll(path)
+  })
   const sortableState = items.map((item: Grapoi) => ({ id: JSON.stringify(item.term), term: item.term }))
 
   const setItems = () => {
@@ -69,29 +84,21 @@ export default function PropertyShapeEditModeNestedPredicateList(props: Property
       validate()
     }
   }
-  const addObject = (emptyTerm?: Term) => {
-    if (!emptyTerm) return
-
-    const path = parsePath(props.property.out(sh('path')))
-    const firstPathPart = path?.at(0)
-    if (firstPathPart?.predicates && firstPathPart?.predicates?.length > 1)
-      throw new Error('Alternative property paths are not yet supported')
-    const [predicate] = firstPathPart?.predicates ?? []
-    nodeDataPointer.addOut(predicate, emptyTerm)
-    setItems()
-  }
-
-  // const createEmptyTerm = useEmptyTerm(items, props.property)
-
-  // useEffect(() => {
-  //   if (items.ptrs.length === 0) addObject(createEmptyTerm())
-  // }, [items])
 
   return (
     <PropertyElement
       cssClass={errors?.length ? 'has-error' : ''}
       property={props.property}
-      suffix={<AddButtons property={props.property} items={items} addTerm={addObject} />}
+      suffix={
+        <AddButtons
+          property={props.property}
+          items={items}
+          addTerm={(emptyTerm: Term) => {
+            addObject(emptyTerm)
+            setItems()
+          }}
+        />
+      }
     >
       <div className="editors">
         <ReactSortable
