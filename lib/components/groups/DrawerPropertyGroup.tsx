@@ -1,4 +1,4 @@
-import { ReactNode, useContext } from 'react'
+import { ReactNode, useContext, useState } from 'react'
 import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
 import { getProperties, groupHasContents, PropertyGroupProps } from './PropertyGroup'
@@ -7,13 +7,16 @@ import { Localized } from '@fluent/react'
 import { language } from '@rdfjs/score'
 import { Grapoi } from 'grapoi'
 import { rdfs, sh } from '../../core/namespaces'
+import parsePath from '../../helpers/parsePath'
 import { useEmptyTerm } from '../EditMode/PropertyShapeEditMode'
 import PropertyElement from '../PropertyElement'
 
 export default function DrawerPropertyGroup(props: PropertyGroupProps) {
   const { activeInterfaceLanguage } = useContext(languageContext)
+  const [selectedPropertyIndex, setSelectedPropertyIndex] = useState<number | string>()
+  const [selectedProperty, setSelectedProperty] = useState<Grapoi>()
   const localName = props.group.term.value.split(/\/|#/g).pop()
-  const { data: dataset } = useContext(mainContext)
+  const { data: dataset, update } = useContext(mainContext)
   const properties = getProperties({ ...props, dataset, groupByUsage: true }) as {
     used: ReactNode[]
     unused: Grapoi[]
@@ -37,14 +40,16 @@ export default function DrawerPropertyGroup(props: PropertyGroupProps) {
           <div className="editors">
             <div className="editor drawer-add-property">
               <select
-                value={''}
+                value={selectedPropertyIndex}
                 onChange={event => {
                   const selectedProperty = properties.unused[parseInt(event.target.value)]
-                  const emptyTerm = createEmptyTerm(selectedProperty, props.nodeDataPointer)
-                  console.log(emptyTerm)
+                  if (selectedProperty) {
+                    setSelectedProperty(selectedProperty)
+                    setSelectedPropertyIndex(parseInt(event.target.value))
+                  }
                 }}
               >
-                <option disabled value={''}>
+                <option value={''}>
                   <Localized id="pick-an-option">- Pick an option -</Localized>
                 </option>
 
@@ -61,7 +66,24 @@ export default function DrawerPropertyGroup(props: PropertyGroupProps) {
                 })}
               </select>
 
-              <button className="button primary">
+              <button
+                className="button primary"
+                onClick={() => {
+                  setSelectedPropertyIndex('')
+                  setSelectedProperty(undefined)
+
+                  if (!selectedProperty) return
+                  const path = parsePath(selectedProperty.out(sh('path')))
+                  const itemPointer = props.nodeDataPointer.executeAll(path)
+                  const emptyTerm = createEmptyTerm(selectedProperty, itemPointer)
+                  const predicate = path?.at(-1)?.predicates[0]
+
+                  if (emptyTerm && predicate) {
+                    props.nodeDataPointer.addOut(predicate, emptyTerm)
+                    update()
+                  }
+                }}
+              >
                 <Localized id="add">Add</Localized>
               </button>
             </div>

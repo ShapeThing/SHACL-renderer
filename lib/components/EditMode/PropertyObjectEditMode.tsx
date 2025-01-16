@@ -1,6 +1,7 @@
 import type { Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
 import { Suspense, useContext, useEffect, useState } from 'react'
+import { mainContext } from '../../core/main-context'
 import { dash, sh } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { TouchableTerm } from '../../helpers/touchableRdf'
@@ -27,6 +28,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
   const { data, items, errors, setTerm, deleteTerm, alwaysShowRemove } = props
   let property = props.property
   const { editors } = useContext(widgetsContext)
+  const { update } = useContext(mainContext)
 
   const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
   const [widgetConfiguration, setWidgetConfiguration] = useState<AdditionalWidgetConfiguration>()
@@ -40,6 +42,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
     ? () => {
         deleteTerm()
         setIsDeleting(false)
+        update() // We need this here so that the drawer group is able to re-render and remove empty fields.
       }
     : undefined
 
