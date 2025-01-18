@@ -21,7 +21,7 @@ export default function PropertyShapeViewMode(props: PropertyShapeInnerProps) {
           const widgetItem = scoreWidgets(viewers, data, property, dash('viewer'))
 
           return widgetItem && item.term.value ? (
-            <span className={`${(item.term as DiffableTerm).diffState ?? ''} term`}>
+            <span key={item.term.value} className={`${(item.term as DiffableTerm).diffState ?? ''} term`}>
               <widgetItem.Component {...props} key={item.term.value} data={item} term={item.term} />
             </span>
           ) : null

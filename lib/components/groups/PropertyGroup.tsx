@@ -30,7 +30,8 @@ export const getProperties = ({
   dataset,
   facetSearchDataPointer,
   nodeDataPointer,
-  groupByUsage
+  groupByUsage,
+  mode
 }: {
   shapePointer: Grapoi
   group: Grapoi
@@ -38,6 +39,7 @@ export const getProperties = ({
   facetSearchDataPointer: Grapoi
   nodeDataPointer: Grapoi
   groupByUsage?: boolean
+  mode: string
 }) => {
   const groups = [...shapePointer.node().hasOut(rdf('type'), sh('PropertyGroup'))]
   const groupLevelGroups = groups.filter(innerGroup => innerGroup.out(sh('group')).term?.equals(group.term))
@@ -47,7 +49,8 @@ export const getProperties = ({
     shapePointer,
     dataPointer: nodeDataPointer,
     facetSearchDataPointer,
-    dataset
+    dataset,
+    mode
   })
 
   const formElements: [number, ReactNode, boolean, Grapoi][] = [
@@ -73,8 +76,8 @@ export const getProperties = ({
 export default function PropertyGroup(props: PropertyGroupProps) {
   const { activeInterfaceLanguage } = useContext(languageContext)
   const localName = props.group.term.value.split(/\/|#/g).pop()
-  const { data: dataset } = useContext(mainContext)
-  const properties = getProperties({ ...props, dataset }) as ReactNode[]
+  const { data: dataset, mode } = useContext(mainContext)
+  const properties = getProperties({ ...props, dataset, mode }) as ReactNode[]
   const label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value
   const description = props.group
     .out([sh('description'), rdfs('comment')])

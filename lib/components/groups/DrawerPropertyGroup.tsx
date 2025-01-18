@@ -16,8 +16,8 @@ export default function DrawerPropertyGroup(props: PropertyGroupProps) {
   const [selectedPropertyIndex, setSelectedPropertyIndex] = useState<number | string>()
   const [selectedProperty, setSelectedProperty] = useState<Grapoi>()
   const localName = props.group.term.value.split(/\/|#/g).pop()
-  const { data: dataset, update } = useContext(mainContext)
-  const properties = getProperties({ ...props, dataset, groupByUsage: true }) as {
+  const { data: dataset, update, mode } = useContext(mainContext)
+  const properties = getProperties({ ...props, dataset, groupByUsage: true, mode }) as {
     used: ReactNode[]
     unused: Grapoi[]
   }
@@ -36,10 +36,15 @@ export default function DrawerPropertyGroup(props: PropertyGroupProps) {
       <div className="group-inner">
         {properties.used}
 
-        <PropertyElement required={true} label={<Localized id="add-a-property">Add a property</Localized>}>
+        <PropertyElement
+          cssClass={'drawer-add-property-wrapper'}
+          required={true}
+          label={<Localized id="add-a-property">Add a property</Localized>}
+        >
           <div className="editors">
             <div className="editor drawer-add-property">
               <select
+                className="input"
                 value={selectedPropertyIndex}
                 onChange={event => {
                   const selectedProperty = properties.unused[parseInt(event.target.value)]

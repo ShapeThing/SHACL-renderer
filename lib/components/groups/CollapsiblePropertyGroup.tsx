@@ -10,10 +10,10 @@ import { getProperties, groupHasContents, PropertyGroupProps } from './PropertyG
 
 export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
   const localName = props.group.term.value.split(/\/|#/g).pop()
-  const { data: dataset } = useContext(mainContext)
+  const { data: dataset, mode } = useContext(mainContext)
   const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const properties = getProperties({ ...props, dataset }) as ReactNode[]
+  const properties = getProperties({ ...props, dataset, mode }) as ReactNode[]
 
   const groupLabelPath = props.group.out(stsr('groupLabelPath')).list()
   let label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName

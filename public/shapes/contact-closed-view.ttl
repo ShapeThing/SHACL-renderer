@@ -21,6 +21,7 @@
     faker:generator faker:person.firstName ;
     sh:minCount 1;
     sh:maxCount 5;
+    sh:group <#name> ;
     sh:datatype xsd:string ;
   ];
   sh:property [
@@ -34,6 +35,7 @@
     faker:generator faker:person.lastName ;
     sh:path schema:familyName ;
     sh:minCount 1;
+    sh:group <#name> ;
     sh:maxCount 1;
     sh:datatype xsd:string ;
   ];

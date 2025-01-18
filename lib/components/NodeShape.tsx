@@ -24,12 +24,14 @@ export const getElementHelpers = ({
   shapePointer,
   facetSearchDataPointer,
   dataPointer,
-  dataset
+  dataset,
+  mode
 }: {
   shapePointer: Grapoi
   facetSearchDataPointer: Grapoi
   dataPointer: Grapoi
   dataset: DatasetCore
+  mode: string
 }) => {
   const keyPrefix = shapePointer.values.join(',') + ':' + dataPointer.values.join(',') + ':'
 
@@ -53,7 +55,7 @@ export const getElementHelpers = ({
     const groupType = group.out(rdf('type')).filter(pointer => !pointer.term.equals(sh('PropertyGroup')))
     const type = (groupType.values
       .map(value => value.split(/\/|\#/g).pop())
-      .find(type => (type ? Object.keys(propertyGroupTypes).includes(type) : false)) ??
+      .find(type => (type && mode === 'edit' ? Object.keys(propertyGroupTypes).includes(type) : false)) ??
       '_default') as keyof typeof propertyGroupTypes
     const Element = propertyGroupTypes[type]
 
@@ -127,7 +129,13 @@ export default function NodeShape() {
     return grapoi({ dataset: shapes, factory, term: propertyIri })
   })
 
-  const { mapGroup, mapProperty } = getElementHelpers({ shapePointer, dataPointer, facetSearchDataPointer, dataset })
+  const { mapGroup, mapProperty } = getElementHelpers({
+    shapePointer,
+    dataPointer,
+    facetSearchDataPointer,
+    dataset,
+    mode
+  })
 
   const formElements: ReactNode[] = [
     ...[

@@ -146,18 +146,22 @@
 
 .group.drawer {
 
+  .drawer-add-property-wrapper {
+    padding-top: 1em;
+    border-top: 1px dashed rgba(var(--primary-rgb), .5);
+  }
+
   .drawer-add-property {
     background-color: transparent;
     padding-inline: 0;
     flex-wrap: nowrap;
+    max-width: var(--default-input-max-width);
 
     .button {
       margin-top: 0;
       padding-block: 8px;
     }
 
-    select {
-      max-width: var(--default-input-max-width);
-    }
+    select {}
   }
 }
