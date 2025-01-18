@@ -81,7 +81,8 @@ const nodeShape = (
     if (fakerIri) {
       generator = () => [getFakerGenerator(fakerIri.substring(20), fakerLibrary)()]
     } else if (property.out(sh('in')).term) {
-      const list = [...property.out(sh('in')).list()].map(pointer => pointer.term)
+      /** @ts-ignore */
+      const list = [...(property.out(sh('in'))?.list() ?? [])].map(pointer => pointer.term)
       generator = () => [fakerLibrary.helpers.arrayElement(list)]
     } else if (property.out(sh('node')).term) {
       generator = () => {
