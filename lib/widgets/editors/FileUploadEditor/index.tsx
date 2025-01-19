@@ -53,6 +53,7 @@ export default function FileUploadEditor({
       </Dropzone>
     ),
     displayCriteria: (term: Term) => !!term.value,
+    // TODO make a modal that gives options to delete the image also.
     deletionCriteria: async (term: Term) => (await fetch(term.value)).status === 200
   })
 

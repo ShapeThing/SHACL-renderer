@@ -10,7 +10,7 @@ export type ImageProps = {
 
 export default function Image({ url, width, height, className, size }: ImageProps) {
   const searchParams = new URLSearchParams()
-  const [hasFirstError, setHasFirstError] = useState(false)
+  const [hasFirstError, setHasFirstError] = useState(!url.toString().startsWith('http'))
   const [hasSecondError, setHasSecondError] = useState(false)
   searchParams.set('url', url.toString())
   searchParams.set('fit', 'cover')
