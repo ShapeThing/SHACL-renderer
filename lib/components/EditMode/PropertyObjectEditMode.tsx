@@ -28,7 +28,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
   const { data, items, errors, setTerm, deleteTerm, alwaysShowRemove } = props
   let property = props.property
   const { editors } = useContext(widgetsContext)
-  const { update } = useContext(mainContext)
+  const { update, fallback } = useContext(mainContext)
 
   const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
   const [widgetConfiguration, setWidgetConfiguration] = useState<AdditionalWidgetConfiguration>()
@@ -67,7 +67,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
               <Icon icon="mdi:drag" />
             </div>
           ) : null}
-          <Suspense>
+          <Suspense fallback={fallback}>
             <widgetItem.Component
               {...props}
               term={data.term}

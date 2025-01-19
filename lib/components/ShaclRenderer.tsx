@@ -1,12 +1,11 @@
 import { Localized } from '@fluent/react'
 import { write } from '@jeswr/pretty-turtle/dist'
-import { Suspense, useContext, useEffect, useState } from 'react'
+import { Suspense, use, useContext, useEffect, useRef, useState } from 'react'
 import { fetchContext } from '../core/fetchContext'
 import LanguageProvider from '../core/language-context'
 import { initContext, MainContext, MainContextInput, MainContextProvider } from '../core/main-context'
 import ValidationContextProvider from '../core/validation/validation-context'
 import { cleanUpDataset } from '../helpers/cleanUpDataset'
-import { wrapPromise } from '../helpers/wrapPromise'
 import LanguageAwareTabs from './language/LanguageAwareTabs'
 import NodeShape from './NodeShape'
 import { prefixes } from './ShaclRenderer'
@@ -15,13 +14,7 @@ export * from '../core/namespaces'
 export type ShaclRendererProps = MainContextInput
 
 function ShaclRendererInner(props: ShaclRendererProps & { contextResource: any }) {
-  const givenContext: MainContext = props.contextResource.read()
-
-  const [
-    context
-    // setContext
-  ] = useState(givenContext)
-
+  const context: MainContext = use(props.contextResource)
   const [, setCounter] = useState(0)
 
   const submit = async () => {
@@ -73,21 +66,23 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextResource: any }
   )
 }
 
-// TODO improve this structure and learn why useMemo was not a solution.
-const promises: Map<string, Promise<MainContext>> = new Map()
-
 export default function ShaclRenderer(props: ShaclRendererProps) {
   const { fetch } = useContext(fetchContext)
-  const cid = Object.values(props)
-    .map(value => (typeof value === 'string' ? value : ''))
-    .join(',')
-  if (!promises.has(cid)) promises.set(cid, initContext({ ...props, fetch }))
+  const contextResource = useRef<Promise<MainContext>>(null)
 
-  return (
+  const [hasBeenMounted, setHasBeenMounted] = useState(false)
+  useEffect(() => {
+    if (contextResource.current === null) {
+      contextResource.current = initContext({ ...props, fetch })
+      setHasBeenMounted(true)
+    }
+  }, [])
+
+  return hasBeenMounted ? (
     <div data-mode={props.mode} className="shacl-renderer">
-      <Suspense>
-        <ShaclRendererInner contextResource={wrapPromise(promises.get(cid)!)} {...props} />
+      <Suspense fallback={props.fallback}>
+        <ShaclRendererInner contextResource={contextResource.current} {...props} />
       </Suspense>
     </div>
-  )
+  ) : null
 }

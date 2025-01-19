@@ -1,7 +1,7 @@
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { DatasetCore, Quad, Quad_Object, Quad_Subject } from '@rdfjs/types'
-import grapoi from 'grapoi'
+import grapoi, { Grapoi } from 'grapoi'
 import Parser from 'n3/src/N3Parser.js'
 import { nonNullable } from '../helpers/nonNullable'
 import { owl, rdfs, sh, stsr } from './namespaces'
@@ -67,7 +67,7 @@ export const resolveRdfInput = async (
         const { QueryEngine } = await import('@comunica/query-sparql')
         const engine = new QueryEngine()
 
-        for (const dynamicIn of dynamicIns) {
+        const dynamicShaclPromises = [...dynamicIns].map(async (dynamicIn: Grapoi) => {
           const query = dynamicIn.out(sh('select')).value
           const endpoint = dynamicIn.out(stsr('endpoint')).term
 
@@ -108,7 +108,9 @@ export const resolveRdfInput = async (
           property.deleteOut(sh('in'))
           property.deleteList(sh('in'))
           property.addList(sh('in'), dedupedValues.filter(nonNullable))
-        }
+        })
+
+        await Promise.all(dynamicShaclPromises)
       }
     }
 

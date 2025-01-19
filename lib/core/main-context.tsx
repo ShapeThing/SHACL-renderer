@@ -25,6 +25,7 @@ export type MainContextInput = {
   contentLanguages?: Record<string, Record<string, string>>
   interfaceLanguages?: Record<string, Record<string, string>>
   cacheId?: string
+  fallback?: ReactNode
   context?: Record<string, string>
   onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>, dataPointer: Grapoi, context: MainContext) => void
   children?: (submit: () => void) => ReactNode
@@ -49,6 +50,7 @@ export type MainContext = {
   dataPointer: Grapoi
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
+  fallback?: ReactNode
   languageMode: 'tabs' | 'individual'
   contentLanguages: Record<string, Record<string, string>>
   interfaceLanguages: Record<string, Record<string, string>>
@@ -241,6 +243,7 @@ export const createLocalizationBundles = async (languageCodes: string[]) => {
  * Creates a new main context. This is a promise, so it should be awaited.
  */
 export const initContext = async (originalInput: MainContextInput): Promise<MainContext> => {
+  const start = performance.now()
   let {
     shapes,
     data,
@@ -248,6 +251,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     subject,
     targetClass: givenTargetClass,
     mode,
+    fallback,
     languageMode,
     prefixes: givenPrefixes,
     interfaceLanguages,
@@ -264,20 +268,24 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     containsRelativeReferences
   } = await getData(data, subject, fetch)
 
-  const localizationBundles = globalThis.location
-    ? await createLocalizationBundles(Object.keys(interfaceLanguages ?? { en: true }))
-    : {}
+  const localizationBundlePromises: Promise<Record<string, FluentBundle>> = new Promise(async resolve => {
+    const returnOutput = globalThis.location
+      ? await createLocalizationBundles(Object.keys(interfaceLanguages ?? { en: true }))
+      : {}
+
+    resolve(returnOutput)
+  })
 
   const shapesGraph = dataPointer.out(sh('shapesGraph')).term
   const shapesUrl = !shapes && shapesGraph?.value ? new URL(shapesGraph.value, location.toString()) : undefined
   if (!givenShapeSubject && shapesGraph) givenShapeSubject = shapesUrl
 
-  let { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject, shapesPointer } = await getShapes(
-    fetch,
-    shapes ?? shapesUrl,
-    givenTargetClass,
-    givenShapeSubject
-  )
+  const shapePromise = getShapes(fetch, shapes ?? shapesUrl, givenTargetClass, givenShapeSubject)
+
+  const [
+    localizationBundles,
+    { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject, shapesPointer }
+  ] = await Promise.all([localizationBundlePromises, shapePromise])
 
   // This is only for facets, it contains a dataset that we will filter through.
   const facetSearchDataset = facetSearchData
@@ -301,6 +309,8 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     dataPointer = dataPointer.node(finalSubject)
   }
 
+  console.log(`Resolving context took ${performance.now() - start}`)
+
   return {
     shapes: resolvedShapes,
     data: dataset,
@@ -313,6 +323,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     languageMode: languageMode ?? 'tabs',
     activeShapePointers: shapePointers,
     localizationBundles,
+    fallback,
     shapesPointer,
     facetSearchDataPointer,
     shapeSubject: factory.namedNode(shapeSubject.toString()),
