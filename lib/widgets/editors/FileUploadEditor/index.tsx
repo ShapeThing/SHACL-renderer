@@ -7,6 +7,7 @@ import Image from '../../../components/various/Image'
 import { fetchContext } from '../../../core/fetchContext'
 import { dash, sh, stsr } from '../../../core/namespaces'
 import parsePath from '../../../helpers/parsePath'
+import { useResolveMediaUrl } from '../../../hooks/useResolveMediaUrl'
 import { WidgetProps } from '../../widgets-context'
 
 type UploadFileArguments = {
@@ -55,9 +56,11 @@ export default function FileUploadEditor({
     deletionCriteria: async (term: Term) => (await fetch(term.value)).status === 200
   })
 
+  const url = useResolveMediaUrl(term)
+
   return term.value ? (
     <div key={term.value} title={term.value} className="iri-preview search-result">
-      <Image className="image" url={term.value} size={32} />
+      {url ? <Image className="image" url={url} size={32} /> : null}
       <a className="link" href={term.value} target="_blank">
         <span className="label">{decodeURI(term.value.split(/\/|\#/g).pop()!)}</span>
       </a>
