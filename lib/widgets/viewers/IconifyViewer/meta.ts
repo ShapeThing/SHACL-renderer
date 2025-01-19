@@ -1,6 +1,5 @@
 import { Grapoi } from 'grapoi'
 import { sh, stsr } from '../../../core/namespaces'
-import { TouchableTerm } from '../../../helpers/touchableRdf'
 import { WidgetMeta } from '../../widgets-context'
 
 export default {
@@ -8,12 +7,7 @@ export default {
   score: (data?: Grapoi, propertyShape?: Grapoi) => {
     const term = data?.terms[0]
 
-    if (
-      term &&
-      (term.value || (term as TouchableTerm).touched === false) &&
-      term.termType === 'Literal' &&
-      term.datatype.value === 'https://iconify.design'
-    ) {
+    if (term && term.value && term.termType === 'Literal' && term.datatype.value === 'https://iconify.design') {
       return 15
     }
 
