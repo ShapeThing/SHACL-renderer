@@ -29,7 +29,7 @@ export default function DrawerPropertyGroup(props: PropertyGroupProps) {
     .out([sh('description'), rdfs('comment')])
     .best(language([activeInterfaceLanguage])).value
 
-  return groupHasContents(props.group, props.shapePointer) ? (
+  return groupHasContents(props.group, props.shapePointer, props.nodeDataPointer, mode === 'view') ? (
     <div className={`group drawer ${localName} ${props.className ?? ''}`} data-term={props.group.term.value}>
       {label ? <h3 className="title">{label}</h3> : null}
       {description ? <div className="group-description">{description}</div> : null}

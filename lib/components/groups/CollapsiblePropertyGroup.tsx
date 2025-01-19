@@ -52,7 +52,7 @@ export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
     }
   })
 
-  return groupHasContents(props.group, props.shapePointer) ? (
+  return groupHasContents(props.group, props.shapePointer, props.nodeDataPointer, mode === 'view') ? (
     <div
       ref={wrapper}
       className={`collapsible-group ${localName} ${expanded || !height ? 'expanded' : ''} ${height ? 'processed' : ''}`}

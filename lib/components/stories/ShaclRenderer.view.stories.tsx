@@ -55,3 +55,12 @@ export const diff = {
     shapes: new URL('/shapes/contact-closed-view.ttl', location.origin)
   } as ShaclRendererProps
 }
+
+export const PersonWithShape = {
+  args: {
+    mode: 'view',
+    data: new URL('/john.ttl#john', location.origin),
+    targetClass: schema('Person'),
+    shapes: new URL('/shapes/person.ttl', location.origin)
+  } as ShaclRendererProps
+}

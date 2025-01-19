@@ -94,14 +94,13 @@
     sh:in [
       stsr:endpoint <./countries.ttl> ;
       sh:select """
-        prefix schema: <https://schema.org/>
-        prefix skos: <http://www.w3.org/2004/02/skos/core#>
+        prefix countries: <http://www.bpiresearch.com/BPMO/2004/03/03/cdl/Countries#>
 
         SELECT distinct ?value ?label
         WHERE {
-          ?value a skos:Concept .
-          ?value skos:inScheme <http://publications.europa.eu/resource/authority/country> .
-          ?value skos:prefLabel ?label .
+          ?value a countries:ISO3166DefinedCountry .
+          ?value countries:referencesCountry ?labelItem .
+          ?labelItem countries:nameEnglish ?label .
         }
         """ ;
     ] ;

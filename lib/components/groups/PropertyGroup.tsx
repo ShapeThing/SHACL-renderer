@@ -6,6 +6,7 @@ import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
 import { rdf, rdfs, sh } from '../../core/namespaces'
 import { nonNullable } from '../../helpers/nonNullable'
+import parsePath from '../../helpers/parsePath'
 import { getElementHelpers } from '../NodeShape'
 
 export type PropertyGroupProps = {
@@ -16,12 +17,21 @@ export type PropertyGroupProps = {
   className?: string
 }
 
-export const groupHasContents = (group: Grapoi, shapePointer: Grapoi) => {
+export const groupHasContents = (group: Grapoi, shapePointer: Grapoi, dataPointer: Grapoi, onlyWhenData: boolean) => {
   const groups = [...shapePointer.node().hasOut(rdf('type'), sh('PropertyGroup'))]
   const groupLevelGroups = groups.filter(innerGroup => innerGroup.out(sh('group')).term?.equals(group.term))
   const groupLevelProperties: Grapoi = shapePointer.out(sh('property')).hasOut(sh('group'), group.term)
-  const someNestedGroupHasContents = groupLevelGroups.some(group => groupHasContents(group, shapePointer))
-  return groupLevelProperties.ptrs.length || someNestedGroupHasContents
+  const someNestedGroupHasContents = groupLevelGroups.some(group =>
+    groupHasContents(group, shapePointer, dataPointer, onlyWhenData)
+  )
+
+  const hasData = [...groupLevelProperties].some((property: Grapoi) => {
+    const path = parsePath(property.out(sh('path')))
+    const innerData = dataPointer.executeAll(path)
+    return !!innerData.terms.length
+  })
+
+  return (onlyWhenData ? hasData : groupLevelProperties.ptrs.length) || someNestedGroupHasContents
 }
 
 export const getProperties = ({
@@ -83,7 +93,7 @@ export default function PropertyGroup(props: PropertyGroupProps) {
     .out([sh('description'), rdfs('comment')])
     .best(language([activeInterfaceLanguage])).value
 
-  return groupHasContents(props.group, props.shapePointer) ? (
+  return groupHasContents(props.group, props.shapePointer, props.nodeDataPointer, mode === 'view') ? (
     <div className={`group ${localName} ${props.className ?? ''}`} data-term={props.group.term.value}>
       {label ? <h3 className="title">{label}</h3> : null}
       {description ? <div className="group-description">{description}</div> : null}

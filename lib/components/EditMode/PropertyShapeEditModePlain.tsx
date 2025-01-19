@@ -89,7 +89,6 @@ export default function PropertyShapeEditModePlain(props: PropertyShapeEditModeP
               errors={errorMessages}
               rerenderAfterManipulatingPointer={setItems}
               setTerm={(term: Term) => {
-                console.log([...item.quads()])
                 const quads = [...item.quads()]
                 const quad = quads.at(-1)
                 if (!quad || quad.object.equals(term)) return

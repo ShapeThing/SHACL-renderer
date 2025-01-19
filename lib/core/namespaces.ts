@@ -12,7 +12,7 @@ export const stf = namespace('http://ontology.shapething.com/facet#')
 export const ed = namespace('https://editorjs.io/')
 export const owl = namespace('http://www.w3.org/2002/07/owl#')
 export const faker = namespace('https://fakerjs.dev/')
-export const app = namespace(location.origin + '/')
+export const app = namespace((globalThis.location?.origin ?? 'http://example.com') + '/')
 
 export const prefixes = Object.fromEntries(
   Object.entries({

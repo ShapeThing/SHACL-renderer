@@ -5,6 +5,7 @@ import type { BlankNode, DatasetCore, NamedNode, Quad_Subject } from '@rdfjs/typ
 import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import { ReactNode, createContext, useReducer } from 'react'
+import { cachedFetch } from '../helpers/cachedFetch'
 import { renameSubject as renameSubjectFull } from '../helpers/renameSubject'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import { prefixes, rdf, rdfs, sh } from './namespaces'
@@ -219,9 +220,11 @@ const getShapes = async (
   }
 }
 
-export const createLocalizationBundles = async (languageCodes: string[], fetch?: (typeof globalThis)['fetch']) => {
+const localizationFetch = cachedFetch()
+
+export const createLocalizationBundles = async (languageCodes: string[]) => {
   const translations = languageCodes.map(languageCode =>
-    (fetch ?? globalThis['fetch'])(`/translations/${languageCode}/shacl-renderer.ftl`)
+    localizationFetch(`/translations/${languageCode}/shacl-renderer.ftl`)
       .then(response => response.text())
       .then(translation => new FluentResource(translation))
       .then(resource => {
@@ -261,7 +264,9 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     containsRelativeReferences
   } = await getData(data, subject, fetch)
 
-  const localizationBundles = await createLocalizationBundles(Object.keys(interfaceLanguages ?? { en: true }), fetch)
+  const localizationBundles = globalThis.location
+    ? await createLocalizationBundles(Object.keys(interfaceLanguages ?? { en: true }))
+    : {}
 
   const shapesGraph = dataPointer.out(sh('shapesGraph')).term
   const shapesUrl = !shapes && shapesGraph?.value ? new URL(shapesGraph.value, location.toString()) : undefined
@@ -276,7 +281,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
 
   // This is only for facets, it contains a dataset that we will filter through.
   const facetSearchDataset = facetSearchData
-    ? (await resolveRdfInput(facetSearchData, true)).dataset
+    ? (await resolveRdfInput(facetSearchData, true, fetch)).dataset
     : datasetFactory.dataset()
   const facetSearchDataPointer = grapoi({ dataset: facetSearchDataset, factory })
     .hasOut(rdf('type'), targetClass)

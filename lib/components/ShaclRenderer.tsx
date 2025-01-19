@@ -1,9 +1,9 @@
 import { Localized } from '@fluent/react'
 import { write } from '@jeswr/pretty-turtle/dist'
-import { Suspense, useContext, useEffect, useMemo, useState } from 'react'
+import { Suspense, useContext, useEffect, useState } from 'react'
 import { fetchContext } from '../core/fetchContext'
 import LanguageProvider from '../core/language-context'
-import { MainContext, MainContextInput, MainContextProvider, initContext } from '../core/main-context'
+import { initContext, MainContext, MainContextInput, MainContextProvider } from '../core/main-context'
 import ValidationContextProvider from '../core/validation/validation-context'
 import { cleanUpDataset } from '../helpers/cleanUpDataset'
 import { wrapPromise } from '../helpers/wrapPromise'
@@ -73,14 +73,20 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextResource: any }
   )
 }
 
+// TODO improve this structure and learn why useMemo was not a solution.
+const promises: Map<string, Promise<MainContext>> = new Map()
+
 export default function ShaclRenderer(props: ShaclRendererProps) {
   const { fetch } = useContext(fetchContext)
-  const contextResource = useMemo(() => wrapPromise(initContext({ ...props, fetch })), [])
+  const cid = Object.values(props)
+    .map(value => (typeof value === 'string' ? value : ''))
+    .join(',')
+  if (!promises.has(cid)) promises.set(cid, initContext({ ...props, fetch }))
 
   return (
     <div data-mode={props.mode} className="shacl-renderer">
       <Suspense>
-        <ShaclRendererInner contextResource={contextResource} {...props} />
+        <ShaclRendererInner contextResource={wrapPromise(promises.get(cid)!)} {...props} />
       </Suspense>
     </div>
   )

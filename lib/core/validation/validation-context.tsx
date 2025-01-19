@@ -9,7 +9,7 @@ import { TouchableQuad } from '../../helpers/touchableRdf'
 import { fetchContext } from '../fetchContext'
 import { mainContext } from '../main-context'
 import { fetchAdditionalData } from './fetchAdditionalData'
-import { resolveDynamicShacl } from './resolveDynamicShacl'
+import { resolveDynamicShaclInternal } from './resolveDynamicShaclInternal'
 
 export const validationContext = createContext<{ report: ValidationReport | undefined; validate: () => void }>({
   report: undefined,
@@ -40,7 +40,7 @@ export default function ValidationContextProvider({ children }: { children: Reac
       if (!dataset.size) return
 
       await fetchAdditionalData(shapePointer, dataset, dataPointer, fetch)
-      await resolveDynamicShacl(shapePointer, dataset)
+      await resolveDynamicShaclInternal(shapePointer, dataset)
 
       const report = await validator.validate({ dataset }, shapePointer)
       console.log(

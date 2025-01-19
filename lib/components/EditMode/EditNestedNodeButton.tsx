@@ -79,7 +79,6 @@ export default function EditNestedNodeButton({
                       <button
                         className="danger button outline delete-resource"
                         onClick={() => {
-                          console.log(outAll(data))
                           setOpen(false)
                         }}
                       >
