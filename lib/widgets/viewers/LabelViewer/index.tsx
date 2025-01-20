@@ -1,7 +1,7 @@
 import { language } from '@rdfjs/score'
 import { useContext } from 'react'
 import { languageContext } from '../../../core/language-context'
-import { rdfs, schema, sh } from '../../../core/namespaces'
+import { rdfs, schema, sh, skos } from '../../../core/namespaces'
 import { WidgetProps } from '../../widgets-context'
 
 export default function LabelViewer({ term, property, nodeDataPointer }: WidgetProps) {
@@ -10,11 +10,11 @@ export default function LabelViewer({ term, property, nodeDataPointer }: WidgetP
   const label =
     nodeDataPointer
       ?.node(term)
-      .out([sh('name'), rdfs('label'), schema('name')])
+      .out([skos('prefLabel'), rdfs('label'), schema('name')])
       .best(language([activeInterfaceLanguage, '', '*']))?.value ??
     property
       ?.node(term)
-      .out([sh('name'), rdfs('label'), schema('name')])
+      .out([skos('prefLabel'), rdfs('label'), schema('name')])
       .best(language([activeInterfaceLanguage, '', '*']))?.value
 
   const isEnum = !!property?.out(sh('in')).value

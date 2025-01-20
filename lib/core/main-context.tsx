@@ -1,11 +1,9 @@
-import { FluentBundle, FluentResource } from '@fluent/bundle'
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode, Quad_Subject } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import { ReactNode, createContext, useReducer } from 'react'
-import { cachedFetch } from '../helpers/cachedFetch'
 import { renameSubject as renameSubjectFull } from '../helpers/renameSubject'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import { prefixes, rdf, rdfs, sh } from './namespaces'
@@ -45,7 +43,6 @@ export type MainContext = {
   targetClass?: NamedNode
   shapePointer: Grapoi
   shapesPointer: Grapoi
-  localizationBundles: Record<string, FluentBundle>
   activeShapePointers: Grapoi
   dataPointer: Grapoi
   facetSearchDataPointer: Grapoi
@@ -84,8 +81,7 @@ export const mainContext = createContext<MainContext>({
   renameSubject: () => null,
   updates: 0,
   update: () => null,
-  originalInput: null as unknown as MainContextInput,
-  localizationBundles: null as unknown as Record<string, FluentBundle>
+  originalInput: null as unknown as MainContextInput
 })
 
 type MainContextProviderProps = {
@@ -222,23 +218,6 @@ const getShapes = async (
   }
 }
 
-const localizationFetch = cachedFetch()
-
-export const createLocalizationBundles = async (languageCodes: string[]) => {
-  const translations = languageCodes.map(languageCode =>
-    localizationFetch(`/translations/${languageCode}/shacl-renderer.ftl`)
-      .then(response => response.text())
-      .then(translation => new FluentResource(translation))
-      .then(resource => {
-        const bundle = new FluentBundle(languageCode)
-        bundle.addResource(resource)
-        return [languageCode, bundle] as [string, FluentBundle]
-      })
-  )
-
-  return Object.fromEntries(await Promise.all(translations))
-}
-
 /**
  * Creates a new main context. This is a promise, so it should be awaited.
  */
@@ -267,25 +246,16 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     subject: finalSubject,
     containsRelativeReferences
   } = await getData(data, subject, fetch)
-
-  const localizationBundlePromises: Promise<Record<string, FluentBundle>> = new Promise(async resolve => {
-    const returnOutput = globalThis.location
-      ? await createLocalizationBundles(Object.keys(interfaceLanguages ?? { en: true }))
-      : {}
-
-    resolve(returnOutput)
-  })
-
   const shapesGraph = dataPointer.out(sh('shapesGraph')).term
   const shapesUrl = !shapes && shapesGraph?.value ? new URL(shapesGraph.value, location.toString()) : undefined
   if (!givenShapeSubject && shapesGraph) givenShapeSubject = shapesUrl
 
-  const shapePromise = getShapes(fetch, shapes ?? shapesUrl, givenTargetClass, givenShapeSubject)
-
-  const [
-    localizationBundles,
-    { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject, shapesPointer }
-  ] = await Promise.all([localizationBundlePromises, shapePromise])
+  const { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject, shapesPointer } = await getShapes(
+    fetch,
+    shapes ?? shapesUrl,
+    givenTargetClass,
+    givenShapeSubject
+  )
 
   // This is only for facets, it contains a dataset that we will filter through.
   const facetSearchDataset = facetSearchData
@@ -322,7 +292,6 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     shapePointer,
     languageMode: languageMode ?? 'tabs',
     activeShapePointers: shapePointers,
-    localizationBundles,
     fallback,
     shapesPointer,
     facetSearchDataPointer,

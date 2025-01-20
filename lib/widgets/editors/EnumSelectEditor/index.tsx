@@ -7,7 +7,7 @@ import { Store } from 'n3'
 import { useContext, useEffect } from 'react'
 import { languageContext } from '../../../core/language-context'
 import { mainContext } from '../../../core/main-context'
-import { rdfs, sh, stsr } from '../../../core/namespaces'
+import { rdfs, sh, skos, stsr } from '../../../core/namespaces'
 import { wrapPromise } from '../../../helpers/wrapPromise'
 import { WidgetProps } from '../../widgets-context'
 
@@ -73,11 +73,11 @@ export default function EnumSelectEditor({ property, term, setTerm, dataset }: W
         const label =
           dataPointer
             .node(term)
-            .out([sh('name'), rdfs('label')])
+            .out([skos('prefLabel'), rdfs('label')])
             .best(language([activeInterfaceLanguage, activeContentLanguage, '', '*'])).value ??
           property
             .node(term)
-            .out([sh('name'), rdfs('label')])
+            .out([skos('prefLabel'), rdfs('label')])
             .best(language([activeInterfaceLanguage, activeContentLanguage, '', '*'])).value ??
           term.value.split(/\#|\//g).pop()!
 

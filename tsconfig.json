@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "declaration": false,
+    "emitDeclarationOnly": true,
 
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -14,6 +14,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "allowJs": true,
+    "declaration": true,
     "jsx": "react-jsx",
 
     /* Linting */

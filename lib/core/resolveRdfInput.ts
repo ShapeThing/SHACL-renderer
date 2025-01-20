@@ -60,6 +60,8 @@ export const resolveRdfInput = async (
       }
 
       // Dynamic SHACL, https://datashapes.org/dynamic.html 2.2 with the addition of an endpoint.
+      // This works but is quite slow.
+      // An alternative is owl:imports and referencing the list, like is done in countries.ttl and person.ttl.
       const datasetPointer = grapoi({ dataset, factory })
       const dynamicIns = datasetPointer.node().out(sh('in')).hasOut(sh('select')).hasOut(stsr('endpoint'))
 
