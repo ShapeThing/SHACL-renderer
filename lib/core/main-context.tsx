@@ -3,6 +3,7 @@ import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode, Quad_Subject } from '@rdfjs/types'
 import grapoi, { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
+import { Store } from 'n3'
 import { ReactNode, createContext, useReducer } from 'react'
 import { renameSubject as renameSubjectFull } from '../helpers/renameSubject'
 import { getShapeSkeleton } from './getShapeSkeleton'
@@ -24,6 +25,7 @@ export type MainContextInput = {
   interfaceLanguages?: Record<string, Record<string, string>>
   cacheId?: string
   fallback?: ReactNode
+  stores?: Record<string, Store>
   context?: Record<string, string>
   onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>, dataPointer: Grapoi, context: MainContext) => void
   children?: (submit: () => void) => ReactNode
@@ -47,6 +49,7 @@ export type MainContext = {
   dataPointer: Grapoi
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
+  stores: Record<string, Store>
   fallback?: ReactNode
   languageMode: 'tabs' | 'individual'
   contentLanguages: Record<string, Record<string, string>>
@@ -77,6 +80,7 @@ export const mainContext = createContext<MainContext>({
   jsonLdContext: new JsonLdContextNormalized({}),
   languageMode: 'tabs',
   contentLanguages: {},
+  stores: {},
   interfaceLanguages: { en: { en: 'English' } },
   renameSubject: () => null,
   updates: 0,
@@ -230,6 +234,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     subject,
     targetClass: givenTargetClass,
     mode,
+    stores,
     fallback,
     languageMode,
     prefixes: givenPrefixes,
@@ -293,6 +298,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     languageMode: languageMode ?? 'tabs',
     activeShapePointers: shapePointers,
     fallback,
+    stores: stores ?? {},
     shapesPointer,
     facetSearchDataPointer,
     shapeSubject: factory.namedNode(shapeSubject.toString()),

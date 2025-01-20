@@ -11,6 +11,8 @@
   schema:child "Anna", "Lisa", "John jr" ;
   schema:birthDate "1947-01-14"^^xsd:date ;
 
+  schema:image <http://localhost:6006/woman.jpg> ;
+
   schema:householdMembers 6 ;
 
   schema:icon "line-md:buy-me-a-coffee-twotone"^^<https://iconify.design> ;

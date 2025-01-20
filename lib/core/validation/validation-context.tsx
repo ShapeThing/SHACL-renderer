@@ -18,7 +18,7 @@ export const validationContext = createContext<{ report: ValidationReport | unde
 
 export default function ValidationContextProvider({ children }: { children: ReactNode }) {
   const [report, setReport] = useState<ValidationReport | undefined>(undefined)
-  const { data, shapes: originalShapes, shapePointer: originalShapePointer, mode } = useContext(mainContext)
+  const { data, shapes: originalShapes, shapePointer: originalShapePointer, mode, stores } = useContext(mainContext)
   const { fetch } = useContext(fetchContext)
 
   const [validateOnNextTick, setValidateOnNextTick] = useState(true)
@@ -39,7 +39,7 @@ export default function ValidationContextProvider({ children }: { children: Reac
 
       if (!dataset.size) return
 
-      await fetchAdditionalData(shapePointer, dataset, dataPointer, fetch)
+      await fetchAdditionalData(shapePointer, dataset, dataPointer, fetch, stores)
       await resolveDynamicShaclInternal(shapePointer, dataset)
 
       const report = await validator.validate({ dataset }, shapePointer)

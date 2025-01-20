@@ -20,6 +20,7 @@ type Input = {
   searchTerm?: string
   limit?: number
   fetch?: (typeof globalThis)['fetch']
+  stores?: Record<string, Store>
 }
 
 export const fetchDataAccordingToProperty = async ({
@@ -29,7 +30,8 @@ export const fetchDataAccordingToProperty = async ({
   dataset,
   searchTerm,
   limit = 10,
-  fetch
+  fetch,
+  stores
 }: Input) => {
   const shapeQuads = outAll(nodeShape.out().distinct().out())
   const shapeDataset = datasetFactory.dataset(shapeQuads)
@@ -46,10 +48,18 @@ export const fetchDataAccordingToProperty = async ({
 
   const termNeedsProxy = term?.value ? await needsHttpProxy(term.value, fetch) : false
   const store = dataset ? new Store([...dataset]) : undefined
-  const sources = [endpoint, endpoint ? undefined : store, endpoint ? undefined : term?.value].filter(nonNullable)
+  let sources = [endpoint, endpoint ? undefined : store, endpoint ? undefined : term?.value].filter(nonNullable)
+
+  let useComunica = false
+
+  if (endpoint && endpoint.startsWith('urn:store:') && stores) {
+    const storeId = endpoint.slice(10)
+    sources = [stores[storeId] as any]
+    useComunica = true
+  }
 
   // If this is a clean SPARQL endpoint.
-  if (endpoint) {
+  if (endpoint && !useComunica) {
     const body = new URLSearchParams()
     body.set('query', query)
 

@@ -1,5 +1,6 @@
 import { DatasetCore, NamedNode } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
+import { Store } from 'n3'
 import parsePath from '../../helpers/parsePath'
 import { sh, stsr } from '../namespaces'
 
@@ -7,7 +8,8 @@ export const fetchAdditionalData = async (
   shapePointer: Grapoi,
   dataset: DatasetCore,
   dataPointer: Grapoi,
-  fetch: (typeof globalThis)['fetch']
+  fetch: (typeof globalThis)['fetch'],
+  stores?: Record<string, Store>
 ) => {
   const properties = shapePointer.out(sh('property'))
 
@@ -26,7 +28,8 @@ export const fetchAdditionalData = async (
           nodeShape: property,
           term: term as NamedNode,
           endpoint,
-          fetch
+          fetch,
+          stores
         })
         for (const quad of additionalQuads) dataset.add(quad)
       })

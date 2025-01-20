@@ -1,3 +1,5 @@
+import { Store } from 'n3'
+import { resolveRdfInput } from '../../core/resolveRdfInput'
 import ShaclRenderer, { ShaclRendererProps, schema } from '../ShaclRenderer'
 
 export default {
@@ -82,5 +84,19 @@ export const MixedObjects = {
     mode: 'edit',
     shapes: new URL('/shapes/mixed-objects.ttl', location.origin),
     data: new URL('/shapes/mixed-objects-data.ttl', location.origin)
+  } as ShaclRendererProps
+}
+
+const john = await resolveRdfInput(new URL('/john.ttl#john', location.origin))
+
+export const EditWithExternalStore = {
+  args: {
+    mode: 'edit',
+    data: new URL('/shapes/external-store.ttl#data', location.origin),
+    shapes: new URL('/shapes/external-store.ttl#shape', location.origin),
+    targetClass: schema('Person'),
+    stores: {
+      lorem: new Store([...john.dataset])
+    }
   } as ShaclRendererProps
 }
