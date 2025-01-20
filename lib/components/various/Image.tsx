@@ -1,4 +1,6 @@
+import factory from '@rdfjs/data-model'
 import { useState } from 'react'
+import { useResolveMediaUrl } from '../../hooks/useResolveMediaUrl'
 
 export type ImageProps = {
   url: string | URL
@@ -8,9 +10,10 @@ export type ImageProps = {
   size?: number
 }
 
-export default function Image({ url, width, height, className, size }: ImageProps) {
+export default function Image({ url: givenUrl, width, height, className, size }: ImageProps) {
+  const url = useResolveMediaUrl(factory.namedNode(givenUrl.toString())) ?? givenUrl
   const searchParams = new URLSearchParams()
-  const [hasFirstError, setHasFirstError] = useState(!url.toString().startsWith('http'))
+  const [hasFirstError, setHasFirstError] = useState(false)
   const [hasSecondError, setHasSecondError] = useState(false)
   searchParams.set('url', url.toString())
   searchParams.set('fit', 'cover')

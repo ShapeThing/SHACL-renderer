@@ -78,10 +78,15 @@ export const fetchDataAccordingToProperty = async ({
 
   const { QueryEngine } = await import('@comunica/query-sparql')
   const queryEngine = new QueryEngine()
+
+  console.log(query)
+
   const quadsStream = await queryEngine.queryQuads(query, {
     /** @ts-expect-error the types of Comunica do not match */
     sources,
     lenient: true,
+    unionDefaultGraph: true,
+
     // TODO no fetch, the cachedFetch does not work with comunica.
     httpProxyHandler: termNeedsProxy ? new ProxyHandlerStatic(`https://corsproxy.io/?`) : undefined
   })
