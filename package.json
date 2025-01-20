@@ -28,7 +28,7 @@
     "build": "tsc --p ./tsconfig.build.json && vite build && sass lib/scss/style.scss > dist/style.css",
     "lint": "eslint lib/**/*.ts --report-unused-disable-directives --max-warnings 0 --fix",
     "preview": "vite preview",
-    "postinstall": "patch-package",
+    "postinstall": "patch-package && rm -rf ./node_modules/@types/rdfjs__data-model/node_modules",
     "inspect": "npx vite-bundle-visualizer -o stats.html",
     "build-storybook": "storybook build",
     "test": "vitest"
