@@ -1,11 +1,10 @@
-import { useResolveMediaUrl } from '../../../hooks/useResolveMediaUrl'
+import Image from '../../../components/various/Image'
 import { WidgetProps } from '../../widgets-context'
 
 export default function ImageViewer({ term }: WidgetProps) {
-  const url = useResolveMediaUrl(term)
-  return url ? (
-    <a href={url} target="_blank">
-      <img src={url} className="viewer image" />
+  return (
+    <a href={term.value} target="_blank">
+      <Image url={term.value} className="viewer image" />
     </a>
-  ) : null
+  )
 }

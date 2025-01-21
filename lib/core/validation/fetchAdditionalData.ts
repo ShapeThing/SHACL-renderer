@@ -9,14 +9,14 @@ export const fetchAdditionalData = async (
   dataset: DatasetCore,
   dataPointer: Grapoi,
   fetch: (typeof globalThis)['fetch'],
-  stores?: Record<string, Store>
+  store?: Store
 ) => {
-  const properties = shapePointer.out(sh('property'))
+  const properties = shapePointer.out(sh('property')).hasOut(sh('node'))
 
   for (const property of properties) {
     const endpoint = property.out(stsr('endpoint')).value
 
-    if (endpoint) {
+    if (endpoint || store) {
       const fetchDataAccordingToProperty = (await import('../fetchDataAccordingToProperty'))
         .fetchDataAccordingToProperty
       const path = parsePath(property.out(sh('path')))
@@ -29,7 +29,7 @@ export const fetchAdditionalData = async (
           term: term as NamedNode,
           endpoint,
           fetch,
-          stores
+          store
         })
         for (const quad of additionalQuads) dataset.add(quad)
       })

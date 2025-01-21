@@ -12,6 +12,12 @@ export type ImageProps = {
 
 export default function Image({ url: givenUrl, width, height, className, size }: ImageProps) {
   const url = useResolveMediaUrl(factory.namedNode(givenUrl.toString())) ?? givenUrl
+  const isHttp = url.toString().startsWith('http')
+
+  if (!isHttp) {
+    return <img src={url.toString()} className={className} />
+  }
+
   const searchParams = new URLSearchParams()
   const [hasFirstError, setHasFirstError] = useState(false)
   const [hasSecondError, setHasSecondError] = useState(false)

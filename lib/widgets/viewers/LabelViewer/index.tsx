@@ -1,29 +1,30 @@
 import { language } from '@rdfjs/score'
+import { Grapoi } from 'grapoi'
 import { useContext } from 'react'
 import { languageContext } from '../../../core/language-context'
-import { rdfs, schema, sh, skos } from '../../../core/namespaces'
+import { mainContext } from '../../../core/main-context'
+import { rdfs, schema, sh, skos, stsr } from '../../../core/namespaces'
 import { WidgetProps } from '../../widgets-context'
 
 export default function LabelViewer({ term, property, nodeDataPointer }: WidgetProps) {
   const { activeInterfaceLanguage } = useContext(languageContext)
+  const { externalStorePointer } = useContext(mainContext)
 
-  const label =
-    nodeDataPointer
+  const getLabel = (pointer: Grapoi) =>
+    pointer
       ?.node(term)
-      .out([skos('prefLabel'), rdfs('label'), schema('name')])
-      .best(language([activeInterfaceLanguage, '', '*']))?.value ??
-    property
-      ?.node(term)
-      .out([skos('prefLabel'), rdfs('label'), schema('name')])
+      .out([skos('prefLabel'), rdfs('label'), schema('name'), stsr('label')])
       .best(language([activeInterfaceLanguage, '', '*']))?.value
 
+  const localName = term.value.split(/\/|\#/g).pop()!
+  const label = getLabel(nodeDataPointer) ?? getLabel(property) ?? getLabel(externalStorePointer) ?? localName
   const isEnum = !!property?.out(sh('in')).value
 
   return isEnum ? (
-    label
+    label ?? localName
   ) : (
     <a href={term.value} title={term.value} target="_blank" className="uri">
-      <span className="uri-label">{label}</span>
+      <span className="uri-label">{label ?? localName}</span>
     </a>
   )
 }

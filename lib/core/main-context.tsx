@@ -25,7 +25,7 @@ export type MainContextInput = {
   interfaceLanguages?: Record<string, Record<string, string>>
   cacheId?: string
   fallback?: ReactNode
-  stores?: Record<string, Store>
+  store?: Store
   context?: Record<string, string>
   onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>, dataPointer: Grapoi, context: MainContext) => void
   children?: (submit: () => void) => ReactNode
@@ -49,7 +49,8 @@ export type MainContext = {
   dataPointer: Grapoi
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
-  stores: Record<string, Store>
+  store?: Store
+  externalStorePointer: Grapoi
   fallback?: ReactNode
   languageMode: 'tabs' | 'individual'
   contentLanguages: Record<string, Record<string, string>>
@@ -75,12 +76,12 @@ export const mainContext = createContext<MainContext>({
   activeShapePointers: undefined as unknown as Grapoi,
   dataPointer: undefined as unknown as Grapoi,
   shapesPointer: undefined as unknown as Grapoi,
+  externalStorePointer: undefined as unknown as Grapoi,
   facetSearchDataPointer: undefined as unknown as Grapoi,
   mode: 'edit',
   jsonLdContext: new JsonLdContextNormalized({}),
   languageMode: 'tabs',
   contentLanguages: {},
-  stores: {},
   interfaceLanguages: { en: { en: 'English' } },
   renameSubject: () => null,
   updates: 0,
@@ -234,7 +235,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     subject,
     targetClass: givenTargetClass,
     mode,
-    stores,
+    store,
     fallback,
     languageMode,
     prefixes: givenPrefixes,
@@ -298,7 +299,8 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     languageMode: languageMode ?? 'tabs',
     activeShapePointers: shapePointers,
     fallback,
-    stores: stores ?? {},
+    store: store,
+    externalStorePointer: grapoi({ dataset: store ?? datasetFactory.dataset() }),
     shapesPointer,
     facetSearchDataPointer,
     shapeSubject: factory.namedNode(shapeSubject.toString()),

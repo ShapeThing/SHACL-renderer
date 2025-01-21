@@ -16,7 +16,7 @@ import { useDebounced } from '../../../hooks/useDebounced'
 import { WidgetProps } from '../../widgets-context'
 
 export default function AutoCompleteEditor({ term, setTerm, property }: WidgetProps) {
-  const { data, stores } = useContext(mainContext)
+  const { data, store } = useContext(mainContext)
   const endpoint: string | undefined = property.out(stsr('endpoint')).value
 
   const labels = getPurposePredicates(property.out(sh('node')), 'label')
@@ -43,7 +43,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
       dataset: data,
       term: isValidIri(search) ? factory.namedNode(search) : undefined,
       searchTerm: isValidIri(search) ? '' : search,
-      stores
+      store
     }).then(quads => {
       setIsLoading(false)
       const dataset = datasetFactory.dataset(quads as Quad[])
@@ -62,7 +62,7 @@ export default function AutoCompleteEditor({ term, setTerm, property }: WidgetPr
       term: term as NamedNode,
       endpoint,
       dataset: data,
-      stores
+      store
     }).then(async quads => {
       const dataset = datasetFactory.dataset(quads as Quad[])
       setSelectedInstance(grapoi({ dataset, factory, term }))

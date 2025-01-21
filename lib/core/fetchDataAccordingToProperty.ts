@@ -20,7 +20,7 @@ type Input = {
   searchTerm?: string
   limit?: number
   fetch?: (typeof globalThis)['fetch']
-  stores?: Record<string, Store>
+  store?: Store
 }
 
 export const fetchDataAccordingToProperty = async ({
@@ -31,7 +31,7 @@ export const fetchDataAccordingToProperty = async ({
   searchTerm,
   limit = 10,
   fetch,
-  stores
+  store: externalStore
 }: Input) => {
   const shapeQuads = outAll(nodeShape.out().distinct().out())
   const shapeDataset = datasetFactory.dataset(shapeQuads)
@@ -52,9 +52,8 @@ export const fetchDataAccordingToProperty = async ({
 
   let useComunica = false
 
-  if (endpoint && endpoint.startsWith('urn:store:') && stores) {
-    const storeId = endpoint.slice(10)
-    sources = [stores[storeId] as any]
+  if (externalStore) {
+    sources.push(externalStore)
     useComunica = true
   }
 
@@ -78,8 +77,6 @@ export const fetchDataAccordingToProperty = async ({
 
   const { QueryEngine } = await import('@comunica/query-sparql')
   const queryEngine = new QueryEngine()
-
-  console.log(query)
 
   const quadsStream = await queryEngine.queryQuads(query, {
     /** @ts-expect-error the types of Comunica do not match */

@@ -37,6 +37,7 @@ export type WidgetProps = {
   setConstraint: (predicate: NamedNode, value: string | number) => void
   property: Grapoi
   facetSearchData: Grapoi
+  externalStorePointer: Grapoi
   term: Term
   nodeDataPointer: Grapoi
   index: number

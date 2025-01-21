@@ -95,8 +95,6 @@ export const EditWithExternalStore = {
     data: new URL('/shapes/external-store.ttl#data', location.origin),
     shapes: new URL('/shapes/external-store.ttl#shape', location.origin),
     targetClass: schema('Person'),
-    stores: {
-      lorem: new Store([...john.dataset])
-    }
+    store: new Store([...john.dataset])
   } as ShaclRendererProps
 }
