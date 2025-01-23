@@ -1,6 +1,5 @@
 import fs from 'fs'
 import { expect, test } from 'vitest'
-import { schema } from '../../core/namespaces'
 import { toType } from './type'
 
 test('type output', async () => {
@@ -8,7 +7,7 @@ test('type output', async () => {
 
   const typeOutput = await toType({
     shapes: shape,
-    targetClass: schema('Person'),
+    // targetClass: schema('Person'),
     context: { '@vocab': 'https://schema.org/' }
   })
 
@@ -31,4 +30,16 @@ test('type output', async () => {
     addressCountry: string
   }
 }`)
+})
+
+test('type empty output', async () => {
+  const shape = fs.readFileSync('./public/john.ttl', 'utf8')
+
+  const typeOutput = await toType({
+    shapes: shape,
+    // targetClass: schema('Person'),
+    context: { '@vocab': 'https://schema.org/' }
+  })
+
+  expect(typeOutput).toStrictEqual(``)
 })

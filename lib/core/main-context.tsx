@@ -41,7 +41,7 @@ export type MainContext = {
   data: DatasetCore
   facetSearchData: DatasetCore
   subject: NamedNode | BlankNode
-  shapeSubject: NamedNode
+  shapeSubject?: NamedNode
   targetClass?: NamedNode
   shapePointer: Grapoi
   shapesPointer: Grapoi
@@ -204,12 +204,14 @@ const getShapes = async (
   if (!shapeSubject) shapeSubject = shapePointers.terms?.[0]?.value
 
   // Gather inheritance data
-  const parents = getShapeIrisByChildShapeIri(factory.namedNode(shapeSubject.toString()), shapesPointer)
+  const parents = shapeSubject?.toString()
+    ? getShapeIrisByChildShapeIri(factory.namedNode(shapeSubject.toString()), shapesPointer)
+    : []
   const shapePointer = shapePointers.filter(pointer =>
     [factory.namedNode(shapeSubject.toString()), ...parents].some(term => term.equals(pointer.term))
   )
 
-  const targetClass: NamedNode | undefined = givenTargetClass
+  const targetClass: NamedNode | undefined = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
 
   if (!shapePointer) throw new Error('No shape pointer')
 
@@ -303,7 +305,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     externalStorePointer: grapoi({ dataset: store ?? datasetFactory.dataset() }),
     shapesPointer,
     facetSearchDataPointer,
-    shapeSubject: factory.namedNode(shapeSubject.toString()),
+    shapeSubject: shapeSubject ? factory.namedNode(shapeSubject.toString()) : undefined,
     contentLanguages: contentLanguages ?? {},
     interfaceLanguages: interfaceLanguages ?? { en: { en: 'English' } },
     jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}), ...(givenPrefixes ?? {}) }),

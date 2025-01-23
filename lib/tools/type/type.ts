@@ -76,7 +76,9 @@ const propertyShape = (
   const dataType = cast(propertyPointer.out(sh('datatype')).term ?? xsd('string'))
   const isRequired =
     propertyPointer.out(sh('minCount')).value && parseInt(propertyPointer.out(sh('minCount')).value) > 0
-  const property = compactedPredicate.includes('.') ? `'${compactedPredicate}'` : compactedPredicate
+  const property = ['.', ':'].some(char => compactedPredicate.includes(char))
+    ? `'${compactedPredicate}'`
+    : compactedPredicate
 
   return `${' '.repeat(spacing * 2)}${property}${isRequired ? '' : '?'}: ${
     isMultiple ? `Array<${subType ?? dataType}>` : subType ?? dataType
@@ -84,13 +86,15 @@ const propertyShape = (
 }
 
 export async function toType(input: Omit<ShaclRendererProps, 'mode'>) {
-  const { jsonLdContext, shapePointer, targetClass } = await initContext({ ...input, mode: 'edit' })
+  const { jsonLdContext, shapePointer, targetClass, shapeSubject } = await initContext({ ...input, mode: 'edit' })
   const widgets = coreWidgets
   const mergedContext = new JsonLdContextNormalized({
     ...prefixes,
     ...jsonLdContext.getContextRaw(),
     ...(input.context ?? {})
   })
+
+  if (!targetClass && !shapeSubject) return ''
 
   return `export type ${targetClass?.value.split(/\/|\#/g).pop()} = {\n${nodeShape(
     shapePointer,
