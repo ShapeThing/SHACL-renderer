@@ -127,8 +127,9 @@ const propertyShape = (
 
   let multiple = propertyPointer.out(sh('maxCount')).value !== '1'
   const datatypeTerm = propertyPointer.out(sh('datatype')).term ?? xsd('string')
+  const uniqueLanguage = !!propertyPointer.out(sh('uniqueLang')).value
 
-  if (activeContentLanguage && datatypeTerm.equals(rdf('langString'))) multiple = false
+  if (activeContentLanguage && datatypeTerm.equals(rdf('langString')) && uniqueLanguage) multiple = false
 
   return {
     [compactedPredicate]: multiple ? values : values[0]

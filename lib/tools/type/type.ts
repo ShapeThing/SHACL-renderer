@@ -82,9 +82,10 @@ const propertyShape = (
   }
 
   const datatypeTerm = propertyPointer.out(sh('datatype')).term ?? xsd('string')
+  const uniqueLanguage = !!propertyPointer.out(sh('uniqueLang')).value
   let isMultiple = propertyPointer.out(sh('maxCount')).value !== '1'
 
-  if (languageStringsToSingular && datatypeTerm.equals(rdf('langString'))) {
+  if (languageStringsToSingular && uniqueLanguage && datatypeTerm.equals(rdf('langString'))) {
     isMultiple = false
   }
 
