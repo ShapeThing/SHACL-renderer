@@ -15,6 +15,7 @@
     sh:name "Name"@en ;
     sh:path schema:name ;
     sh:minCount 1;
+    sh:uniqueLang true ;
     sh:datatype rdf:langString ;
   ];
   
