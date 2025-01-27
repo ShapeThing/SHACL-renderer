@@ -97,7 +97,8 @@ const propertyShape = (
 
   const predicate = path?.[0]?.predicates[0]!
   const compactedPredicate = context.compactIri(predicate.value, true)
-  const materializedItems = isList ? [...items.list()] : items
+  /** @ts-ignore */
+  const materializedItems = isList ? [...(items.list() ?? [])] : items
 
   const values = materializedItems.map((item: Grapoi) => {
     const widget = scoreWidgets(widgets['editors'], item, propertyPointer, dash('editor'))

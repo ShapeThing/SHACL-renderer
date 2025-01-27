@@ -32,11 +32,11 @@ test('data output with shape', async () => {
     icon: ['line-md:buy-me-a-coffee-twotone'],
     isHuman: true,
     knows: ['http://dbpedia.org/resource/Søren_Kierkegaard'],
-    selfReference: ['']
+    selfReference: ['#john']
   })
 })
 
-test.only('data output with multilingual shape', async () => {
+test('data output with multilingual shape', async () => {
   const data = fs.readFileSync('./public/shapes/multilingual-data.ttl', 'utf8')
   const shape = fs.readFileSync('./public/shapes/multilingual.ttl', 'utf8')
 
@@ -69,7 +69,8 @@ test('data output without shape', async () => {
     birthDate: [new Date('1947-01-14T00:00:00.000Z')],
     householdMembers: [6],
     icon: ['line-md:buy-me-a-coffee-twotone'],
-    selfReference: [''],
+    image: ['http://localhost:6006/woman.jpg'],
+    selfReference: ['#john'],
     favoriteColor: ['#ff33ff'],
     isHuman: [true],
     knows: ['http://dbpedia.org/resource/Søren_Kierkegaard'],
@@ -88,7 +89,7 @@ test('data output without shape', async () => {
 
 test('editor.js data output with shape', async () => {
   const output = await rdfToData({
-    data: new URL(`./public/shapes/widgets/editors/editor-js.ttl#editorjsItem`, baseUrl),
+    data: new URL(`./public/shapes/widgets/editors/editor-js.data.ttl#item`, baseUrl),
     shapes: new URL('./public/shapes/editorjs-output.ttl', baseUrl),
     context: { '@vocab': ed().value }
   })
@@ -102,13 +103,6 @@ test('editor.js data output with shape', async () => {
         },
         id: '9d61vUfGCT',
         type: 'paragraph'
-      },
-      {
-        data: {
-          text: 'Ipsum'
-        },
-        id: 'pK4nbVeBqp',
-        type: 'paragraph'
       }
     ],
     time: 1234,
@@ -116,7 +110,7 @@ test('editor.js data output with shape', async () => {
   })
 })
 
-test.only('rdf output with shape', async () => {
+test('rdf output with shape', async () => {
   const shape = fs.readFileSync('./public/shapes/editorjs-output.ttl', 'utf8')
 
   const data = {
