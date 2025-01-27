@@ -36,6 +36,22 @@ test('data output with shape', async () => {
   })
 })
 
+test.only('data output with multilingual shape', async () => {
+  const data = fs.readFileSync('./public/shapes/multilingual-data.ttl', 'utf8')
+  const shape = fs.readFileSync('./public/shapes/multilingual.ttl', 'utf8')
+
+  const output = await rdfToData({
+    data: data,
+    shapes: shape,
+    activeContentLanguage: 'en',
+    context: { '@vocab': 'https://schema.org/' }
+  })
+
+  expect(output).toStrictEqual({
+    name: 'English'
+  })
+})
+
 test('data output without shape', async () => {
   const john = fs.readFileSync('./public/john.ttl', 'utf8')
 

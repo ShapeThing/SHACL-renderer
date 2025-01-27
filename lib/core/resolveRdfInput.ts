@@ -15,8 +15,7 @@ export const resolveRdfInput = async (
   prefixes: Record<string, string>
   containsRelativeReferences?: boolean
 }> => {
-  const dummyDataset = datasetFactory.dataset()
-  if (input?.constructor && input?.constructor === dummyDataset.constructor)
+  if ((input as DatasetCore).add && (input as DatasetCore).delete)
     return {
       dataset: input as DatasetCore,
       prefixes: {}

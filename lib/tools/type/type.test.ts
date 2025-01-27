@@ -7,11 +7,10 @@ test('type output', async () => {
 
   const typeOutput = await toType({
     shapes: shape,
-    // targetClass: schema('Person'),
     context: { '@vocab': 'https://schema.org/' }
   })
 
-  expect(typeOutput).toStrictEqual(`export type Person = {
+  expect(typeOutput?.type).toStrictEqual(`export type Person = {
   givenName: Array<string>
   gender?: string
   familyName: string
@@ -41,5 +40,19 @@ test('type empty output', async () => {
     context: { '@vocab': 'https://schema.org/' }
   })
 
-  expect(typeOutput).toStrictEqual(``)
+  expect(typeOutput).toStrictEqual(undefined)
+})
+
+test('type output for a shape that contains multilingual strings', async () => {
+  const shape = fs.readFileSync('./public/shapes/multilingual.ttl', 'utf8')
+
+  const typeOutput = await toType({
+    shapes: shape,
+    languageStringsToSingular: true,
+    context: { '@vocab': 'https://schema.org/' }
+  })
+
+  expect(typeOutput?.type).toStrictEqual(`export type Person = {
+  name: string
+}`)
 })

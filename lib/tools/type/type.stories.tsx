@@ -5,7 +5,7 @@ import { toType } from './type'
 function RenderData(props: ShaclRendererProps) {
   const [type, setType] = useState<string>()
   useEffect(() => {
-    toType(props).then(setType)
+    toType(props).then(convertedType => setType(convertedType?.type))
   }, [])
   return (
     <code>

@@ -14,7 +14,8 @@ export default defineConfig({
         'shacl-renderer': './lib/index.tsx',
         type: './lib/tools/type/type.ts',
         faker: './lib/tools/faker/faker.ts',
-        data: './lib/tools/data/data.ts'
+        data: './lib/tools/data/data.ts',
+        resolveRdfInput: './lib/core/resolveRdfInput.ts'
       },
       name: 'ShaclRenderer',
       formats: ['es']

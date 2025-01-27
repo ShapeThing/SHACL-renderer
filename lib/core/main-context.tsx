@@ -24,6 +24,7 @@ export type MainContextInput = {
   contentLanguages?: Record<string, Record<string, string>>
   interfaceLanguages?: Record<string, Record<string, string>>
   cacheId?: string
+  activeContentLanguage?: string
   fallback?: ReactNode
   store?: Store
   context?: Record<string, string>
@@ -229,7 +230,6 @@ const getShapes = async (
  * Creates a new main context. This is a promise, so it should be awaited.
  */
 export const initContext = async (originalInput: MainContextInput): Promise<MainContext> => {
-  const start = performance.now()
   let {
     shapes,
     data,
@@ -243,6 +243,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     prefixes: givenPrefixes,
     interfaceLanguages,
     shapeSubject: givenShapeSubject,
+    activeContentLanguage,
     contentLanguages,
     fetch = globalThis['fetch'],
     ...settings
@@ -287,8 +288,6 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     dataPointer = dataPointer.node(finalSubject)
   }
 
-  console.log(`Resolving context took ${performance.now() - start}`)
-
   return {
     shapes: resolvedShapes,
     data: dataset,
@@ -302,6 +301,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     activeShapePointers: shapePointers,
     fallback,
     store: store,
+    activeContentLanguage,
     externalStorePointer: grapoi({ dataset: store ?? datasetFactory.dataset() }),
     shapesPointer,
     facetSearchDataPointer,

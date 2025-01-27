@@ -10,6 +10,7 @@ import { scoreWidgets } from '../../core/scoreWidgets'
 import { isOrderedList } from '../../helpers/isOrderedList'
 import parsePath from '../../helpers/parsePath'
 import { coreWidgets } from '../../widgets/coreWidgets'
+import { TransformerOptions } from '../types'
 
 const cast = (value: Term) => {
   const datatype = (value as Literal).datatype
@@ -27,7 +28,8 @@ const nodeShape = (
   shapePointer: Grapoi,
   dataPointer: Grapoi,
   context: JsonLdContextNormalized,
-  widgets: typeof coreWidgets
+  widgets: typeof coreWidgets,
+  activeContentLanguage?: string
 ) => {
   const isClosed = shapePointer.out(sh('closed')).value === 'true'
   const properties = shapePointer.out(sh('property'))
@@ -35,7 +37,7 @@ const nodeShape = (
 
   const normalProperties: [number, any][] = [...properties].map((property: Grapoi) => [
     parseFloat(property.out(sh('order')).value ?? '0'),
-    propertyShape(property, dataPointer, context, widgets)
+    propertyShape(property, dataPointer, context, widgets, activeContentLanguage)
   ])
 
   const predicatesWithoutNodeShapes = new Map(
@@ -57,7 +59,7 @@ const nodeShape = (
         for (const quad of quads) dataset.add(quad)
 
         const property = grapoi({ dataset, factory, term: propertyIri })
-        return [0, propertyShape(property, dataPointer, context, widgets)]
+        return [0, propertyShape(property, dataPointer, context, widgets, activeContentLanguage)]
       })
     : []
 
@@ -73,7 +75,8 @@ const propertyShape = (
   propertyPointer: Grapoi,
   dataPointer: Grapoi,
   context: JsonLdContextNormalized,
-  widgets: typeof coreWidgets
+  widgets: typeof coreWidgets,
+  activeContentLanguage?: string
 ): object => {
   let path = parsePath(propertyPointer.out(sh('path'))) as any
 
@@ -83,7 +86,14 @@ const propertyShape = (
   // For now we can only deal with simple paths.
   if (path?.[0]?.predicates.length !== 1) return {}
 
-  const items = dataPointer.executeAll(path)
+  let items = dataPointer.executeAll(path)
+
+  if (activeContentLanguage) {
+    items = items.filter(item => {
+      if (!(item.term as Literal)?.language) return true
+      return (item.term as Literal)?.language === activeContentLanguage
+    })
+  }
 
   const predicate = path?.[0]?.predicates[0]!
   const compactedPredicate = context.compactIri(predicate.value, true)
@@ -106,7 +116,7 @@ const propertyShape = (
         nodeShapePointer = propertyPointer.node(node)
       }
 
-      const subItem = nodeShape(nodeShapePointer, item, context, widgets)
+      const subItem = nodeShape(nodeShapePointer, item, context, widgets, activeContentLanguage)
       return subItem
     } else {
       return cast(item.term)
@@ -115,14 +125,17 @@ const propertyShape = (
 
   if (!values.length) return {}
 
-  const multiple = propertyPointer.out(sh('maxCount')).value !== '1'
+  let multiple = propertyPointer.out(sh('maxCount')).value !== '1'
+  const datatypeTerm = propertyPointer.out(sh('datatype')).term ?? xsd('string')
+
+  if (activeContentLanguage && datatypeTerm.equals(rdf('langString'))) multiple = false
 
   return {
     [compactedPredicate]: multiple ? values : values[0]
   }
 }
 
-export async function rdfToData(input: Omit<ShaclRendererProps, 'mode'>) {
+export async function rdfToData(input: Omit<ShaclRendererProps, 'mode'> & TransformerOptions) {
   const { jsonLdContext, shapePointer, dataPointer } = await initContext({ ...input, mode: 'edit' })
   const widgets = coreWidgets
   const mergedContext = new JsonLdContextNormalized({
@@ -131,5 +144,5 @@ export async function rdfToData(input: Omit<ShaclRendererProps, 'mode'>) {
     ...(input.context ?? {})
   })
 
-  return nodeShape(shapePointer, dataPointer, mergedContext, widgets)
+  return nodeShape(shapePointer, dataPointer, mergedContext, widgets, input.activeContentLanguage)
 }

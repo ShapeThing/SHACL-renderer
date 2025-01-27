@@ -27,8 +27,8 @@ const languages = {
 export const MultilingualWithTabs = {
   args: {
     mode: 'edit',
-    data: new URL('/shapes/multilingual.ttl#data', location.origin),
-    shapes: new URL('/shapes/multilingual.ttl#default', location.origin),
+    data: new URL('/shapes/multilingual-data.ttl', location.origin),
+    shapes: new URL('/shapes/multilingual.ttl', location.origin),
     languageMode: 'tabs',
     contentLanguages: languages
   } as ShaclRendererProps
@@ -37,8 +37,8 @@ export const MultilingualWithTabs = {
 export const MultilingualIndividual = {
   args: {
     mode: 'edit',
-    data: new URL('/shapes/multilingual.ttl#data', location.origin),
-    shapes: new URL('/shapes/multilingual.ttl#default', location.origin),
+    data: new URL('/shapes/multilingual-data.ttl', location.origin),
+    shapes: new URL('/shapes/multilingual.ttl', location.origin),
     languageMode: 'individual',
     contentLanguages: languages
   } as ShaclRendererProps

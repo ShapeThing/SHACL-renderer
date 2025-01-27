@@ -8,14 +8,4 @@
 @prefix stf: <http://ontology.shapething.com/facet#> .
 
 <>
-  a sh:NodeShape ;
-  sh:targetClass schema:Person ;
-
-  sh:property [
-    sh:name "Name"@en ;
-    sh:path schema:name ;
-    sh:minCount 1;
-    sh:datatype rdf:langString ;
-  ];
-  
-  .
+ schema:name "French"@fr, "English"@en, "Dutch"@nl .
