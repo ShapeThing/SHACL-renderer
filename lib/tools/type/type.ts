@@ -32,11 +32,17 @@ const nodeShape = (
     propertyShape(property, context, widgets, languageStringsToSingular, spacing)
   ])
 
-  return properties
-    .sort((a, b) => a[0] - b[0])
-    .map(item => item[1])
-    .filter(Boolean)
-    .join('\n')
+  const iri = `${'  '.repeat(spacing)}iri: string\n`
+  const mustBeIri = shapePointer.out(sh('nodeKind')).term?.equals(sh('IRI'))
+
+  return (
+    (mustBeIri ? iri : '') +
+    properties
+      .sort((a, b) => a[0] - b[0])
+      .map(item => item[1])
+      .filter(Boolean)
+      .join('\n')
+  )
 }
 
 const propertyShape = (

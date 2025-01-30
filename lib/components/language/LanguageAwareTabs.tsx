@@ -32,7 +32,8 @@ export default function LanguageAwareTabs({ children }: Props) {
       }
   }
 
-  return ((languageMode === 'individual' || mode === 'facet') && Object.keys(interfaceLanguages).length <= 1) ||
+  return ((languageMode === 'individual' || mode === 'facet' || mode === 'view') &&
+    Object.keys(interfaceLanguages).length <= 1) ||
     !Object.keys(localAllowedLanguages).length ? (
     children
   ) : (

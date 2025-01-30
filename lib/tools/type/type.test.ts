@@ -11,6 +11,7 @@ test('type output', async () => {
   })
 
   expect(typeOutput?.type).toStrictEqual(`export type Person = {
+  iri: string
   givenName: Array<string>
   gender?: string
   familyName: string
@@ -36,7 +37,6 @@ test('type empty output', async () => {
 
   const typeOutput = await toType({
     shapes: shape,
-    // targetClass: schema('Person'),
     context: { '@vocab': 'https://schema.org/' }
   })
 

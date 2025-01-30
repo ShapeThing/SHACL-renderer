@@ -64,3 +64,11 @@ export const PersonWithShape = {
     shapes: new URL('/shapes/person.ttl', location.origin)
   } as ShaclRendererProps
 }
+
+export const oneEnglishTerm = {
+  args: {
+    mode: 'view',
+    data: new URL('/shapes/one-english.ttl', location.origin),
+    shapes: new URL('/shapes/multilingual.ttl', location.origin)
+  } as ShaclRendererProps
+}

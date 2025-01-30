@@ -68,7 +68,13 @@ const nodeShape = (
     .sort((a, b) => b[0] - a[0])
     .map(item => item[1])
 
-  return Object.assign({}, ...allProperties)
+  const outputObject = Object.assign({}, ...allProperties)
+
+  if (dataPointer.term.termType === 'NamedNode' && dataPointer.term.value) {
+    outputObject.iri = dataPointer.term.value
+  }
+
+  return outputObject
 }
 
 const propertyShape = (

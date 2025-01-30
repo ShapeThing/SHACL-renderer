@@ -30,6 +30,7 @@ test('data output with shape', async () => {
     favoriteColor: '#ff33ff',
     givenName: ['Hendrik', 'Jan'],
     icon: ['line-md:buy-me-a-coffee-twotone'],
+    iri: '#john',
     isHuman: true,
     knows: ['http://dbpedia.org/resource/Søren_Kierkegaard'],
     selfReference: ['#john']
@@ -70,6 +71,7 @@ test('data output without shape', async () => {
     householdMembers: [6],
     icon: ['line-md:buy-me-a-coffee-twotone'],
     image: ['http://localhost:6006/woman.jpg'],
+    iri: '#john',
     selfReference: ['#john'],
     favoriteColor: ['#ff33ff'],
     isHuman: [true],
@@ -93,7 +95,7 @@ test('editor.js data output with shape', async () => {
     shapes: new URL('./public/shapes/editorjs-output.ttl', baseUrl),
     context: { '@vocab': ed().value }
   })
-
+  delete output.iri
   expect(output).toStrictEqual({
     'rdf:type': ed('OutputData').value,
     blocks: [
