@@ -57,7 +57,7 @@ test('type output for a shape that contains multilingual strings', async () => {
 }`)
 })
 
-test.only('type output with a comment', async () => {
+test('type output with a comment', async () => {
   const shape = fs.readFileSync('./public/shapes/comment.ttl', 'utf8')
   const typeOutput = await toType({
     shapes: shape,
