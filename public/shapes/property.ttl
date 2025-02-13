@@ -1,0 +1,54 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
+@prefix faker: <https://fakerjs.dev/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+<>
+  a sh:NodeShape, stsr:Shape ;
+  sh:targetClass rdf:Property ;
+  sh:closed true ;
+  sh:name "Ontology property"@en ;
+  dash:stem <../properties> ;
+  stsr:icon "solar:tag-line-duotone"^^<https://iconify.design> ;
+  stsr:filenameSuggestion ( rdfs:label ) ;
+  sh:ignoredProperties ( stsr:label ) ;
+  sh:nodeKind sh:IRI ;
+
+  sh:property [
+    sh:path rdf:type ;
+    sh:hasValue rdf:Property ;
+    sh:minCount 1;
+    sh:maxCount 1;
+  ];
+
+  sh:property [
+    sh:path sh:shapesGraph ;
+    sh:hasValue <> ;
+    sh:minCount 1;
+    sh:maxCount 1;
+  ];
+
+  sh:property [
+    sh:name "Label"@en ;
+    sh:path rdfs:label ;
+		sh:uniqueLang true ;
+    sh:minCount 1;
+    sh:order 1 ;
+    sh:datatype rdf:langString ;
+  ];
+
+  sh:property [
+    sh:name "Description"@en ;
+    sh:path rdfs:comment ;
+		sh:uniqueLang true ;
+    sh:minCount 1;
+    sh:order 2 ;
+    sh:datatype rdf:langString ;
+  ];
+
+.

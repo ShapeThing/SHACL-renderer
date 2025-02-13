@@ -56,3 +56,17 @@ test('type output for a shape that contains multilingual strings', async () => {
   name: string
 }`)
 })
+
+test.only('type output with a comment', async () => {
+  const shape = fs.readFileSync('./public/shapes/comment.ttl', 'utf8')
+  const typeOutput = await toType({
+    shapes: shape,
+    languageStringsToSingular: true,
+    context: { '@vocab': 'https://schema.org/' }
+  })
+
+  expect(typeOutput?.type).toStrictEqual(`export type Person = {
+  /** The given name, often the first name */
+  givenName: Array<string>
+}`)
+})

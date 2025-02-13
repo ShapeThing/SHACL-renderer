@@ -39,3 +39,10 @@ export const EditPerson = {
     shapes: new URL('/shapes/person.ttl', location.origin)
   } as ShaclRendererProps
 }
+
+export const EditProperty = {
+  args: {
+    mode: 'edit',
+    shapes: new URL('/shapes/property.ttl', location.origin)
+  } as ShaclRendererProps
+}
