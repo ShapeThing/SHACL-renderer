@@ -11,7 +11,6 @@ export type ImageProps = {
 }
 
 export default function Image({ url: givenUrl, width, height, className, size }: ImageProps) {
-  console.log(givenUrl)
   const url = useResolveMediaUrl(factory.namedNode(givenUrl.toString())) ?? givenUrl
   const isHttp = url.toString().startsWith('http')
 

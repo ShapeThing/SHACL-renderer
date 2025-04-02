@@ -163,6 +163,25 @@ const getShapeIrisByChildShapeIri = (childIri: NamedNode, shapes: Grapoi, shapeI
   return shapeIris
 }
 
+const shapesCache = new Map()
+const getShapesCached = async (
+  fetch: (typeof globalThis)['fetch'],
+  shapes?: URL | DatasetCore | string,
+  givenTargetClass?: NamedNode,
+  shapeSubject?: URL | string
+) => {
+  if (shapes?.toString()) {
+    const cid = `${shapes?.toString()}-${givenTargetClass?.value}-${shapeSubject?.toString()}`
+    if (!shapesCache.has(cid)) {
+      shapesCache.set(cid, getShapes(fetch, shapes, givenTargetClass, shapeSubject))
+    }
+
+    return shapesCache.get(cid)
+  }
+
+  return getShapes(fetch, shapes, givenTargetClass, shapeSubject)
+}
+
 /**
  * Fetches the shape part, can return a generic shape if none was given
  */
@@ -259,12 +278,8 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
   const shapesUrl = !shapes && shapesGraph?.value ? new URL(shapesGraph.value, location.toString()) : undefined
   if (!givenShapeSubject && shapesGraph) givenShapeSubject = shapesUrl
 
-  const { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject, shapesPointer } = await getShapes(
-    fetch,
-    shapes ?? shapesUrl,
-    givenTargetClass,
-    givenShapeSubject
-  )
+  const { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject, shapesPointer } =
+    await getShapesCached(fetch, shapes ?? shapesUrl, givenTargetClass, givenShapeSubject)
 
   // This is only for facets, it contains a dataset that we will filter through.
   const facetSearchDataset = facetSearchData

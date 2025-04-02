@@ -80,7 +80,7 @@
   &.active,
   &:hover {
     .iconify {
-      color: var(--primary);
+      color: var(--primary) !important;
     }
 
     &.primary,
