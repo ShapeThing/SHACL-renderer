@@ -9,17 +9,19 @@ import parsePath from '../../helpers/parsePath'
 import { coreWidgets } from '../../widgets/coreWidgets'
 
 const cast = (value: any, datatype?: NamedNode) => {
-  if (value.termType === 'Literal') return value.value
-  if (datatype?.equals(xsd('boolean'))) return value ? 'true' : 'false'
-  if (datatype?.equals(xsd('date')))
-    return `${value.getFullYear()}-${(value.getMonth() + 1).toString().padStart(2, '0')}-${value
-      .getDate()
-      .toString()
-      .padStart(2, '0')}`
-  if (datatype?.equals(xsd('integer'))) return parseInt(value)
-  if (datatype?.equals(xsd('decimal'))) return parseFloat(value)
-  if (datatype?.equals(xsd('string'))) return value
-  if (datatype?.equals(rdf('langString'))) return value
+  try {
+    if (value.termType === 'Literal') return value.value
+    if (datatype?.equals(xsd('boolean'))) return value ? 'true' : 'false'
+    if (datatype?.equals(xsd('date')))
+      return `${value.getFullYear()}-${(value.getMonth() + 1).toString().padStart(2, '0')}-${value
+        .getDate()
+        .toString()
+        .padStart(2, '0')}`
+    if (datatype?.equals(xsd('integer'))) return parseInt(value)
+    if (datatype?.equals(xsd('decimal'))) return parseFloat(value)
+    if (datatype?.equals(xsd('string'))) return value
+    if (datatype?.equals(rdf('langString'))) return value
+  } catch {}
   return value
 }
 
@@ -55,6 +57,7 @@ type FakerGenerator = () => FakerValue
 const getFakerGenerator = (dotSeparatedString: string, pointer: any): FakerGenerator => {
   const parts = dotSeparatedString.split('.')
   for (const part of parts) pointer = pointer[part]
+  if (!pointer) throw new Error(`Could not find faker: ${dotSeparatedString}`)
   return pointer as unknown as FakerGenerator
 }
 
@@ -76,14 +79,16 @@ const nodeShape = (
     const min = parseInt(property.out(sh('minCount')).value ?? '0')
     const max = parseInt(property.out(sh('maxCount')).value ?? '10')
 
-    let generator: () => any
+    let generator: () => any = () => []
 
     if (fakerIri) {
       generator = () => [getFakerGenerator(fakerIri.substring(20), fakerLibrary)()]
     } else if (property.out(sh('in')).term) {
       /** @ts-ignore */
       const list = [...(property.out(sh('in'))?.list() ?? [])].map(pointer => pointer.term)
-      generator = () => [fakerLibrary.helpers.arrayElement(list)]
+      if (list.length) {
+        generator = () => [fakerLibrary.helpers.arrayElement(list)]
+      }
     } else if (property.out(sh('node')).term) {
       generator = () => {
         const node = property.out(sh('node')).term
@@ -97,7 +102,12 @@ const nodeShape = (
     }
 
     for (let index = 0; index < fakerLibrary.number.int({ min, max }); index++) {
-      const generatedValues = generator()
+      let generatedValues: any[] = []
+      try {
+        generatedValues = generator()
+      } catch (exception) {
+        console.log(path, fakerIri, exception)
+      }
 
       for (const generatedValue of generatedValues) {
         let term: Quad_Object | undefined = undefined
@@ -107,7 +117,8 @@ const nodeShape = (
         } else if (generatedValue?.termType === 'NamedNode') {
           term = generatedValue
         } else {
-          term = widget!.meta.createTerm!({ activeContentLanguage }, property) as Quad_Object
+          if (!widget) continue
+          term = widget.meta.createTerm!({ activeContentLanguage }, property) as Quad_Object
           term.value =
             generatedValue?.termType === 'NamedNode'
               ? generatedValue

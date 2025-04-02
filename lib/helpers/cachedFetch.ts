@@ -13,6 +13,7 @@ export const cachedFetch = () => {
   d2LFetch.use({ name: 'dedupe', fn: fetchDedupe })
   return (input: RequestInfo | URL, init?: RequestInit | undefined): ReturnType<(typeof globalThis)['fetch']> => {
     if (input instanceof URL) input = input.toString()
+    if (input.toString().includes('blob:')) return fetch(input, init)
     return d2LFetch.fetch(input, init)
   }
 }
