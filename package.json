@@ -9,26 +9,26 @@
       "default": "./dist/shacl-renderer.js"
     },
     "./data": {
-      "types": "./dist/tools/data/data.d.ts",
       "shapething": "./lib/tools/data/data.ts",
+      "types": "./dist/tools/data/data.d.ts",
       "default": "./dist/data.js"
     },
     "./faker": {
-      "types": "./dist/tools/faker/faker.d.ts",
       "shapething": "./lib/tools/faker/faker.ts",
+      "types": "./dist/tools/faker/faker.d.ts",
       "default": "./dist/faker.js"
     },
     "./type": {
-      "types": "./dist/tools/type/type.d.ts",
       "shapething": "./lib/tools/type/type.ts",
+      "types": "./dist/tools/type/type.d.ts",
       "default": "./dist/type.js"
     },
     "./style.css": {
       "default": "./dist/style.css"
     },
     "./resolveRdfInput": {
-      "types": "./dist/core/resolveRdfInput.d.ts",
       "shapething": "./lib/core/resolveRdfInput.ts",
+      "types": "./dist/core/resolveRdfInput.d.ts",
       "default": "./dist/resolveRdfInput.js"
     }
   },
