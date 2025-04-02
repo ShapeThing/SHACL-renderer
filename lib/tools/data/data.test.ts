@@ -70,7 +70,7 @@ test('data output without shape', async () => {
     birthDate: [new Date('1947-01-14T00:00:00.000Z')],
     householdMembers: [6],
     icon: ['line-md:buy-me-a-coffee-twotone'],
-    image: ['http://localhost:6006/woman.jpg'],
+    image: ['/woman.jpg'],
     iri: '#john',
     selfReference: ['#john'],
     favoriteColor: ['#ff33ff'],
