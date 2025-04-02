@@ -4,8 +4,8 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "shapething": "./lib/index.tsx",
+      "types": "./dist/index.d.ts",
       "default": "./dist/shacl-renderer.js"
     },
     "./data": {

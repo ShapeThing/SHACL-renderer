@@ -1,6 +1,5 @@
 .storybook
 .vscode
-lib
 node_modules
 patches
 public

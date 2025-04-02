@@ -17,6 +17,7 @@ const config: StorybookConfig = {
   },
 
   viteFinal: async config => {
+    /** @ts-ignore */
     config.plugins = config.plugins?.filter(item => item?.name !== 'vite-plugin-top-level-await')
     return config
   },
