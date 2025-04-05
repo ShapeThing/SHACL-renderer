@@ -16,4 +16,6 @@ subject = Onderwerp
 subject-editor-description = De IRI van dit onderwerp
 delete = Verwijderen
 add-a-property = Voeg een eigenschap toe
+add-a-group = Voeg een groep toe
 add = Toevoegen
+subject-editor-description-local = De naam van dit onderwerp

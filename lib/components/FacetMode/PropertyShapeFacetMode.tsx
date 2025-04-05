@@ -1,10 +1,9 @@
 import { useContext } from 'react'
 import { mainContext } from '../../core/main-context'
 import { sh, stf } from '../../core/namespaces'
-import { scoreWidgets } from '../../core/scoreWidgets'
 import parsePath from '../../helpers/parsePath'
 import { setConstraint } from '../../helpers/setConstraint'
-import { widgetsContext } from '../../widgets/widgets-context'
+import { useWidget } from '../EditMode/PropertyShapeEditMode'
 import PropertyElement from '../PropertyElement'
 import type { PropertyShapeInnerProps } from '../PropertyShape'
 
@@ -13,8 +12,8 @@ export default function PropertyShapeFacetMode(props: PropertyShapeInnerProps) {
   const { nodeDataPointer, property } = props
   const path = parsePath(property.out(sh('path')))
   const facetSearchData = facetSearchDataPointer.executeAll(path)
-  const { facets } = useContext(widgetsContext)
-  const widgetItem = scoreWidgets(facets, facetSearchData, property, stf('facet'))
+  const widgetItem = useWidget(stf('facet'))(property, facetSearchData)
+
   const predicate = property.out(sh('path')).term
   const data = nodeDataPointer.out(sh('property')).distinct().hasOut(sh('path'), predicate)
 

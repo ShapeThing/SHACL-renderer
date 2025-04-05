@@ -27,6 +27,7 @@ export type MainContextInput = {
   activeContentLanguage?: string
   fallback?: ReactNode
   store?: Store
+  subjectEditLocalNameOnly?: boolean
   context?: Record<string, string>
   onSubmit?: (dataset: DatasetCore, prefixes: Record<string, string>, dataPointer: Grapoi, context: MainContext) => void
   children?: (submit: () => void) => ReactNode
@@ -57,6 +58,7 @@ export type MainContext = {
   contentLanguages: Record<string, Record<string, string>>
   interfaceLanguages: Record<string, Record<string, string>>
   activeContentLanguage?: string
+  subjectEditLocalNameOnly?: boolean
   updates: number
   update: () => void
   activeInterfaceLanguage?: string
@@ -262,6 +264,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     prefixes: givenPrefixes,
     interfaceLanguages,
     shapeSubject: givenShapeSubject,
+    subjectEditLocalNameOnly,
     activeContentLanguage,
     contentLanguages,
     fetch = globalThis['fetch'],
@@ -316,6 +319,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     activeShapePointers: shapePointers,
     fallback,
     store: store,
+    subjectEditLocalNameOnly,
     activeContentLanguage,
     externalStorePointer: grapoi({ dataset: store ?? datasetFactory.dataset() }),
     shapesPointer,

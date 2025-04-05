@@ -2,13 +2,13 @@ import type { Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
 import { Suspense, useContext, useEffect, useState } from 'react'
 import { mainContext } from '../../core/main-context'
-import { dash, sh } from '../../core/namespaces'
-import { scoreWidgets } from '../../core/scoreWidgets'
+import { sh } from '../../core/namespaces'
 import { TouchableTerm } from '../../helpers/touchableRdf'
-import { AdditionalWidgetConfiguration, widgetsContext } from '../../widgets/widgets-context'
+import { AdditionalWidgetConfiguration } from '../../widgets/widgets-context'
 import Icon from '../various/Icon'
 import AddNestedNodeButton from './AddNestedNodeButton'
 import EditNestedNodeButton from './EditNestedNodeButton'
+import { useWidget } from './PropertyShapeEditMode'
 
 export type PropertyObjectEditModeProps = {
   property: Grapoi
@@ -27,10 +27,9 @@ export type PropertyObjectEditModeProps = {
 export default function PropertyObjectEditMode(props: PropertyObjectEditModeProps) {
   const { data, items, errors, setTerm, deleteTerm, alwaysShowRemove } = props
   let property = props.property
-  const { editors } = useContext(widgetsContext)
   const { update, fallback } = useContext(mainContext)
 
-  const widgetItem = scoreWidgets(editors, data, property, dash('editor'))
+  const widgetItem = useWidget()(property, items)
   const [widgetConfiguration, setWidgetConfiguration] = useState<AdditionalWidgetConfiguration>()
   const [isDeleting, setIsDeleting] = useState(false)
   if (!widgetItem) return null
@@ -71,7 +70,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
             <widgetItem.Component
               {...props}
               term={data.term}
-              useConfigureWidget={hook => {
+              useConfigureWidget={(hook: any) => {
                 useEffect(() => {
                   setWidgetConfiguration(() => hook)
                 }, [])

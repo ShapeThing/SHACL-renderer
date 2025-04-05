@@ -14,6 +14,7 @@ export type WidgetMeta = {
   createTerm?: ({ activeContentLanguage }: { activeContentLanguage?: string }, property?: Grapoi) => Term
   iri: NamedNode
   showIfEmpty?: true
+  hidePlusButton?: true
 }
 
 type WidgetsContext = {

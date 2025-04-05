@@ -45,6 +45,8 @@
   "dependencies": {
     "@comunica/query-sparql": "^4.1.0",
     "@comunica/query-sparql-rdfjs-lite": "^4.1.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
     "@editorjs/editorjs": "^2.30.8",
     "@editorjs/header": "^2.8.8",
     "@editorjs/list": "^2.0.6",

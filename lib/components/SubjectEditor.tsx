@@ -9,7 +9,7 @@ import URIEditor from '../widgets/editors/URIEditor'
 import PropertyElement from './PropertyElement'
 
 export default function SubjectEditor() {
-  const { shapePointer, mode, dataPointer, renameSubject } = useContext(mainContext)
+  const { shapePointer, mode, dataPointer, renameSubject, subjectEditLocalNameOnly } = useContext(mainContext)
   if (mode !== 'edit') return null
   const nodeKind = shapePointer.out(sh('nodeKind')).term ?? sh('BlankNode')
 
@@ -17,7 +17,11 @@ export default function SubjectEditor() {
     dataPointer.term.value === 'urn:no-subject-given' ? factory.namedNode('') : dataPointer.term
   )
 
-  const description = <Localized id="subject-editor-description">The IRI of this resource</Localized>
+  const description = subjectEditLocalNameOnly ? (
+    <Localized id="subject-editor-description-local">The name of this resource</Localized>
+  ) : (
+    <Localized id="subject-editor-description">The IRI of this resource</Localized>
+  )
 
   const save = useDebounced(() => {
     if (!localTerm.equals(dataPointer.term)) renameSubject(localTerm as Quad_Subject)

@@ -1,0 +1,16 @@
+.shape-editor {
+
+    >header {
+        justify-content: flex-end;
+        padding: 1rem;
+        display: flex;
+        gap: .5rem;
+        background-color: white;
+    }
+
+    .tree {
+        padding: 1rem;
+    }
+
+    width: 100%;
+}

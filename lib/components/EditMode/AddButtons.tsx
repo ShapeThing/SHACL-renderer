@@ -6,7 +6,7 @@ import { languageContext } from '../../core/language-context'
 import { sh } from '../../core/namespaces'
 import { allLogicalPointers } from '../../helpers/allLogicalPointers'
 import Icon from '../various/Icon'
-import { useEmptyTerm } from './PropertyShapeEditMode'
+import { useEmptyTerm, useWidget } from './PropertyShapeEditMode'
 
 type AddButtonsProps = {
   property: Grapoi
@@ -34,8 +34,9 @@ export function AddButtons({ property, items, addTerm }: AddButtonsProps) {
     : []
 
   const createEmptyTerm = useEmptyTerm()
+  const widgetItem = useWidget()(property, items)
 
-  if (items.ptrs.length >= maxCount || uniqueLang) {
+  if (widgetItem?.meta.hidePlusButton || items.ptrs.length >= maxCount || uniqueLang) {
     return null
   }
 

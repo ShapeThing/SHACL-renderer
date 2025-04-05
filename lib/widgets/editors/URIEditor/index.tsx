@@ -6,10 +6,14 @@ import { isValidIri } from '../../../helpers/isValidIri'
 import { WidgetProps } from '../../widgets-context'
 
 export default function URIEditor({ term, setTerm }: WidgetProps) {
+  const { subjectEditLocalNameOnly } = useContext(mainContext)
   const { jsonLdContext } = useContext(mainContext)
   const compactedIri = jsonLdContext.compactIri(term.value)
   let prefixAlias = ''
-  let value = term.value
+  const lastPart = term.value.split(/#|\//g).pop()!
+
+  const before = subjectEditLocalNameOnly ? term.value.substring(0, term.value.length - lastPart?.length) : ''
+  let value = subjectEditLocalNameOnly ? term.value.split(/#|\//g).pop() : term.value
 
   const prefixes = Object.fromEntries(Object.entries(jsonLdContext.getContextRaw()).filter(([key]) => key[0] !== '@'))
 
@@ -25,30 +29,36 @@ export default function URIEditor({ term, setTerm }: WidgetProps) {
 
   return (
     <div className="uri-selector" title={term.value}>
-      <select
-        className="prefix"
-        value={prefixAlias}
-        onChange={event => {
-          const newPrefixAlias = prefixes[event.target.value]
-          if (newPrefixAlias) {
-            setTerm(factory.namedNode(`${newPrefixAlias ?? ''}${value ?? ''}`))
-          } else {
-            setTerm(factory.namedNode(``))
-          }
-        }}
-      >
-        <option value={''}>(None)</option>
-        {Object.entries(prefixes).map(([alias]) => {
-          return (
-            <option key={alias} value={alias}>
-              {alias}
-            </option>
-          )
-        })}
-      </select>
+      {!subjectEditLocalNameOnly ? (
+        <select
+          className="prefix"
+          value={prefixAlias}
+          onChange={event => {
+            const newPrefixAlias = prefixes[event.target.value]
+            if (newPrefixAlias) {
+              setTerm(factory.namedNode(`${newPrefixAlias ?? ''}${value ?? ''}`))
+            } else {
+              setTerm(factory.namedNode(``))
+            }
+          }}
+        >
+          <option value={''}>(None)</option>
+          {Object.entries(prefixes).map(([alias]) => {
+            return (
+              <option key={alias} value={alias}>
+                {alias}
+              </option>
+            )
+          })}
+        </select>
+      ) : null}
       <input
         className="input"
         onChange={event => {
+          if (subjectEditLocalNameOnly) {
+            setTerm(factory.namedNode(`${before}${event.target.value ?? ''}`))
+            return
+          }
           if (isValidIri(event.target.value)) {
             setTerm(factory.namedNode(event.target.value))
           } else {

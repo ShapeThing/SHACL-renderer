@@ -162,7 +162,7 @@
     sh:group <#properties>;
     sh:order 9;
     sh:path sh:property ;
-    stsr:nestedOrder sh:order ;
+    # stsr:nestedOrder sh:order ;
     sh:nodeKind sh:BlankNode ;
     sh:description "Dit zijn de eigenschappen van het type. De velden in het formulier. Je kunt de volgorde aanpassen door te slepen."@nl, "These are the properties of the type. The fields in the form. You can change the order by dragging."@en ;
     sh:node <#propertyShape>;

@@ -1,10 +1,11 @@
-import { Term } from '@rdfjs/types'
+import { NamedNode, Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
+import { property } from 'lodash-es'
 import type ValidationReport from 'rdf-validate-shacl/src/validation-report'
 import { useContext } from 'react'
 import { languageContext } from '../../core/language-context'
-import { dash, stsr } from '../../core/namespaces'
+import { dash, sh, stf, stsr } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
 import { isOrderedList } from '../../helpers/isOrderedList'
 import { TouchableTerm } from '../../helpers/touchableRdf'
@@ -53,16 +54,44 @@ export const getErrorMessages = (errors: any[], term: Term, jsonLdContext: JsonL
 }
 
 export const useEmptyTerm = () => {
-  const { editors } = useContext(widgetsContext)
   const { activeContentLanguage } = useContext(languageContext)
+  const getWidget = useWidget()
 
   return (property: Grapoi, items: Grapoi) => {
-    const widgetItem = scoreWidgets(editors, items, property, dash('editor'))
+    const widgetItem = getWidget(property, items)
     const emptyTerm = widgetItem?.meta.createTerm
       ? widgetItem?.meta.createTerm({ activeContentLanguage }, property)
       : null
     if (emptyTerm) (emptyTerm as TouchableTerm).touched = false
     return emptyTerm ? emptyTerm : undefined
+  }
+}
+
+const cache = new Map()
+export const useWidget = (predicate: NamedNode = dash('editor')) => {
+  const { editors, facets, viewers } = useContext(widgetsContext)
+
+  const widgetTypes = {
+    [dash('editor').value]: editors,
+    [dash('viewer').value]: viewers,
+    [stf('facet').value]: facets
+  }
+
+  const widgets = widgetTypes[predicate.value]
+
+  if (!cache.has(property)) {
+    cache.set(property, new Map())
+  }
+  const propertyCache = cache.get(property)
+
+  return (property: Grapoi, items: Grapoi) => {
+    if (!property.hasOut(sh('or')) && propertyCache.has(items)) {
+      return propertyCache.get(items)
+    }
+
+    const widget = scoreWidgets(widgets, items, property, predicate)
+    propertyCache.set(items, widget)
+    return propertyCache.get(items)
   }
 }
 
