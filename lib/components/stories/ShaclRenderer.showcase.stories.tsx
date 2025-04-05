@@ -23,6 +23,7 @@ export const EditPersonShape = {
     shapes: new URL('/shapes/shapething-nodeshape.ttl', location.origin),
     data: new URL('/shapes/shapething-person.ttl', location.origin),
     activeInterfaceLanguage: 'nl',
+    useHierarchy: true,
     activeContentLanguage: 'nl',
     contentLanguages: languageLabels,
     interfaceLanguages: {

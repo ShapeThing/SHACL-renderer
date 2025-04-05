@@ -26,13 +26,39 @@ type PropertyShapeEditModeProps = {
 }
 
 export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditModeProps) {
+  const addObject = (items: Grapoi, emptyTerm?: Term) => {
+    if (!emptyTerm) return
+
+    const path = parsePath(props.property.out(sh('path')))
+    const firstPathPart = path?.at(0)
+    if (firstPathPart?.predicates && firstPathPart?.predicates?.length > 1)
+      throw new Error('Alternative property paths are not yet supported')
+    const [predicate] = firstPathPart?.predicates ?? []
+
+    const previousTerms = [...items].map((item: Grapoi) => item.term)
+
+    if (previousTerms.some(term => term.equals(emptyTerm))) return
+
+    const terms = [...previousTerms, emptyTerm]
+    let pointer = nodeDataPointer.executeAll([path?.[0]])
+    if ((previousTerms?.[0] as TouchableTerm)?.touched === false) return
+
+    if (!pointer.isList()) {
+      nodeDataPointer.addList(predicate, emptyTerm)
+    } else {
+      replaceList(terms, pointer)
+    }
+
+    setItems()
+  }
+
   const { nodeDataPointer, errors, path } = props
   const { jsonLdContext } = useContext(mainContext)
   const { validate } = useContext(validationContext)
   const createEmptyTerm = useEmptyTerm()
   const [items, realSetItems] = useLanguageFilteredItems(() => {
     const items = nodeDataPointer.executeAll(path)
-    if (items.ptrs.length === 0) addObject(createEmptyTerm(props.property, items))
+    if (items.ptrs.length === 0) addObject(items, createEmptyTerm(props.property, items))
     return nodeDataPointer.executeAll(path)
   })
 
@@ -60,37 +86,11 @@ export default function PropertyShapeEditModeRdfList(props: PropertyShapeEditMod
     }
   }
 
-  const addObject = (emptyTerm?: Term) => {
-    if (!emptyTerm) return
-
-    const path = parsePath(props.property.out(sh('path')))
-    const firstPathPart = path?.at(0)
-    if (firstPathPart?.predicates && firstPathPart?.predicates?.length > 1)
-      throw new Error('Alternative property paths are not yet supported')
-    const [predicate] = firstPathPart?.predicates ?? []
-
-    const previousTerms = [...items].map((item: Grapoi) => item.term)
-
-    if (previousTerms.some(term => term.equals(emptyTerm))) return
-
-    const terms = [...previousTerms, emptyTerm]
-    let pointer = nodeDataPointer.executeAll([path?.[0]])
-    if ((previousTerms?.[0] as TouchableTerm)?.touched === false) return
-
-    if (!pointer.isList()) {
-      nodeDataPointer.addList(predicate, emptyTerm)
-    } else {
-      replaceList(terms, pointer)
-    }
-
-    setItems()
-  }
-
   return (
     <PropertyElement
       cssClass={errors?.length ? 'has-error' : ''}
       property={props.property}
-      suffix={<AddButtons property={props.property} items={items} addTerm={addObject} />}
+      suffix={<AddButtons property={props.property} items={items} addTerm={term => addObject(items, term)} />}
     >
       <div className="editors">
         <ReactSortable

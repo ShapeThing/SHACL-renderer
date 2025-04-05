@@ -1,43 +1,38 @@
 import { Localized } from '@fluent/react'
 import factory from '@rdfjs/data-model'
+import { NamedNode, Term } from '@rdfjs/types'
 import { useContext, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { mainContext } from '../../core/main-context'
-import { dash, sh } from '../../core/namespaces'
-import { WidgetItem } from '../../widgets/widgets-context'
 import ShaclRenderer from '../ShaclRenderer'
 import Icon from '../various/Icon'
-import { PropertyObjectEditModeProps } from './PropertyObjectEditMode'
 
 export default function AddNestedNodeButton({
-  property,
-  data,
-  setTerm,
-  widgetItem
-}: PropertyObjectEditModeProps & { widgetItem: WidgetItem }) {
+  shapeIri,
+  setTerm
+}: {
+  shapeIri: NamedNode
+  setTerm: (term: Term) => void
+}) {
   const { originalInput, data: dataset, jsonLdContext, update } = useContext(mainContext)
   const [open, setOpen] = useState(false)
-  const shClass = property.out(sh('class')).term
-
-  if (!shClass || data.term.value) return null
-  const shape = property.node().hasOut(sh('targetClass'), shClass)
-  if (!shape.term || widgetItem.meta.iri.equals(dash('DetailsEditor'))) return null
 
   return (
     <>
-      <button className="button icon" key={`create-resource:${shape.term.value}`} onClick={() => setOpen(true)}>
+      <button className="button icon" key={`create-resource:${shapeIri.value}`} onClick={() => setOpen(true)}>
         <Icon icon="fluent:document-add-48-regular" />
       </button>
       {open
         ? createPortal(
             <dialog className="popup-editor" ref={element => element?.showModal()}>
               <ShaclRenderer
-                key={shape?.value}
+                key={shapeIri?.value}
                 {...originalInput}
                 prefixes={jsonLdContext.getContextRaw()}
                 data={undefined}
+                useHierarchy={false}
                 subject={factory.blankNode()}
-                shapeSubject={shape.term.value}
+                shapeSubject={shapeIri.value}
                 onSubmit={(innerDataset, _prefixes, _dataPointer, context) => {
                   for (const quad of [...innerDataset]) dataset.add(quad)
                   setTerm(context.subject)

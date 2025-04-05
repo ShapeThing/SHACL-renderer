@@ -1,7 +1,12 @@
 import classNames from 'classnames'
-import React, { forwardRef, HTMLAttributes } from 'react'
+import React, { forwardRef, HTMLAttributes, useContext } from 'react'
 
+import { Localized } from '@fluent/react'
+import { NamedNode } from '@rdfjs/types'
+import EditNestedNodeButton from '../../../../../components/EditMode/EditNestedNodeButton'
 import Icon from '../../../../../components/various/Icon'
+import { mainContext } from '../../../../../core/main-context'
+import { sh } from '../../../../../core/namespaces'
 import { Handle } from '../../components/Item/Handle'
 import { Remove } from '../../components/Item/Remove'
 import styles from './TreeItem.module.css'
@@ -15,9 +20,12 @@ export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, 'id'> {
   disableSelection?: boolean
   ghost?: boolean
   handleProps?: any
+  addBottomSpacing?: boolean
   indicator?: boolean
   indentationWidth: number
   value: string
+  term: NamedNode
+  type: 'group' | 'property' | 'root'
   label: string
   onCollapse?(): void
   onRemove?(): void
@@ -42,21 +50,37 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
       style,
       value,
       label,
+      term,
+      type,
+      addBottomSpacing,
       wrapperRef,
       ...props
     },
     ref
   ) => {
+    const { dataPointer, shapePointer } = useContext(mainContext)
+
+    const groupOrPropertyPointer = dataPointer.node(term)
+    const isProperty = !!groupOrPropertyPointer.hasOut(sh('path')).term
+
+    const shapeIri = (
+      isProperty
+        ? shapePointer.node().hasOut(sh('path'), sh('path')).in()
+        : shapePointer.node().hasOut(sh('targetClass'), sh('PropertyGroup'))
+    ).term
+
+    const subject = dataPointer.node(term)
+
     return (
       <li
-        className={classNames(
+        className={`${classNames(
           styles.Wrapper,
           clone && styles.clone,
           ghost && styles.ghost,
           indicator && styles.indicator,
           disableSelection && styles.disableSelection,
           disableInteraction && styles.disableInteraction
-        )}
+        )} type-${type} ${addBottomSpacing ? 'spacing-bottom' : ''} ${collapsed ? 'collapsed' : ''}`}
         ref={wrapperRef}
         style={
           {
@@ -72,7 +96,20 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
               <Icon icon="mdi:caret-down-outline" style={collapsed ? { rotate: '-90deg' } : {}} />
             </button>
           )}
-          <span className={styles.Text}>{label}</span>
+          <span className={styles.Text}>
+            <span className="type-label">
+              {type === 'group' ? (
+                <>
+                  <Localized id="group">Group</Localized>:
+                </>
+              ) : null}
+              &nbsp;
+            </span>
+            {label}
+          </span>
+
+          <EditNestedNodeButton shapeIri={shapeIri} data={subject} />
+
           {!clone && onRemove && <Remove onClick={onRemove} />}
           {clone && childCount && childCount > 1 ? <span className={styles.Count}>{childCount}</span> : null}
         </div>

@@ -52,6 +52,7 @@ export const MultipleForms = {
 export const Inheritance = {
   args: {
     mode: 'edit',
+    useHierarchy: true,
     shapes: new URL('/shapes/inheritance.ttl#pet', location.origin)
   } as ShaclRendererProps
 }

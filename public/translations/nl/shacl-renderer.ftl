@@ -19,3 +19,5 @@ add-a-property = Voeg een eigenschap toe
 add-a-group = Voeg een groep toe
 add = Toevoegen
 subject-editor-description-local = De naam van dit onderwerp
+property = Eigenschap
+group = Groep

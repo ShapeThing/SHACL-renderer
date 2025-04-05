@@ -4,7 +4,7 @@ import { Grapoi } from 'grapoi'
 import { ReactNode, useContext } from 'react'
 import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
-import { rdf, rdfs, sh } from '../../core/namespaces'
+import { rdf, rdfs, sh, stsr } from '../../core/namespaces'
 import { nonNullable } from '../../helpers/nonNullable'
 import parsePath from '../../helpers/parsePath'
 import { getElementHelpers } from '../NodeShape'
@@ -100,4 +100,33 @@ export default function PropertyGroup(props: PropertyGroupProps) {
       <div className="group-inner">{properties}</div>
     </div>
   ) : null
+}
+
+export const useGroupLabel = (group: Grapoi, nodeDataPointer: Grapoi) => {
+  const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
+  const localName = group.term.value.split(/\/|#/g).pop()
+
+  const groupLabelPath = group.out(stsr('groupLabelPath')).list()
+  let label = group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName
+
+  if (groupLabelPath) {
+    /** @ts-ignore */
+    const groupLabelPathPointers: Grapoi[] = [...groupLabelPath]
+
+    const hasMultipleLanguages =
+      groupLabelPathPointers.map(pointer => pointer.term.language).filter(nonNullable).length > 1
+
+    label = groupLabelPathPointers
+      .map(pointer => {
+        if (pointer.term.termType === 'Literal') {
+          if (hasMultipleLanguages && pointer.term.language === activeInterfaceLanguage) return pointer.term.value
+          if (!hasMultipleLanguages) return pointer.term.value
+          return ''
+        }
+        return nodeDataPointer.out(pointer.term).best(language([activeContentLanguage, '', '*'])).value
+      })
+      .join('')
+  }
+
+  return label
 }

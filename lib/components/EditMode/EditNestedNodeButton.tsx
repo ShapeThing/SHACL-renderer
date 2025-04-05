@@ -1,40 +1,23 @@
 import { Localized } from '@fluent/react'
 import datasetFactory from '@rdfjs/dataset'
+import { NamedNode } from '@rdfjs/types'
+import { Grapoi } from 'grapoi'
 import { useContext, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { mainContext } from '../../core/main-context'
-import { dash, rdf, sh } from '../../core/namespaces'
 import { outAll } from '../../helpers/outAll'
-import { WidgetItem } from '../../widgets/widgets-context'
 import ShaclRenderer from '../ShaclRenderer'
 import Icon from '../various/Icon'
-import { PropertyObjectEditModeProps } from './PropertyObjectEditMode'
 
-export default function EditNestedNodeButton({
-  property,
-  data,
-  widgetItem
-}: PropertyObjectEditModeProps & { widgetItem: WidgetItem }) {
+export default function EditNestedNodeButton({ data, shapeIri }: { shapeIri: NamedNode; data: Grapoi }) {
   const [open, setOpen] = useState(false)
 
   const { originalInput, data: dataset, jsonLdContext, update } = useContext(mainContext)
   if (!['BlankNode', 'NamedNode'].includes(data.term.termType)) return null
 
-  const pointer = data.node(data.term)
-  const valueClasses = pointer.out(rdf('type')).terms
-  const shapes = valueClasses
-    .map(valueClass => property.node().hasOut(sh('targetClass'), valueClass))
-    .filter(pointer => !pointer.hasOut(dash('abstract')).term)
-
-  if (!shapes.length || widgetItem.meta.iri.equals(dash('DetailsEditor'))) return null
-
   return (
     <>
-      <button
-        className="button icon"
-        key={`edit-resource:${shapes.map(shape => shape.values.join(',')).join(',')}`}
-        onClick={() => setOpen(true)}
-      >
+      <button className="button icon" key={`edit-resource:${shapeIri.value}`} onClick={() => setOpen(true)}>
         <Icon icon="fluent:document-edit-16-regular" />
       </button>
 
@@ -42,12 +25,13 @@ export default function EditNestedNodeButton({
         ? createPortal(
             <dialog className="popup-editor" ref={element => element?.showModal()}>
               <ShaclRenderer
-                key={shapes.flatMap(shape => shape.terms).join(',')}
+                key={'nested:' + shapeIri.value}
                 {...originalInput}
                 prefixes={jsonLdContext.getContextRaw()}
                 data={datasetFactory.dataset(outAll(data))}
                 subject={data.term}
-                shapeSubject={shapes[0].term.value}
+                useHierarchy={false}
+                shapeSubject={shapeIri.value}
                 onSubmit={localDataset => {
                   const localQuads = [...localDataset]
                   const initialQuads = outAll(data)

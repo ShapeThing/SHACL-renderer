@@ -1,41 +1,18 @@
-import { language } from '@rdfjs/score'
 import useResizeObserver from '@react-hook/resize-observer'
 import { ReactNode, useContext, useLayoutEffect, useRef, useState } from 'react'
-import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
-import { sh, stsr } from '../../core/namespaces'
-import { nonNullable } from '../../helpers/nonNullable'
+import { stsr } from '../../core/namespaces'
 import Icon from '../various/Icon'
-import { getProperties, groupHasContents, PropertyGroupProps } from './PropertyGroup'
+import { getProperties, groupHasContents, PropertyGroupProps, useGroupLabel } from './PropertyGroup'
 
 export default function CollapsiblePropertyGroup(props: PropertyGroupProps) {
   const localName = props.group.term.value.split(/\/|#/g).pop()
   const { data: dataset, mode } = useContext(mainContext)
-  const { activeInterfaceLanguage, activeContentLanguage } = useContext(languageContext)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const properties = getProperties({ ...props, dataset, mode }) as ReactNode[]
 
   const groupLabelPath = props.group.out(stsr('groupLabelPath')).list()
-  let label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName
-
-  if (groupLabelPath) {
-    /** @ts-ignore */
-    const groupLabelPathPointers: Grapoi[] = [...groupLabelPath]
-
-    const hasMultipleLanguages =
-      groupLabelPathPointers.map(pointer => pointer.term.language).filter(nonNullable).length > 1
-
-    label = groupLabelPathPointers
-      .map(pointer => {
-        if (pointer.term.termType === 'Literal') {
-          if (hasMultipleLanguages && pointer.term.language === activeInterfaceLanguage) return pointer.term.value
-          if (!hasMultipleLanguages) return pointer.term.value
-          return ''
-        }
-        return props.nodeDataPointer.out(pointer.term).best(language([activeContentLanguage, '', '*'])).value
-      })
-      .join('')
-  }
+  const label = useGroupLabel(props.group, props.nodeDataPointer)
 
   const [expanded, setExpanded] = useState(groupLabelPath && !label ? true : false)
   const wrapper = useRef<HTMLDivElement>(null)

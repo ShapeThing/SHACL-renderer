@@ -4,6 +4,8 @@ import type { Grapoi } from 'grapoi'
 export const outAll = (pointer: Grapoi) => {
   const quads: Quad[] = []
 
+  pointer = pointer.out()
+
   let results = [...pointer.quads()]
 
   while (results.length) {

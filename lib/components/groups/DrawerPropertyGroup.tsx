@@ -1,7 +1,7 @@
 import { ReactNode, useContext, useState } from 'react'
 import { languageContext } from '../../core/language-context'
 import { mainContext } from '../../core/main-context'
-import { getProperties, groupHasContents, PropertyGroupProps } from './PropertyGroup'
+import { getProperties, groupHasContents, PropertyGroupProps, useGroupLabel } from './PropertyGroup'
 
 import { Localized } from '@fluent/react'
 import { language } from '@rdfjs/score'
@@ -24,7 +24,8 @@ export default function DrawerPropertyGroup(props: PropertyGroupProps) {
 
   const createEmptyTerm = useEmptyTerm()
 
-  const label = props.group.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value
+  const label = useGroupLabel(props.group, props.nodeDataPointer)
+
   const description = props.group
     .out([sh('description'), rdfs('comment')])
     .best(language([activeInterfaceLanguage])).value

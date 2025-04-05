@@ -26,6 +26,7 @@ export type MainContextInput = {
   cacheId?: string
   activeContentLanguage?: string
   fallback?: ReactNode
+  useHierarchy?: boolean
   store?: Store
   subjectEditLocalNameOnly?: boolean
   context?: Record<string, string>
@@ -49,6 +50,7 @@ export type MainContext = {
   shapesPointer: Grapoi
   activeShapePointers: Grapoi
   dataPointer: Grapoi
+  useHierarchy?: boolean
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
   store?: Store
@@ -170,18 +172,19 @@ const getShapesCached = async (
   fetch: (typeof globalThis)['fetch'],
   shapes?: URL | DatasetCore | string,
   givenTargetClass?: NamedNode,
-  shapeSubject?: URL | string
+  shapeSubject?: URL | string,
+  useHierarchy?: boolean
 ) => {
   if (shapes?.toString()) {
-    const cid = `${shapes?.toString()}-${givenTargetClass?.value}-${shapeSubject?.toString()}`
+    const cid = `${shapes?.toString()}-${givenTargetClass?.value}-${shapeSubject?.toString()}-${useHierarchy}}`
     if (!shapesCache.has(cid)) {
-      shapesCache.set(cid, getShapes(fetch, shapes, givenTargetClass, shapeSubject))
+      shapesCache.set(cid, getShapes(fetch, shapes, givenTargetClass, shapeSubject, useHierarchy))
     }
 
     return shapesCache.get(cid)
   }
 
-  return getShapes(fetch, shapes, givenTargetClass, shapeSubject)
+  return getShapes(fetch, shapes, givenTargetClass, shapeSubject, useHierarchy)
 }
 
 /**
@@ -191,7 +194,9 @@ const getShapes = async (
   fetch: (typeof globalThis)['fetch'],
   shapes?: URL | DatasetCore | string,
   givenTargetClass?: NamedNode,
-  shapeSubject?: URL | string
+  shapeSubject?: URL | string,
+  // TODO useHierarchy is inconsistently used in EditNestedNodeButton
+  useHierarchy?: boolean
 ) => {
   const { dataset: resolvedShapes } = shapes
     ? await resolveRdfInput(shapes, true, fetch)
@@ -226,16 +231,19 @@ const getShapes = async (
   if (!shapeSubject) shapeSubject = shapePointers.terms?.[0]?.value
 
   // Gather inheritance data
-  const parents = shapeSubject?.toString()
-    ? getShapeIrisByChildShapeIri(factory.namedNode(shapeSubject.toString()), shapesPointer)
-    : []
+  // Currently this is unfortunately ordered such that we do not use it for node shapes of Shapething.
+  const parents =
+    useHierarchy && shapeSubject?.toString()
+      ? getShapeIrisByChildShapeIri(factory.namedNode(shapeSubject.toString()), shapesPointer)
+      : []
+
   const shapePointer = shapePointers.filter(pointer =>
-    [factory.namedNode(shapeSubject.toString()), ...parents].some(term => term.equals(pointer.term))
+    [factory.namedNode(shapeSubject.toString()), ...parents.toReversed()].some(term => term.equals(pointer.term))
   )
 
   const targetClass: NamedNode | undefined = givenTargetClass ?? shapePointer.out(sh('targetClass')).term
 
-  if (!shapePointer) throw new Error('No shape pointer')
+  if (!shapePointer.terms.length) throw new Error('No shape pointer(s)')
 
   return {
     shapePointer,
@@ -266,6 +274,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     shapeSubject: givenShapeSubject,
     subjectEditLocalNameOnly,
     activeContentLanguage,
+    useHierarchy,
     contentLanguages,
     fetch = globalThis['fetch'],
     ...settings
@@ -282,7 +291,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
   if (!givenShapeSubject && shapesGraph) givenShapeSubject = shapesUrl
 
   const { shapePointer, resolvedShapes, targetClass, shapePointers, shapeSubject, shapesPointer } =
-    await getShapesCached(fetch, shapes ?? shapesUrl, givenTargetClass, givenShapeSubject)
+    await getShapesCached(fetch, shapes ?? shapesUrl, givenTargetClass, givenShapeSubject, useHierarchy)
 
   // This is only for facets, it contains a dataset that we will filter through.
   const facetSearchDataset = facetSearchData
@@ -318,6 +327,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     languageMode: languageMode ?? 'tabs',
     activeShapePointers: shapePointers,
     fallback,
+    useHierarchy,
     store: store,
     subjectEditLocalNameOnly,
     activeContentLanguage,

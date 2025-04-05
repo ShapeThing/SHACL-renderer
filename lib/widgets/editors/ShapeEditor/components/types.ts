@@ -1,10 +1,12 @@
 import type { UniqueIdentifier } from '@dnd-kit/core'
+import { NamedNode } from '@rdfjs/types'
 import type { RefObject } from 'react'
 
 export interface TreeItem {
   id: UniqueIdentifier
   label: string
-  type: 'property' | 'group'
+  term: NamedNode
+  type: 'property' | 'group' | 'root'
   children: TreeItem[]
   collapsed?: boolean
 }

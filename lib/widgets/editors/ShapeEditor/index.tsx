@@ -31,6 +31,7 @@ function ShapeEditorInner() {
         return {
           label: propertyOrGroup.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName,
           id: propertyOrGroup.term.value,
+          term: propertyOrGroup.term,
           type: propertyOrGroup.hasOut(sh('path')).term ? 'property' : 'group',
           children
         } as TreeItem

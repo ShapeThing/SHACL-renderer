@@ -2,7 +2,7 @@ import type { Term } from '@rdfjs/types'
 import type { Grapoi } from 'grapoi'
 import { Suspense, useContext, useEffect, useState } from 'react'
 import { mainContext } from '../../core/main-context'
-import { sh } from '../../core/namespaces'
+import { dash, rdf, sh } from '../../core/namespaces'
 import { TouchableTerm } from '../../helpers/touchableRdf'
 import { AdditionalWidgetConfiguration } from '../../widgets/widgets-context'
 import Icon from '../various/Icon'
@@ -33,6 +33,15 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
   const [widgetConfiguration, setWidgetConfiguration] = useState<AdditionalWidgetConfiguration>()
   const [isDeleting, setIsDeleting] = useState(false)
   if (!widgetItem) return null
+
+  const pointer = data.node(data.term)
+  const valueClasses = pointer.out(rdf('type')).terms
+  const shapes = valueClasses
+    .map(valueClass => property.node().hasOut(sh('targetClass'), valueClass))
+    .filter(pointer => !pointer.hasOut(dash('abstract')).term)
+  const shape = shapes?.[0]?.term
+
+  const showNestedNodeButton = shape && !widgetItem?.meta.iri.equals(dash('DetailsEditor'))
 
   const minCount = property.out(sh('minCount')).value ? parseInt(property.out(sh('minCount')).value.toString()) : 0
   const itemIsRequired = items.ptrs.length <= minCount
@@ -79,8 +88,12 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
             />
           </Suspense>
 
-          <EditNestedNodeButton {...props} setTerm={setTerm} widgetItem={widgetItem} />
-          <AddNestedNodeButton {...props} setTerm={setTerm} widgetItem={widgetItem} />
+          {showNestedNodeButton ? (
+            <>
+              <EditNestedNodeButton {...props} shapeIri={shape} />
+              <AddNestedNodeButton {...props} shapeIri={shape} />
+            </>
+          ) : null}
 
           {alwaysShowRemove || (!itemIsRequired && items.ptrs.length > 0 && data.term.value) || errors?.length ? (
             <button

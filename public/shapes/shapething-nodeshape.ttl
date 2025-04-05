@@ -214,6 +214,32 @@
     sh:datatype xsd:integer ;
     sh:path sh:order ;
   ] ;
+
+
+  sh:property [
+    sh:name "Group"@en, "Groep"@nl ;
+    sh:description "Dit toont de eigenschap in een groep samen met andere eigenschappen."@nl, "This shows the property in a group together with other properties."@en ;
+    sh:group <#base> ;  
+    sh:maxCount 1;
+    sh:order 6;
+    sh:path sh:group ;
+    sh:class sh:PropertyGroup ;
+    sh:in [
+      sh:select """
+        prefix sh: <http://www.w3.org/ns/shacl#>
+
+        SELECT distinct ?value ?label
+        WHERE {
+          ?value a sh:PropertyGroup .
+          optional {
+            ?value sh:name ?name .
+          }
+          bind(coalesce(?name, strafter(str(?value), "#"), strafter(str(?value), "/")) as ?label)
+        }
+        """ ;
+    ] ;
+  ];
+
 .
 
 <#base>
@@ -233,7 +259,8 @@
 	sh:order 1 .
 
 <#propertyShapeGroup>
-  sh:group <#propertyShapeGroupWrapper> ;
+  # sh:group <#propertyShapeGroupWrapper> ;
+  stsr:groupLabelPath ( sh:name ) ;
   a sh:PropertyGroup, stsr:DrawerPropertyGroup ;
 .
 
@@ -430,6 +457,29 @@
     ) ;
   ];
 .
+
+<#groupProperty> 
+    sh:name "Group"@en, "Groep"@nl ;
+    sh:description "Dit toont de eigenschap in een groep samen met andere eigenschappen."@nl, "This shows the property in a group together with other properties."@en ;
+    sh:group <#propertyShapeGroup> ;
+    sh:maxCount 1;
+    sh:order 6;
+    sh:path sh:group ;
+    sh:class sh:PropertyGroup ;
+    sh:in [
+      sh:select """
+        prefix sh: <http://www.w3.org/ns/shacl#>
+
+        SELECT distinct ?value ?label
+        WHERE {
+          ?value a sh:PropertyGroup .
+          optional {
+            ?value sh:name ?name .
+          }
+          bind(coalesce(?name, strafter(str(?value), "#"), strafter(str(?value), "/")) as ?label)
+        }
+        """ ;
+    ] .
 
 xsd:string rdfs:label "Text"@en, "Tekst"@nl .
 xsd:integer rdfs:label "Integer"@en, "Nummer"@nl .

@@ -216,11 +216,6 @@
   sh:group <#general> ;
 	sh:order 1 .
 
-<#dates>
-	a sh:PropertyGroup, stsr:HorizontalPropertyGroup ;
-  sh:group <#general> ;
-	sh:order 2 .
-
 <#street-and-housenumber>
 	a sh:PropertyGroup, stsr:HorizontalPropertyGroup ;
 	sh:order 2 .

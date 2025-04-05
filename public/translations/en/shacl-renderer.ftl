@@ -19,3 +19,5 @@ add-a-property = Add a property
 add-a-group = Add a group
 add = Add
 subject-editor-description-local = The name of this resource
+property = Property
+group = Group
