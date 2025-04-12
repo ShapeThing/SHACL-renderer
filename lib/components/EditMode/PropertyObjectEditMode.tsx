@@ -90,8 +90,20 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
 
           {showNestedNodeButton ? (
             <>
-              <EditNestedNodeButton {...props} shapeIri={shape} />
-              <AddNestedNodeButton {...props} shapeIri={shape} />
+              <EditNestedNodeButton {...props} shapeIri={shape}>
+                {onClick => (
+                  <button className="button icon" key={`edit-resource:${shape.value}`} onClick={onClick}>
+                    <Icon icon="fluent:document-edit-16-regular" />
+                  </button>
+                )}
+              </EditNestedNodeButton>
+              <AddNestedNodeButton {...props} shapeIri={shape}>
+                {onClick => (
+                  <button className="button icon" key={`create-resource:${shape.value}`} onClick={onClick}>
+                    <Icon icon="fluent:document-add-48-regular" />
+                  </button>
+                )}
+              </AddNestedNodeButton>
             </>
           ) : null}
 

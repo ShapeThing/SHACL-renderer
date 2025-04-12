@@ -71,7 +71,6 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: var(--vertical-padding) 10px;
   background-color: #fff;
   border: 1px solid var(--gray);
   color: #222;
@@ -84,6 +83,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  font-size: 1rem;
 }
 
 .Count {

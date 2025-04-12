@@ -1,15 +1,20 @@
 import { Localized } from '@fluent/react'
-import datasetFactory from '@rdfjs/dataset'
 import { NamedNode } from '@rdfjs/types'
 import { Grapoi } from 'grapoi'
-import { useContext, useState } from 'react'
+import { ReactNode, useContext, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { mainContext } from '../../core/main-context'
-import { outAll } from '../../helpers/outAll'
 import ShaclRenderer from '../ShaclRenderer'
-import Icon from '../various/Icon'
 
-export default function EditNestedNodeButton({ data, shapeIri }: { shapeIri: NamedNode; data: Grapoi }) {
+export default function EditNestedNodeButton({
+  data,
+  shapeIri,
+  children
+}: {
+  shapeIri: NamedNode
+  data: Grapoi
+  children: (onClick: () => void) => ReactNode
+}) {
   const [open, setOpen] = useState(false)
 
   const { originalInput, data: dataset, jsonLdContext, update } = useContext(mainContext)
@@ -17,10 +22,7 @@ export default function EditNestedNodeButton({ data, shapeIri }: { shapeIri: Nam
 
   return (
     <>
-      <button className="button icon" key={`edit-resource:${shapeIri.value}`} onClick={() => setOpen(true)}>
-        <Icon icon="fluent:document-edit-16-regular" />
-      </button>
-
+      {children(() => setOpen(true))}
       {open
         ? createPortal(
             <dialog className="popup-editor" ref={element => element?.showModal()}>
@@ -28,22 +30,11 @@ export default function EditNestedNodeButton({ data, shapeIri }: { shapeIri: Nam
                 key={'nested:' + shapeIri.value}
                 {...originalInput}
                 prefixes={jsonLdContext.getContextRaw()}
-                data={datasetFactory.dataset(outAll(data))}
+                data={dataset}
                 subject={data.term}
                 useHierarchy={false}
                 shapeSubject={shapeIri.value}
-                onSubmit={localDataset => {
-                  const localQuads = [...localDataset]
-                  const initialQuads = outAll(data)
-
-                  const deletions = initialQuads.filter(
-                    initialQuad => !localQuads.some(localQuad => localQuad.equals(initialQuad))
-                  )
-                  const additions = localQuads.filter(
-                    localQuad => !initialQuads.some(initialQuad => localQuad.equals(initialQuad))
-                  )
-                  for (const deletion of deletions) dataset.delete(deletion)
-                  for (const addition of additions) dataset.add(addition)
+                onSubmit={() => {
                   setOpen(false)
                   update()
                   setTimeout(update, 200)

@@ -1,27 +1,26 @@
 import { Localized } from '@fluent/react'
 import factory from '@rdfjs/data-model'
 import { NamedNode, Term } from '@rdfjs/types'
-import { useContext, useState } from 'react'
+import { ReactNode, useContext, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { mainContext } from '../../core/main-context'
 import ShaclRenderer from '../ShaclRenderer'
-import Icon from '../various/Icon'
 
 export default function AddNestedNodeButton({
   shapeIri,
-  setTerm
+  setTerm,
+  children
 }: {
   shapeIri: NamedNode
-  setTerm: (term: Term) => void
+  setTerm?: (term: Term) => void
+  children: (onClick: () => void) => ReactNode
 }) {
   const { originalInput, data: dataset, jsonLdContext, update } = useContext(mainContext)
   const [open, setOpen] = useState(false)
 
   return (
     <>
-      <button className="button icon" key={`create-resource:${shapeIri.value}`} onClick={() => setOpen(true)}>
-        <Icon icon="fluent:document-add-48-regular" />
-      </button>
+      {children(() => setOpen(true))}
       {open
         ? createPortal(
             <dialog className="popup-editor" ref={element => element?.showModal()}>
@@ -35,7 +34,7 @@ export default function AddNestedNodeButton({
                 shapeSubject={shapeIri.value}
                 onSubmit={(innerDataset, _prefixes, _dataPointer, context) => {
                   for (const quad of [...innerDataset]) dataset.add(quad)
-                  setTerm(context.subject)
+                  if (setTerm) setTerm(context.subject)
                   setOpen(false)
                   update()
                   setTimeout(update, 200)

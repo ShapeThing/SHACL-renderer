@@ -226,7 +226,13 @@ export function SortableTree({
 
     if (projected && over) {
       const { depth, parentId } = projected
-      const clonedItems: FlattenedItem[] = JSON.parse(JSON.stringify(flattenTree(items)))
+      const flatItems = flattenTree(items)
+      const clonedItems: FlattenedItem[] = JSON.parse(JSON.stringify(flatItems))
+
+      for (const [index, item] of clonedItems.entries()) {
+        item.term = flatItems[index].term
+      }
+
       const overIndex = clonedItems.findIndex(({ id }) => id === over.id)
       const activeIndex = clonedItems.findIndex(({ id }) => id === active.id)
       const activeTreeItem = clonedItems[activeIndex]

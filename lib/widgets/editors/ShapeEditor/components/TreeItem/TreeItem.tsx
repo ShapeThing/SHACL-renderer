@@ -108,7 +108,15 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
             {label}
           </span>
 
-          <EditNestedNodeButton shapeIri={shapeIri} data={subject} />
+          {!clone ? (
+            <EditNestedNodeButton shapeIri={shapeIri} data={subject}>
+              {onClick => (
+                <button className="button icon" key={`edit-resource:${shapeIri.value}`} onClick={onClick}>
+                  <Icon icon="fluent:document-edit-16-regular" />
+                </button>
+              )}
+            </EditNestedNodeButton>
+          ) : null}
 
           {!clone && onRemove && <Remove onClick={onRemove} />}
           {clone && childCount && childCount > 1 ? <span className={styles.Count}>{childCount}</span> : null}

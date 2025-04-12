@@ -210,6 +210,10 @@
   sh:name "Overlijden"@nl, "Death"@en ;
 	sh:order 2 .
 
+<#group-without-predicates>
+	a sh:PropertyGroup, stsr:CollapsiblePropertyGroup ;
+  sh:name "Groep zonder velden"@nl, "Group without fields"@en ;
+	sh:order 2 .
 
 <#name>
 	a sh:PropertyGroup, stsr:HorizontalPropertyGroup ;
