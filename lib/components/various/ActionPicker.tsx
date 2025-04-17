@@ -26,10 +26,10 @@ const getLabel = (pointer?: Grapoi, activeInterfaceLanguage?: string): string =>
   return pointer.term?.value?.split(/\/|\#/g).pop() ?? ''
 }
 
-export default function ActionPicker({ setContext }: { setContext: Dispatch<SetStateAction<MainContext>> }) {
+export default function ActionPicker({ setContext }: { setContext: Dispatch<SetStateAction<Promise<MainContext>>> }) {
   const { activeInterfaceLanguage } = useContext(languageContext)
   const context = useContext(mainContext)
-  const { dataPointer, shapesPointer, originalInput } = context
+  const { dataPointer, shapesPointer, originalInput, enableActionPicker } = context
   const allShapes = shapesPointer
     .node()
     .hasOut(rdf('type'), sh('NodeShape'))
@@ -79,7 +79,7 @@ export default function ActionPicker({ setContext }: { setContext: Dispatch<SetS
   const dedupedActions = [...new Map(actions.map(action => [actionId(action), action])).values()]
   const groupedActions = groupBy(dedupedActions, action => getLabel(action.shape, activeInterfaceLanguage))
 
-  return (
+  return enableActionPicker && dedupedActions.length > 1 ? (
     <div className="action-picker">
       <label className="label">
         <Localized id="action">Action</Localized>
@@ -87,13 +87,13 @@ export default function ActionPicker({ setContext }: { setContext: Dispatch<SetS
       <select
         onChange={event => {
           const [_actionType, shapeSubject, dataTerm] = event.target.value.split('||')
-          initContext({
-            ...context.originalInput,
-            shapeSubject: shapeSubject ?? context.originalInput.shapeSubject,
-            subject: dataTerm ? factory.namedNode(dataTerm) : context.originalInput.subject
-          }).then(context => {
-            setContext(context)
-          })
+          setContext(
+            initContext({
+              ...context.originalInput,
+              shapeSubject: shapeSubject ?? context.originalInput.shapeSubject,
+              subject: dataTerm ? factory.namedNode(dataTerm) : context.originalInput.subject
+            })
+          )
         }}
       >
         {Object.entries(groupedActions).map(([groupLabel, actions]) => {
@@ -112,5 +112,5 @@ export default function ActionPicker({ setContext }: { setContext: Dispatch<SetS
         })}
       </select>
     </div>
-  )
+  ) : null
 }

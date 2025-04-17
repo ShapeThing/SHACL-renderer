@@ -16,6 +16,7 @@
   a sh:NodeShape ;
   sh:targetClass schema:Person ;
   sh:closed true ;
+  sh:ignoredProperties (rdf:type) ;
 
   sh:property [
     sh:name "Gender"@en ;

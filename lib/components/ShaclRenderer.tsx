@@ -9,12 +9,14 @@ import { cleanUpDataset } from '../helpers/cleanUpDataset'
 import LanguageAwareTabs from './language/LanguageAwareTabs'
 import NodeShape from './NodeShape'
 import { prefixes } from './ShaclRenderer'
+import ActionPicker from './various/ActionPicker'
 export * from '../core/namespaces'
 
 export type ShaclRendererProps = MainContextInput
 
 function ShaclRendererInner(props: ShaclRendererProps & { contextResource: any }) {
-  const context: MainContext = use(props.contextResource)
+  const [contextResource, setContextResource] = useState(props.contextResource)
+  const context: MainContext = use(contextResource)
   const [, setCounter] = useState(0)
 
   const submit = async () => {
@@ -47,7 +49,7 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextResource: any }
     <MainContextProvider context={context}>
       <LanguageProvider>
         <ValidationContextProvider>
-          {/* <ActionPicker setContext={setContext} /> */}
+          <ActionPicker setContext={setContextResource} />
           <LanguageAwareTabs>
             <NodeShape key="root" />
             <div className="actions">

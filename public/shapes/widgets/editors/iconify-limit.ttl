@@ -16,12 +16,13 @@
   a sh:NodeShape ;
   sh:targetClass schema:Person ;
   sh:closed true ;
+  sh:ignoredProperties (rdf:type) ;
 
   sh:property [
     sh:name "Icon"@en ;
     sh:description "Search for house" ;
     sh:path schema:icon ;
-    stsr:collections "fluent-emoji" ;
+    stsr:iconifyCollections "fluent-emoji" ;
     sh:datatype <https://iconify.design> ;
   ];
 .

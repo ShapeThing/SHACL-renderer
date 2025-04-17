@@ -8,4 +8,4 @@
 @prefix stf: <http://ontology.shapething.com/facet#> .
 
 <>
- schema:name "French"@fr, "English"@en, "Dutch"@nl .
+ schema:name "English"@en, "Dutch"@nl .

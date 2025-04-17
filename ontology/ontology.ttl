@@ -1,0 +1,38 @@
+@base <http://ontology.shapething.com/facet#> .
+@prefix stf: <http://ontology.shapething.com/facet#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+stf:facet a rdf:Property ;
+    rdfs:comment "Similar to dash:editor and dash:viewer but then for facets"@en .
+
+stsr:listType a rdf:Property ;
+    rdfs:comment "Similar to dash:editor and dash:viewer but then for lists"@en .
+
+stsr:NaturalLanguageList a rdfs:Class ;
+    rdfs:comment "A natural language list, uses the browsers API to output a natural language list."@en .
+
+stsr:CommaList a rdfs:Class ;
+    rdfs:comment "A comma separated list."@en .
+
+stsr:UnorderedList a rdfs:Class ;
+    rdfs:comment "An unordered list."@en .
+
+stsr:color a rdfs:Datatype ;
+    rdfs:comment "Defines that the value is a color"@en ;
+    owl:onDatatype xsd:string .
+
+stsr:collections a rdf:Property ;
+    rdfs:comment "A property that can be used inside a SHACL property shape to specify that the iconify collections can only be of the given ones."@en .
+
+stsr:endpoint a rdf:Property ;
+    rdfs:comment "To be used in nested SHACL nodes when the data is external."@en .
+
+stsr:purpose a rdf:Property ;
+    rdfs:comment "The purpose of a SHACL property shape for the SHACL renderer, stsr:image or stsr:label are valid values."@en .
+
+stsr:HideWidget a rdfs:Class ;
+    rdfs:comment "Can be used for dash:viewer, dash:editor, stf:Facet or stsr:listType when no rendering is needed for that context."@en .
+
+stf:TextFieldFacet a rdfs:Class ;
+    rdfs:comment "A textfield facet"@en .

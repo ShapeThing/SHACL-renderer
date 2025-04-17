@@ -9,7 +9,7 @@ export default function IconifyEditor({ term, setTerm, property }: WidgetProps) 
   const { fetch } = useContext(fetchContext)
   const [searchTerm, setSearchTerm] = useState(term?.value)
   const [results, setResults] = useState<Array<string> | null>(null)
-  const collections = property.out([stsr('collections')]).values
+  const collections = property.out([stsr('iconifyCollections')]).values
   const [mode, setMode] = useState<'view' | 'edit'>(term.value ? 'view' : 'edit')
   const inputReference = useRef<HTMLInputElement>(null)
   const [highlightIndex, setHightlightIndex] = useState(-1)

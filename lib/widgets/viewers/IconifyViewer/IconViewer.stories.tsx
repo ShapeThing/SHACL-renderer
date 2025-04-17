@@ -9,7 +9,7 @@ export default {
 export const Default = {
   args: {
     mode: 'view',
-    shapes: new URL('/shapes/widgets/editors/iconify.ttl#default', location.origin),
-    data: new URL('/shapes/widgets/editors/iconify.ttl#data', location.origin)
+    shapes: new URL('/shapes/widgets/editors/iconify-default.ttl', location.origin),
+    data: new URL('/shapes/widgets/editors/iconify-default.ttl#data', location.origin)
   } as ShaclRendererProps
 }

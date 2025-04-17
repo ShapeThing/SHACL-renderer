@@ -24,6 +24,4 @@
 .
 
 <#data>
-    schema:image 
-
-    <https://storage.danielbeeke.nl/example.png> .
+    schema:image </woman.jpg> .

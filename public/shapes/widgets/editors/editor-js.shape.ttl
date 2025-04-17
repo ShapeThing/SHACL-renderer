@@ -14,6 +14,7 @@
   sh:targetClass schema:Blog ;
   sh:closed true ;
   owl:imports <../../editorjs-output.ttl> ;
+  sh:ignoredProperties (rdf:type) ;
 
   sh:property [
     sh:name "Body"@en ;

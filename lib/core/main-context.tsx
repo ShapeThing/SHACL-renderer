@@ -26,6 +26,8 @@ export type MainContextInput = {
   cacheId?: string
   activeContentLanguage?: string
   fallback?: ReactNode
+  enableActionPicker?: true
+  enableSubjectEditor?: true
   useHierarchy?: boolean
   store?: Store
   subjectEditLocalNameOnly?: boolean
@@ -51,6 +53,8 @@ export type MainContext = {
   activeShapePointers: Grapoi
   dataPointer: Grapoi
   useHierarchy?: boolean
+  enableActionPicker?: boolean
+  enableSubjectEditor?: boolean
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
   store?: Store
@@ -271,6 +275,8 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     languageMode,
     prefixes: givenPrefixes,
     interfaceLanguages,
+    enableSubjectEditor,
+    enableActionPicker,
     shapeSubject: givenShapeSubject,
     subjectEditLocalNameOnly,
     activeContentLanguage,
@@ -329,6 +335,8 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     fallback,
     useHierarchy,
     store: store,
+    enableActionPicker,
+    enableSubjectEditor,
     subjectEditLocalNameOnly,
     activeContentLanguage,
     externalStorePointer: grapoi({ dataset: store ?? datasetFactory.dataset() }),

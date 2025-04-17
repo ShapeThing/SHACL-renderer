@@ -9,7 +9,8 @@ import URIEditor from '../widgets/editors/URIEditor'
 import PropertyElement from './PropertyElement'
 
 export default function SubjectEditor() {
-  const { shapePointer, mode, dataPointer, renameSubject, subjectEditLocalNameOnly } = useContext(mainContext)
+  const { shapePointer, mode, dataPointer, renameSubject, subjectEditLocalNameOnly, enableSubjectEditor } =
+    useContext(mainContext)
   if (mode !== 'edit') return null
   const nodeKind = shapePointer.out(sh('nodeKind')).term ?? sh('BlankNode')
 
@@ -30,6 +31,8 @@ export default function SubjectEditor() {
   useEffect(() => {
     save()
   }, [localTerm])
+
+  if (!enableSubjectEditor) return null
 
   return nodeKind.equals(sh('IRI')) || dataPointer.term.termType === 'NamedNode' ? (
     <PropertyElement

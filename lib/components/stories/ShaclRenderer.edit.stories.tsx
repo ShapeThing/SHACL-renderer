@@ -12,7 +12,8 @@ export const CreateWithShape = {
   args: {
     mode: 'edit',
     shapes: new URL('/shapes/contact.ttl', location.origin),
-    targetClass: schema('Person')
+    targetClass: schema('Person'),
+    enableSubjectEditor: true
   } as ShaclRendererProps
 }
 
@@ -45,6 +46,7 @@ export const SortableDataEmpty = {
 export const MultipleForms = {
   args: {
     mode: 'edit',
+    enableActionPicker: true,
     shapes: new URL('/shapes/multiple-forms.ttl', location.origin)
   } as ShaclRendererProps
 }
