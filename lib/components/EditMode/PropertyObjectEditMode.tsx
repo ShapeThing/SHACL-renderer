@@ -41,7 +41,9 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
     .filter(pointer => !pointer.hasOut(dash('abstract')).term)
   const shape = shapes?.[0]?.term
 
-  const showNestedNodeButton = shape && !widgetItem?.meta.iri.equals(dash('DetailsEditor'))
+  const showNestedNodeEditButton = shape && !widgetItem?.meta.iri.equals(dash('DetailsEditor')) && props.data.term.value
+  const showNestedNodeCreateButton =
+    shape && !widgetItem?.meta.iri.equals(dash('DetailsEditor')) && property.out(sh('node')).term
 
   const minCount = property.out(sh('minCount')).value ? parseInt(property.out(sh('minCount')).value.toString()) : 0
   const itemIsRequired = items.ptrs.length <= minCount
@@ -88,7 +90,7 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
             />
           </Suspense>
 
-          {showNestedNodeButton ? (
+          {showNestedNodeEditButton ? (
             <>
               <EditNestedNodeButton {...props} shapeIri={shape}>
                 {onClick => (
@@ -97,14 +99,17 @@ export default function PropertyObjectEditMode(props: PropertyObjectEditModeProp
                   </button>
                 )}
               </EditNestedNodeButton>
-              <AddNestedNodeButton {...props} shapeIri={shape}>
-                {onClick => (
-                  <button className="button icon" key={`create-resource:${shape.value}`} onClick={onClick}>
-                    <Icon icon="fluent:document-add-48-regular" />
-                  </button>
-                )}
-              </AddNestedNodeButton>
             </>
+          ) : null}
+
+          {showNestedNodeCreateButton ? (
+            <AddNestedNodeButton {...props} shapeIri={shape}>
+              {onClick => (
+                <button className="button icon" key={`create-resource:${shape.value}`} onClick={onClick}>
+                  <Icon icon="fluent:document-add-48-regular" />
+                </button>
+              )}
+            </AddNestedNodeButton>
           ) : null}
 
           {alwaysShowRemove || (!itemIsRequired && items.ptrs.length > 0 && data.term.value) || errors?.length ? (
