@@ -12,7 +12,7 @@
 <>
   a sh:NodeShape ;
   sh:targetClass schema:Person ;
-  sh:closed true ;
+  # sh:closed true ;
   sh:nodeKind sh:IRI ;
   sh:description "This form shows various fields. Notice that some fields are singular and others can have multiple values." ;
 

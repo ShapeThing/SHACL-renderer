@@ -332,7 +332,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     shapePointer,
     languageMode: languageMode ?? 'tabs',
     activeShapePointers: shapePointers,
-    fallback,
+    fallback: fallback ?? <input className="input" />,
     useHierarchy,
     store: store,
     enableActionPicker,

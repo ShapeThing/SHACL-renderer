@@ -1,8 +1,8 @@
 .shape-editor {
 
-    >header {
+    >footer {
         justify-content: flex-end;
-        padding: 1rem;
+        padding-block: 1rem;
         display: flex;
         gap: .5rem;
         background-color: white;
@@ -11,14 +11,6 @@
     .tree {
         padding: 1rem;
     }
-
-    // .type-group:not(:first-child):not(.collapsed)>div {
-    //     margin-top: 1rem;
-    // }
-
-    // .spacing-bottom:not(.type-group) {
-    //     margin-bottom: 1rem;
-    // }
 
     width: 100%;
 }

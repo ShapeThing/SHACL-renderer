@@ -13,31 +13,31 @@ import { SortableTree } from './components/SortableTree'
 import { TreeItem } from './components/types'
 import './styles.scss'
 
+const getItemsByIris = (dataPointer: Grapoi, iris: NamedNode[], activeInterfaceLanguage: string) => {
+  return iris
+    .map(iri => dataPointer.node(iri))
+    .map(propertyOrGroup => {
+      const localName = propertyOrGroup.term.value.split(/\/|#/g).pop()
+
+      const children = dataPointer
+        .node()
+        .hasOut(sh('group'), propertyOrGroup.term)
+        .map((iris: Grapoi) => getItemsByIris(dataPointer, iris.terms as NamedNode[], activeInterfaceLanguage))
+        .flat()
+
+      return {
+        label: propertyOrGroup.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName,
+        id: propertyOrGroup.term.value,
+        term: propertyOrGroup.term,
+        type: propertyOrGroup.hasOut(sh('path')).term ? 'property' : 'group',
+        children
+      } as TreeItem
+    })
+}
+
 function ShapeEditorInner() {
   const { dataPointer, shapePointer } = useContext(mainContext)
   const { activeInterfaceLanguage } = useContext(languageContext)
-
-  const getItemsByIris = (iris: NamedNode[]) => {
-    return iris
-      .map(iri => dataPointer.node(iri))
-      .map(propertyOrGroup => {
-        const localName = propertyOrGroup.term.value.split(/\/|#/g).pop()
-
-        const children = dataPointer
-          .node()
-          .hasOut(sh('group'), propertyOrGroup.term)
-          .map((iris: Grapoi) => getItemsByIris(iris.terms as NamedNode[]))
-          .flat()
-
-        return {
-          label: propertyOrGroup.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName,
-          id: propertyOrGroup.term.value,
-          term: propertyOrGroup.term,
-          type: propertyOrGroup.hasOut(sh('path')).term ? 'property' : 'group',
-          children
-        } as TreeItem
-      })
-  }
 
   const groupsOfProperties = dataPointer.node().out(sh('property')).out(sh('group')).distinct().terms
 
@@ -57,7 +57,7 @@ function ShapeEditorInner() {
       .distinct()
       .terms.filter(term => !groupsOfProperties.some(property => property.equals(term)))
   ] as NamedNode[]
-  const initialItems: TreeItem[] = getItemsByIris(firstLevelgroupIris)
+  const initialItems: TreeItem[] = getItemsByIris(dataPointer, firstLevelgroupIris, activeInterfaceLanguage)
 
   const propertyShapeIri = shapePointer.node().hasOut(sh('path'), sh('path')).in().term
   const groupShapeIri = shapePointer.node().hasOut(sh('targetClass'), sh('PropertyGroup')).term
@@ -65,10 +65,17 @@ function ShapeEditorInner() {
   return (
     <div className="shape-editor">
       <div className="tree">
-        <SortableTree defaultItems={initialItems} collapsible indicator removable />
+        {/* I do not like the fact that we serialize to JSON and then somehow back to the dataset. What is the right abstraction to sort Grapoi pointers? */}
+        <SortableTree
+          onChange={items => console.log(items)}
+          defaultItems={initialItems}
+          collapsible
+          indicator
+          removable
+        />
       </div>
 
-      <header>
+      <footer>
         <AddNestedNodeButton shapeIri={groupShapeIri}>
           {onClick => (
             <button onClick={onClick} className="button secondary outline icon">
@@ -90,7 +97,7 @@ function ShapeEditorInner() {
             </button>
           )}
         </AddNestedNodeButton>
-      </header>
+      </footer>
     </div>
   )
 }

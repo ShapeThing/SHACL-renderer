@@ -70,6 +70,7 @@ interface Props {
   indentationWidth?: number
   indicator?: boolean
   removable?: boolean
+  onChange?: (items: TreeItems) => void
 }
 
 export function SortableTree({
@@ -77,9 +78,18 @@ export function SortableTree({
   defaultItems,
   indicator = false,
   indentationWidth = 36,
+  onChange,
   removable
 }: Props) {
   const [items, setItems] = useState(() => defaultItems)
+
+  const [firstRender, setFirstRender] = useState(true)
+
+  useEffect(() => {
+    if (onChange && !firstRender) onChange(items)
+    setFirstRender(false)
+  }, [items])
+
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const [overId, setOverId] = useState<UniqueIdentifier | null>(null)
   const [offsetLeft, setOffsetLeft] = useState(0)
