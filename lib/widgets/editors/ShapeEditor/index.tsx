@@ -11,7 +11,6 @@ import { rdf, sh } from '../../../core/namespaces'
 import { WidgetProps } from '../../widgets-context'
 import { SortableTree } from './components/SortableTree'
 import { TreeItem } from './components/types'
-import './styles.scss'
 
 const getItemsByIris = (dataPointer: Grapoi, iris: NamedNode[], activeInterfaceLanguage: string) => {
   return iris

@@ -1,0 +1,26 @@
+.shape-editor {
+
+    >footer {
+        justify-content: flex-end;
+        padding-block: 1rem;
+        display: flex;
+        gap: .5rem;
+        background-color: white;
+    }
+
+    .tree {
+        padding: 1rem;
+    }
+
+    width: 100%;
+}
+
+.type-group>div {
+    background-color: rgb(224, 233, 233) !important;
+}
+
+
+.type-label {
+    // font-size: 1rem;
+    color: var(--primary);
+}
