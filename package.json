@@ -1,6 +1,6 @@
 {
   "name": "@shapething/shacl-renderer",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "type": "module",
   "exports": {
     ".": {
@@ -24,7 +24,7 @@
       "default": "./dist/type.js"
     },
     "./style.css": {
-      "default": "./dist/style.css"
+      "default": "./dist/shacl-renderer.css"
     },
     "./resolveRdfInput": {
       "shapething": "./lib/core/resolveRdfInput.ts",
