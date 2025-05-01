@@ -35,8 +35,8 @@ export const resolveRdfInput = async (
     originalUrl = input.toString()
 
     if (input.protocol === 'file:') {
-      const fs = await import('fs/promises')
-      input = await fs.readFile(input.pathname, 'utf8')
+      const fs = await import('fs')
+      input = fs.readFileSync(input.pathname, 'utf8')
     } else {
       const response = await (fetch ?? globalThis.fetch)(input)
       if (!['text/turtle'].includes(response.headers.get('content-type')?.split(';')[0] ?? ''))

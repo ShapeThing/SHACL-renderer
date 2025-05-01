@@ -3,7 +3,7 @@ import { WidgetItem, WidgetMeta, WidgetProps } from './widgets-context'
 
 const isNode = typeof import.meta.glob !== 'function'
 
-if (isNode || import.meta.env?.DEV) {
+if (isNode && import.meta.env?.DEV) {
   /** @ts-expect-error Too lazy to type this correctly */
   import.meta.glob = async function (pattern: string, options: { eager?: boolean } = {}) {
     const { glob } = await import('glob')
