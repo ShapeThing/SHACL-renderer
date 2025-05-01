@@ -1,7 +1,7 @@
-import MultiRangeSlider from 'multi-range-slider-react'
 import { sh } from '../../../core/namespaces'
 import { quadsToCounts } from '../../../helpers/quadsToCounts'
 import { WidgetProps } from '../../widgets-context'
+import MultiRangeSlider from './multirangeslider.js'
 
 export default function CountFacet({ facetSearchData, property, setConstraint }: WidgetProps) {
   const predicate = property.out(sh('path')).term
@@ -16,7 +16,7 @@ export default function CountFacet({ facetSearchData, property, setConstraint }:
       max={max}
       canMinMaxValueSame={true}
       minValue={0}
-      onChange={event => {
+      onChange={(event: any) => {
         setConstraint(sh('minCount'), event.minValue)
         setConstraint(sh('maxCount'), event.maxValue)
       }}

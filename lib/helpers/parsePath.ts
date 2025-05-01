@@ -3,7 +3,7 @@
  * and jsr was making it difficult to import it. (I tried to publish at jsr. But that is still not possible)
  */
 import namespace from '@rdfjs/namespace'
-import { Grapoi } from 'grapoi'
+import Grapoi from '../Grapoi'
 
 const owl = namespace('http://www.w3.org/2002/07/owl#')
 const rdf = namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
