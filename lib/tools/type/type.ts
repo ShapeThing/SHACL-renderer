@@ -1,13 +1,19 @@
+/**
+ * Generate a TypeScript type via a SHACL shape
+ * @module
+ */
+
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import { language } from '@rdfjs/score'
 import { NamedNode } from '@rdfjs/types'
-import grapoi, { Grapoi } from 'grapoi'
+import grapoi from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import type { ShaclRendererProps } from '../../components/ShaclRenderer'
 import { initContext } from '../../core/main-context'
 import { dash, prefixes, rdf, rdfs, sh, xsd } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import Grapoi from '../../Grapoi'
 import parsePath from '../../helpers/parsePath'
 import { coreWidgets } from '../../widgets/coreWidgets'
 import { TransformerOptions } from '../types'

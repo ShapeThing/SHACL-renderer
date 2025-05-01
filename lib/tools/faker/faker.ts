@@ -1,10 +1,15 @@
+/**
+ * Generate fake RDF data via a SHACL shape
+ * @module
+ */
+
 import { faker as fakerLibrary } from '@faker-js/faker'
 import factory from '@rdfjs/data-model'
 import { BlankNode, DatasetCore, NamedNode, Quad, Quad_Object } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
 import { initContext } from '../../core/main-context'
 import { dash, faker, rdf, sh, xsd } from '../../core/namespaces'
 import { scoreWidgets } from '../../core/scoreWidgets'
+import Grapoi from '../../Grapoi'
 import parsePath from '../../helpers/parsePath'
 import { coreWidgets } from '../../widgets/coreWidgets'
 

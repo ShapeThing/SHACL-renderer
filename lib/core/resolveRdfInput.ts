@@ -1,3 +1,7 @@
+/**
+ * De-reference a URI and fetch the RDF
+ * @module
+ */
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { DatasetCore, Quad, Quad_Object, Quad_Subject } from '@rdfjs/types'

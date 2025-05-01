@@ -1,3 +1,8 @@
+/**
+ * Contains the SHACL renderer component and the contexts to set it up.
+ * @module
+ */
+
 import ShaclRenderer from './components/ShaclRenderer'
 import FetchContextProvider from './core/fetchContext'
 import { initContext } from './core/main-context'
