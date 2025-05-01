@@ -30,6 +30,9 @@ const cast = (value: any, datatype?: NamedNode) => {
   return value
 }
 
+/**
+ * Given a SHACL shape, generates a dummy data resource
+ */
 export async function generateFake({
   shapes,
   shapeSubject,

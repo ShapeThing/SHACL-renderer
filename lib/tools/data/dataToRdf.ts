@@ -23,6 +23,9 @@ export const cast = (value: any, datatype: NamedNode) => {
   return value
 }
 
+/**
+ * Given a JavaScript object and a SHACL shape, returns RDF quads
+ */
 export async function dataToRdf({
   data,
   shapes,

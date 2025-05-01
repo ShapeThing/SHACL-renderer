@@ -118,6 +118,9 @@ const propertyShape = (
   }: ${isMultiple ? `Array<${subType ?? dataType}>` : subType ?? dataType}`
 }
 
+/**
+ * Creates a TypeScript type for a SHACL shape
+ */
 export async function toType(
   input: Omit<ShaclRendererProps, 'mode'> & TransformerOptions
 ): Promise<{ target: NamedNode; type: string } | undefined> {
