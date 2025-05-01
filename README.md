@@ -15,5 +15,3 @@ This is a work in progress...
 - Supports a subset of SHACL
 - Also works without a SHACL shape
 - You can add your own widgets
-
-## How to use?
