@@ -73,7 +73,7 @@
     "d2l-fetch-simple-cache": "^2.1.3",
     "dedent": "^1.5.3",
     "glob": "^11.0.1",
-    "grapoi": "github:danielbeeke/grapoi",
+    "grapoi": "^1.1.3",
     "intl-pluralrules": "^2.0.1",
     "jsonld": "^8.3.3",
     "jsonld-context-parser": "^3.0.0",
