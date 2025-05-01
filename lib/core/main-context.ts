@@ -4,7 +4,7 @@ import type { BlankNode, DatasetCore, NamedNode, Quad_Subject } from '@rdfjs/typ
 import grapoi from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import { Store } from 'n3'
-import { ReactNode, createContext } from 'react'
+import { ReactNode, createContext, createElement } from 'react'
 import Grapoi from '../Grapoi'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import { prefixes, rdf, rdfs, sh } from './namespaces'
@@ -327,7 +327,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     shapePointer,
     languageMode: languageMode ?? 'tabs',
     activeShapePointers: shapePointers,
-    fallback: fallback ?? <input className="input" />,
+    fallback: fallback ?? createElement('input', { className: 'input' }),
     useHierarchy,
     store: store,
     enableActionPicker,
