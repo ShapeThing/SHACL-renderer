@@ -1,11 +1,11 @@
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { BlankNode, DatasetCore, NamedNode, Quad_Subject } from '@rdfjs/types'
-import grapoi, { Grapoi } from 'grapoi'
+import grapoi from 'grapoi'
 import { JsonLdContextNormalized } from 'jsonld-context-parser'
 import { Store } from 'n3'
-import { ReactNode, createContext, useReducer } from 'react'
-import { renameSubject as renameSubjectFull } from '../helpers/renameSubject'
+import { ReactNode, createContext } from 'react'
+import Grapoi from '../Grapoi'
 import { getShapeSkeleton } from './getShapeSkeleton'
 import { prefixes, rdf, rdfs, sh } from './namespaces'
 import { resolveRdfInput } from './resolveRdfInput'
@@ -97,11 +97,6 @@ export const mainContext = createContext<MainContext>({
   update: () => null,
   originalInput: null as unknown as MainContextInput
 })
-
-type MainContextProviderProps = {
-  children?: ReactNode
-  context: MainContext
-}
 
 /**
  * Fetches the data, returns an empty dataset if no data was given.
@@ -212,7 +207,7 @@ const getShapes = async (
       }
 
   const shapesPointer = grapoi({ dataset: resolvedShapes, factory })
-  let shapePointers = shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
+  let shapePointers: Grapoi = shapesPointer.hasOut(rdf('type'), sh('NodeShape'))
 
   // First filter to all the shapes that match with the given target class
   if (givenTargetClass) {
@@ -353,20 +348,4 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     originalInput,
     ...settings
   }
-}
-
-export function MainContextProvider({ children, context }: MainContextProviderProps) {
-  const [updates, update] = useReducer(x => x + 1, 0)
-
-  const renameSubject = (newSubject: Quad_Subject) => {
-    if (!newSubject.equals(context.subject)) {
-      renameSubjectFull(context.data, context.subject, newSubject)
-      context.dataPointer = context.dataPointer.node(newSubject)
-      context.subject = newSubject as NamedNode
-    }
-    update()
-  }
-  return context ? (
-    <mainContext.Provider value={{ ...context, renameSubject, updates, update }}>{children}</mainContext.Provider>
-  ) : null
 }
