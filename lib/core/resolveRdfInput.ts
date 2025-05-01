@@ -1,8 +1,9 @@
 import factory from '@rdfjs/data-model'
 import datasetFactory from '@rdfjs/dataset'
 import type { DatasetCore, Quad, Quad_Object, Quad_Subject } from '@rdfjs/types'
-import grapoi, { Grapoi } from 'grapoi'
-import Parser from 'n3/src/N3Parser.js'
+import grapoi from 'grapoi'
+import { Parser } from 'n3'
+import Grapoi from '../Grapoi'
 import { nonNullable } from '../helpers/nonNullable'
 import { owl, rdfs, sh, stsr } from './namespaces'
 
@@ -40,7 +41,7 @@ export const resolveRdfInput = async (
   }
 
   if (typeof input === 'string') {
-    const FinalParser = Parser.default ? Parser.default : Parser
+    const FinalParser = Parser
     const parser = new FinalParser({ baseIRI: originalUrl ?? '' })
 
     const quads: Quad[] = await parser.parse(input)
@@ -117,6 +118,7 @@ export const resolveRdfInput = async (
 
     return {
       dataset,
+      /** @ts-ignore */
       prefixes: parser._prefixes,
       containsRelativeReferences
     }
