@@ -11,6 +11,9 @@ import Grapoi from '../Grapoi'
 import { nonNullable } from '../helpers/nonNullable'
 import { owl, rdfs, sh, stsr } from './namespaces'
 
+/**
+ * Given a URL or string, resolves the RDF and returns it as a dataset
+ */
 export const resolveRdfInput = async (
   input: URL | DatasetCore | string,
   allowImports: boolean = false,
