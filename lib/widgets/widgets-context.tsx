@@ -1,7 +1,7 @@
 import type { DatasetCore, NamedNode, Term } from '@rdfjs/types'
-import type { Grapoi } from 'grapoi'
 import type { ComponentType, LazyExoticComponent, ReactNode } from 'react'
 import { createContext } from 'react'
+import Grapoi from '../Grapoi'
 import { coreWidgets } from './coreWidgets'
 
 export type WidgetItem = {
