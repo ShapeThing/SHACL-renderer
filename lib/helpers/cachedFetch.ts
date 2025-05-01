@@ -2,6 +2,9 @@ import { D2LFetch } from 'd2l-fetch'
 import { fetchDedupe } from 'd2l-fetch-dedupe'
 import { D2LFetchSimpleCache } from 'd2l-fetch-simple-cache/src/d2lfetch-simple-cache.js'
 
+/**
+ * A copy of globalThis.fetch which caches GET requests
+ */
 export const cachedFetch = (): (typeof globalThis)['fetch'] => {
   const simpleCache = new D2LFetchSimpleCache()
   function fetchSimpleCache(...args: unknown[]) {

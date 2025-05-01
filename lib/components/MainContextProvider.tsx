@@ -8,6 +8,10 @@ type MainContextProviderProps = {
   context: MainContext
 }
 
+/**
+ * A main context for the SHACL renderer.
+ * No need to init this yourself except in edge cases.
+ */
 export function MainContextProvider({ children, context }: MainContextProviderProps) {
   const [updates, update] = useReducer(x => x + 1, 0)
 

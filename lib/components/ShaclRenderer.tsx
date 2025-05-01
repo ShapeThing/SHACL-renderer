@@ -69,6 +69,9 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextResource: any }
   )
 }
 
+/**
+ * A React component that renders a SHACL shape (if given) as a form, a view or facets
+ */
 export default function ShaclRenderer(props: ShaclRendererProps) {
   const { fetch } = useContext(fetchContext)
   const contextResource = useRef<Promise<MainContext>>(null)
