@@ -126,7 +126,7 @@ declare class Grapoi extends PathList {
 }
 import { Term } from '@rdfjs/types'
 
-import { Environment } from '@rdfjs/environment/Environment'
+import type Environment from '@rdfjs/environment'
 import { DatasetCore, Quad } from '@rdfjs/types'
 
 /**
@@ -150,7 +150,7 @@ declare class PathList {
     graphs
   }: {
     dataset: DatasetCore
-    factory: Environment<unknown>
+    factory: typeof Environment<any>
     ptrs: PathList[]
     terms: Term[]
     graphs: Term[]
