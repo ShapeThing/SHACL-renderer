@@ -143,7 +143,7 @@ const propertyShape = (
   }
 }
 
-export async function rdfToData(input: Omit<ShaclRendererProps, 'mode'> & TransformerOptions) {
+export async function rdfToData(input: Omit<ShaclRendererProps, 'mode'> & TransformerOptions): Promise<object> {
   const { jsonLdContext, shapePointer, dataPointer } = await initContext({ ...input, mode: 'edit' })
   const widgets = coreWidgets
   const mergedContext = new JsonLdContextNormalized({

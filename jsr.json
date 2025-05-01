@@ -1,0 +1,12 @@
+{
+  "name": "@shapething/shacl-renderer",
+  "version": "0.0.24",
+  "license": "MIT",
+  "exports": {
+    ".": "./lib/index.tsx",
+    "./data": "./lib/tools/data/data.ts",
+    "./faker": "./lib/tools/faker/faker.ts",
+    "./type": "./lib/tools/type/type.ts",
+    "./resolveRdfInput": "./lib/core/resolveRdfInput.ts"
+  }
+}

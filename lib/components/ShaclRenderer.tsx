@@ -1,5 +1,5 @@
 import { Localized } from '@fluent/react'
-import { write } from '@jeswr/pretty-turtle/dist'
+import { write } from '@jeswr/pretty-turtle/dist/index'
 import { Suspense, use, useContext, useEffect, useRef, useState } from 'react'
 import { fetchContext } from '../core/fetchContext'
 import LanguageProvider from '../core/language-context'

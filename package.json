@@ -24,7 +24,7 @@
       "default": "./dist/type.js"
     },
     "./style.css": {
-      "default": "./dist/shacl-renderer.css"
+      "default": "./dist/style.css"
     },
     "./resolveRdfInput": {
       "shapething": "./lib/core/resolveRdfInput.ts",

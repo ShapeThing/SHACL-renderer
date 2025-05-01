@@ -2,7 +2,7 @@ import { D2LFetch } from 'd2l-fetch'
 import { fetchDedupe } from 'd2l-fetch-dedupe'
 import { D2LFetchSimpleCache } from 'd2l-fetch-simple-cache/src/d2lfetch-simple-cache.js'
 
-export const cachedFetch = () => {
+export const cachedFetch = (): (typeof globalThis)['fetch'] => {
   const simpleCache = new D2LFetchSimpleCache()
   function fetchSimpleCache(...args: unknown[]) {
     return simpleCache.cache(...args)

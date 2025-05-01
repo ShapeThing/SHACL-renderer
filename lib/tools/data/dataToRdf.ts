@@ -35,7 +35,7 @@ export async function dataToRdf({
   shapeSubject?: URL | string
   context?: Record<string, string>
   subject?: NamedNode | BlankNode
-}) {
+}): Promise<Quad[]> {
   const mainContext = await initContext({
     shapes,
     shapeSubject,
