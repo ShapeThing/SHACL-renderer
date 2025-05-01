@@ -129,7 +129,6 @@ import { Term } from '@rdfjs/types'
 import { Environment } from '@rdfjs/environment/Environment'
 import { DatasetCore, Quad } from '@rdfjs/types'
 
-export default PathList
 /**
  * List of paths
  * @property {Array} ptrs All paths of this list
