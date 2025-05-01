@@ -1,6 +1,6 @@
 {
   "name": "@shapething/shacl-renderer",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "type": "module",
   "license": "GPL-3.0-only",
   "exports": {
