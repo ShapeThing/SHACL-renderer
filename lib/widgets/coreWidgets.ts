@@ -3,11 +3,13 @@ import { WidgetItem, WidgetMeta, WidgetProps } from './widgets-context'
 
 const isNode = typeof import.meta.glob !== 'function'
 
+let viteGlob
+
 if (isNode && import.meta.env?.DEV) {
-  /** @ts-expect-error Too lazy to type this correctly */
-  import.meta.glob = async function (pattern: string, options: { eager?: boolean } = {}) {
+  viteGlob = async function (pattern: string, options: { eager?: boolean } = {}) {
     const { glob } = await import('glob')
     const files = await glob(pattern, { cwd: './lib/widgets' })
+    console.log(files)
     const modules = files.map(async file => [
       './' + file,
       options.eager ? await import(/* @vite-ignore */ './' + file) : () => import(/* @vite-ignore */ './' + file)
@@ -17,10 +19,10 @@ if (isNode && import.meta.env?.DEV) {
   }
 }
 
-const coreWidgetMetaItems = isNode
-  ? await import.meta.glob('./*/*/meta.ts', { eager: true })
+const coreWidgetMetaItems = viteGlob
+  ? await viteGlob('./*/*/meta.ts', { eager: true })
   : import.meta.glob('./*/*/meta.ts', { eager: true })
-const coreWidgetComponents = isNode ? await import.meta.glob('./*/*/index.tsx') : import.meta.glob('./*/*/index.tsx')
+const coreWidgetComponents = viteGlob ? await viteGlob('./*/*/index.tsx') : import.meta.glob('./*/*/index.tsx')
 
 export const coreWidgets: {
   editors: WidgetItem[]
