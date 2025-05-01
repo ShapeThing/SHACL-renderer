@@ -1,6 +1,6 @@
 {
   "name": "@shapething/shacl-renderer",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "type": "module",
   "license": "GPL-3.0-only",
   "exports": {
@@ -44,10 +44,12 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@comunica/actor-http-proxy": "^4.2.0",
     "@comunica/query-sparql": "^4.2.0",
     "@comunica/query-sparql-rdfjs-lite": "^4.2.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@editorjs/editorjs": "^2.30.8",
     "@editorjs/header": "^2.8.8",
     "@editorjs/list": "^2.0.6",
@@ -68,6 +70,8 @@
     "@rdfjs/namespace": "^2.0.1",
     "@rdfjs/score": "^0.1.2",
     "@react-hook/resize-observer": "^2.0.2",
+    "classnames": "^2.5.1",
+    "clownface": "^2.0.3",
     "color-parse": "^2.0.2",
     "d2l-fetch": "^2.6.0",
     "d2l-fetch-dedupe": "^2.1.1",
