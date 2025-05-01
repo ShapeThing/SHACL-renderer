@@ -1,6 +1,6 @@
 {
   "name": "@shapething/shacl-renderer",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "license": "GPL-3.0-only",
   "exports": {
     ".": "./lib/index.tsx",
