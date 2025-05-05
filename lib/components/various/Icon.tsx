@@ -1,11 +1,7 @@
-import plus from '@iconify/icons-iconoir/plus'
-
 import { Icon as IconifyIcon } from '@iconify/react'
 import { CSSProperties, MouseEventHandler } from 'react'
 
-const iconMap = {
-  'icons-iconoir:plus': plus
-}
+const iconMap = {}
 
 export default function Icon({
   icon,
