@@ -21,7 +21,7 @@ This is a work in progress...
 See more usage examples in /lib/components/stories
 
 ```tsx
-import ShaclRenderer from '@shapething/shacl-renderer'
+import { ShaclRenderer } from '@shapething/shacl-renderer'
 
 function App() {
   return (
