@@ -1,5 +1,5 @@
 import { Localized } from '@fluent/react'
-import prettyTurtle from '@jeswr/pretty-turtle/dist/index'
+import { write } from '@jeswr/pretty-turtle'
 import { Suspense, use, useContext, useEffect, useRef, useState } from 'react'
 import { fetchContext } from '../core/fetchContext'
 import LanguageProvider from '../core/language-context'
@@ -11,7 +11,6 @@ import { MainContextProvider } from './MainContextProvider'
 import NodeShape from './NodeShape'
 import { prefixes } from './ShaclRenderer'
 import ActionPicker from './various/ActionPicker'
-const { write } = prettyTurtle
 export * from '../core/namespaces'
 
 export type ShaclRendererProps = MainContextInput
