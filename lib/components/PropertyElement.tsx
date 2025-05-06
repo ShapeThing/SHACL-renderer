@@ -2,11 +2,11 @@ import { Localized } from '@fluent/react'
 import { Icon } from '@iconify-icon/react/dist/iconify.mjs'
 import { language } from '@rdfjs/score'
 import { Term } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
 import { Fragment, ReactNode, useContext } from 'react'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
 import { rdf, rdfs, sh, stsr } from '../core/namespaces'
+import Grapoi from '../Grapoi'
 import { TouchableTerm } from '../helpers/touchableRdf'
 
 type PropertyElementProps = {

@@ -1,6 +1,6 @@
 import { DatasetCore } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
 import { Store } from 'n3'
+import Grapoi from '../../Grapoi'
 import { nonNullable } from '../../helpers/nonNullable'
 import { sh, stsr } from '../namespaces'
 
@@ -20,10 +20,10 @@ export async function resolveDynamicShaclInternal(shapePointer: Grapoi, dataset:
       sources: [new Store(endpoint?.value ? [endpoint.value] : [...dataset])]
     })
     const bindings = await response.toArray()
-    const values = bindings.map(binding => binding.get('value'))
-    const dedupedValues = [...new Map(values.map(value => [value?.value, value])).values()]
+    const values = bindings.map((binding: any) => binding.get('value'))
+    const dedupedValues = [...new Map(values.map((value: any) => [value?.value, value])).values()]
     const property = dynamicIn.in(sh('in'))
     property.deleteList(sh('in'))
-    property.addList(sh('in'), dedupedValues.filter(nonNullable))
+    property.addList(sh('in'), dedupedValues.filter(nonNullable) as any)
   }
 }

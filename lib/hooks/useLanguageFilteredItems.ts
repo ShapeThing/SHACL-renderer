@@ -1,8 +1,8 @@
 import { Literal } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
 import { useContext, useEffect, useState } from 'react'
 import { languageContext } from '../core/language-context'
 import { mainContext } from '../core/main-context'
+import Grapoi from '../Grapoi'
 
 export const useLanguageFilteredItems = (fetcher: () => Grapoi) => {
   const { languageMode } = useContext(mainContext)

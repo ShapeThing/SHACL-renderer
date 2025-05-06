@@ -1,6 +1,6 @@
 import { NamedNode } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
 import { rdfs, schema, sh, stsr } from '../core/namespaces'
+import Grapoi from '../Grapoi'
 import parsePath from './parsePath'
 
 export const getPurposePredicates = (nodeShape: Grapoi, purpose: 'label' | 'image') => {

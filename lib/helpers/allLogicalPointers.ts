@@ -1,4 +1,4 @@
-import { Grapoi } from 'grapoi'
+import Grapoi from '../Grapoi'
 import { sh } from '../core/namespaces'
 
 export const allLogicalPointers = (property: Grapoi) => {

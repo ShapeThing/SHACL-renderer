@@ -1,6 +1,6 @@
-import { Grapoi } from 'grapoi'
 import { ComponentType, ReactNode, useContext } from 'react'
 import { stsr } from '../core/namespaces'
+import Grapoi from '../Grapoi'
 import CommaList from '../widgets/lists/CommaList'
 import { widgetsContext } from '../widgets/widgets-context'
 

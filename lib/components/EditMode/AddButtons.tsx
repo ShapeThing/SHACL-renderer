@@ -1,9 +1,9 @@
 import { language } from '@rdfjs/score'
 import { Term } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
 import { useContext } from 'react'
 import { languageContext } from '../../core/language-context'
 import { sh } from '../../core/namespaces'
+import Grapoi from '../../Grapoi'
 import { allLogicalPointers } from '../../helpers/allLogicalPointers'
 import Icon from '../various/Icon'
 import { useEmptyTerm, useWidget } from './PropertyShapeEditMode'
@@ -28,7 +28,7 @@ export function AddButtons({ property, items, addTerm }: AddButtonsProps) {
         label: option
           .out(sh('name'))
           // We must remove labels from the base pointer.
-          .filter(item => !property.out(sh('name')).terms.some(term => term.equals(item.term)))
+          .filter((item: Grapoi) => !property.out(sh('name')).terms.some(term => term.equals(item.term)))
           .best(language([activeInterfaceLanguage, '', '*'])).value
       }))
     : []

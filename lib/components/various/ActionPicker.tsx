@@ -1,12 +1,12 @@
 import { Localized } from '@fluent/react'
 import factory from '@rdfjs/data-model'
 import { language } from '@rdfjs/score'
-import { Grapoi } from 'grapoi'
-import { groupBy } from 'lodash-es'
+import groupBy from 'lodash-es/groupBy'
 import { Dispatch, SetStateAction, useContext } from 'react'
 import { languageContext } from '../../core/language-context'
 import { initContext, MainContext, mainContext } from '../../core/main-context'
 import { dash, rdf, rdfs, schema, sh, stsr } from '../../core/namespaces'
+import Grapoi from '../../Grapoi'
 
 type Action = {
   type: 'create-type' | 'edit'

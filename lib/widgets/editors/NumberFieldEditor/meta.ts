@@ -1,5 +1,5 @@
 import factory from '@rdfjs/data-model'
-import { Grapoi } from 'grapoi'
+import Grapoi from '../../../Grapoi'
 import { sh, stsr, xsd } from '../../../core/namespaces'
 import { WidgetMeta } from '../../widgets-context'
 

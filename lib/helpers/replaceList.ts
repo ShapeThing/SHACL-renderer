@@ -1,6 +1,6 @@
 import factory from '@rdfjs/data-model'
 import { Term } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
+import Grapoi from '../Grapoi'
 import { rdf } from '../core/namespaces'
 
 export const replaceList = (terms: Array<Term>, pointer: Grapoi | undefined) => {

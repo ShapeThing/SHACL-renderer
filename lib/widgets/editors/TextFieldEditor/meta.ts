@@ -1,5 +1,5 @@
 import factory from '@rdfjs/data-model'
-import { Grapoi } from 'grapoi'
+import Grapoi from '../../../Grapoi'
 import { dash, sh, xsd } from '../../../core/namespaces'
 import { TouchableTerm } from '../../../helpers/touchableRdf'
 import { WidgetMeta } from '../../widgets-context'

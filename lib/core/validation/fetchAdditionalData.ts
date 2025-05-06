@@ -1,6 +1,6 @@
 import { DatasetCore, NamedNode } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
 import { Store } from 'n3'
+import Grapoi from '../../Grapoi'
 import parsePath from '../../helpers/parsePath'
 import { sh, stsr } from '../namespaces'
 

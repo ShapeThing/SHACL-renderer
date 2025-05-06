@@ -1,4 +1,4 @@
-import { Grapoi } from 'grapoi'
+import Grapoi from '../../../Grapoi'
 import { sh, stf, xsd } from '../../../core/namespaces'
 import { WidgetMeta } from '../../widgets-context'
 

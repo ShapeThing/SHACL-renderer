@@ -1,9 +1,9 @@
 import { language } from '@rdfjs/score'
-import { Grapoi } from 'grapoi'
 import { useContext } from 'react'
 import { languageContext } from '../../../core/language-context'
 import { mainContext } from '../../../core/main-context'
 import { rdfs, schema, sh, skos, stsr } from '../../../core/namespaces'
+import Grapoi from '../../../Grapoi'
 import { WidgetProps } from '../../widgets-context'
 
 export default function LabelViewer({ term, property, nodeDataPointer }: WidgetProps) {

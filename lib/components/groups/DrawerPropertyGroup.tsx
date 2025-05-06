@@ -5,7 +5,7 @@ import { getProperties, groupHasContents, PropertyGroupProps, useGroupLabel } fr
 
 import { Localized } from '@fluent/react'
 import { language } from '@rdfjs/score'
-import { Grapoi } from 'grapoi'
+import Grapoi from '../../Grapoi'
 import { rdfs, sh } from '../../core/namespaces'
 import parsePath from '../../helpers/parsePath'
 import { useEmptyTerm } from '../EditMode/PropertyShapeEditMode'

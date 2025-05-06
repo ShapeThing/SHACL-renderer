@@ -1,5 +1,5 @@
 import datasetFactory from '@rdfjs/dataset'
-import { Grapoi } from 'grapoi'
+import Grapoi from '../Grapoi'
 
 export const getShapeSkeleton = (shape: Grapoi) => {
   const filteredQuads = shape.dataset ? [...shape.dataset] : []

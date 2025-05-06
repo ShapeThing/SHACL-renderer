@@ -1,9 +1,9 @@
 import { Localized } from '@fluent/react'
 import { NamedNode } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
 import { ReactNode, useContext, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { mainContext } from '../../core/main-context'
+import Grapoi from '../../Grapoi'
 import ShaclRenderer from '../ShaclRenderer'
 
 export default function EditNestedNodeButton({

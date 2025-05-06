@@ -21,9 +21,9 @@ const registerServiceWorker = async () => {
   }
 }
 
-await document.fonts.ready
-
-registerServiceWorker()
+document.fonts.ready.then(() => {
+  registerServiceWorker()
+})
 
 const preview: Preview = {
   parameters: {

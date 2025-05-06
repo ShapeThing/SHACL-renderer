@@ -1,5 +1,5 @@
-import { Grapoi } from 'grapoi'
 import { sh } from '../../core/namespaces'
+import Grapoi from '../../Grapoi'
 import { allLogicalPointers } from '../../helpers/allLogicalPointers'
 
 export const splitPointers = (originalProperty: Grapoi, item: Grapoi) => {

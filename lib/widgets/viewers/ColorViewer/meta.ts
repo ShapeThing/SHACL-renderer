@@ -1,5 +1,5 @@
 import colorParse from 'color-parse'
-import { Grapoi } from 'grapoi'
+import Grapoi from '../../../Grapoi'
 import { sh, stsr } from '../../../core/namespaces'
 import { TouchableTerm } from '../../../helpers/touchableRdf'
 import { WidgetMeta } from '../../widgets-context'

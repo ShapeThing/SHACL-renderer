@@ -1,5 +1,5 @@
 import { language } from '@rdfjs/score'
-import { Grapoi } from 'grapoi'
+import Grapoi from '../../../Grapoi'
 import { dash, rdfs, schema, sh } from '../../../core/namespaces'
 import { WidgetMeta } from '../../widgets-context'
 

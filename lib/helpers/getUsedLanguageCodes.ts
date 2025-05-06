@@ -1,5 +1,5 @@
 import type { Literal } from '@rdfjs/types'
-import { Grapoi } from 'grapoi'
+import Grapoi from '../Grapoi'
 import { sh } from '../core/namespaces'
 import parsePath from './parsePath'
 

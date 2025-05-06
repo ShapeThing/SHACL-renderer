@@ -1,4 +1,4 @@
-import { Grapoi } from 'grapoi'
+import Grapoi from '../Grapoi'
 import { getPurposePredicates } from './getPurposePredicates'
 
 export const getImageFromPointer = (pointer?: Grapoi, property?: Grapoi) => {
