@@ -3,41 +3,10 @@
   "version": "0.0.40",
   "type": "module",
   "license": "GPL-3.0-only",
-  "exports": {
-    ".": {
-      "shapething": "./lib/index.tsx",
-      "types": "./dist/index.d.ts",
-      "default": "./dist/shacl-renderer.js"
-    },
-    "./data": {
-      "shapething": "./lib/tools/data/data.ts",
-      "types": "./dist/tools/data/data.d.ts",
-      "default": "./dist/data.js"
-    },
-    "./faker": {
-      "shapething": "./lib/tools/faker/faker.ts",
-      "types": "./dist/tools/faker/faker.d.ts",
-      "default": "./dist/faker.js"
-    },
-    "./type": {
-      "shapething": "./lib/tools/type/type.ts",
-      "types": "./dist/tools/type/type.d.ts",
-      "default": "./dist/type.js"
-    },
-    "./style.css": {
-      "default": "./dist/style.css"
-    },
-    "./resolveRdfInput": {
-      "shapething": "./lib/core/resolveRdfInput.ts",
-      "types": "./dist/core/resolveRdfInput.d.ts",
-      "default": "./dist/resolveRdfInput.js"
-    }
-  },
   "scripts": {
     "dev": "storybook dev -p 6006",
     "build": "tsc --p ./tsconfig.build.json && vite build && sass lib/scss/style.scss > dist/style.css",
     "lint": "eslint lib/**/*.ts --report-unused-disable-directives --max-warnings 0 --fix",
-    "preview": "vite preview",
     "postinstall": "patch-package && rm -rf ./node_modules/@types/rdfjs__data-model/node_modules",
     "inspect": "npx vite-bundle-visualizer -o stats.html",
     "build-storybook": "storybook build",
