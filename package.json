@@ -5,7 +5,7 @@
   "license": "GPL-3.0-only",
   "scripts": {
     "dev": "storybook dev -p 6006",
-    "build": "tsc --p ./tsconfig.build.json && vite build",
+    "build:css": "sass lib/scss/style.scss > lib/style.css",
     "lint": "eslint lib/**/*.ts --report-unused-disable-directives --max-warnings 0 --fix",
     "postinstall": "patch-package && rm -rf ./node_modules/@types/rdfjs__data-model/node_modules",
     "inspect": "npx vite-bundle-visualizer -o stats.html",
