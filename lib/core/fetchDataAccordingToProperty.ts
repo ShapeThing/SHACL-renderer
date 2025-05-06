@@ -49,7 +49,7 @@ export const fetchDataAccordingToProperty = async ({
 
   const termNeedsProxy = term?.value ? await needsHttpProxy(term.value, fetch) : false
   const store = dataset ? new Store([...dataset]) : undefined
-  let sources = [endpoint, endpoint ? undefined : store, endpoint ? undefined : term?.value].filter(nonNullable)
+  const sources = [endpoint, endpoint ? undefined : store, endpoint ? undefined : term?.value].filter(nonNullable)
 
   let useComunica = false
 

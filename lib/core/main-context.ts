@@ -107,7 +107,7 @@ const getData = async (
   fetch?: (typeof globalThis)['fetch']
 ) => {
   const resolvedData = dataInput ? await resolveRdfInput(dataInput, false, fetch) : null
-  let dataset = resolvedData ? resolvedData.dataset : datasetFactory.dataset()
+  const dataset = resolvedData ? resolvedData.dataset : datasetFactory.dataset()
 
   if (!subject && dataInput instanceof URL) {
     const localDataName = dataInput?.toString().split('#').pop()
@@ -173,7 +173,7 @@ const getShapesCached = async (
   givenTargetClass?: NamedNode,
   shapeSubject?: URL | string,
   useHierarchy?: boolean
-) => {
+): ReturnType<typeof getShapes> => {
   if (shapes?.toString()) {
     const cid = `${shapes?.toString()}-${givenTargetClass?.value}-${shapeSubject?.toString()}-${useHierarchy}}`
     if (!shapesCache.has(cid)) {
@@ -222,7 +222,7 @@ const getShapes = async (
       ? shapes?.toString().split('#').pop()
       : false
   if (!shapeSubject && localShapeName) {
-    shapeSubject = [...shapePointers].find(pointer => pointer.term.value.split(/\/|\#/g).pop() === localShapeName)?.term
+    shapeSubject = [...shapePointers].find(pointer => pointer.term.value.split(/\/|#/g).pop() === localShapeName)?.term
       .value
   }
 
@@ -258,7 +258,7 @@ const getShapes = async (
  * Creates a new main context. This is a promise, so it should be awaited.
  */
 export const initContext = async (originalInput: MainContextInput): Promise<MainContext> => {
-  let {
+  const {
     shapes,
     data,
     facetSearchData,
@@ -272,7 +272,6 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     interfaceLanguages,
     enableSubjectEditor,
     enableActionPicker,
-    shapeSubject: givenShapeSubject,
     subjectEditLocalNameOnly,
     activeContentLanguage,
     useHierarchy,
@@ -280,13 +279,15 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     fetch = globalThis['fetch'],
     ...settings
   } = originalInput
-  let {
-    dataset,
-    dataPointer,
-    prefixes,
-    subject: finalSubject,
-    containsRelativeReferences
-  } = await getData(data, subject, fetch)
+
+  let { shapeSubject: givenShapeSubject } = originalInput
+
+  const dataObject = await getData(data, subject, fetch)
+
+  const { prefixes, containsRelativeReferences } = dataObject
+
+  let { dataset, subject: finalSubject, dataPointer } = dataObject
+
   const shapesGraph = dataPointer.out(sh('shapesGraph')).term
   const shapesUrl = !shapes && shapesGraph?.value ? new URL(shapesGraph.value, location.toString()) : undefined
   if (!givenShapeSubject && shapesGraph) givenShapeSubject = shapesUrl
@@ -316,6 +317,8 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     dataPointer = dataPointer.node(finalSubject)
   }
 
+  const finalShapeSubject = shapeSubject ? factory.namedNode(shapeSubject.toString()) : undefined
+
   return {
     shapes: resolvedShapes,
     data: dataset,
@@ -337,7 +340,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     externalStorePointer: grapoi({ dataset: store ?? datasetFactory.dataset() }),
     shapesPointer,
     facetSearchDataPointer,
-    shapeSubject: shapeSubject ? factory.namedNode(shapeSubject.toString()) : undefined,
+    shapeSubject: finalShapeSubject,
     contentLanguages: contentLanguages ?? {},
     interfaceLanguages: interfaceLanguages ?? { en: { en: 'English' } },
     jsonLdContext: new JsonLdContextNormalized({ ...(prefixes ?? {}), ...(givenPrefixes ?? {}) }),

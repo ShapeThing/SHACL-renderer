@@ -125,7 +125,7 @@ export const resolveRdfInput = async (
 
     return {
       dataset,
-      /** @ts-ignore */
+      /** @ts-expect-error an internal path */
       prefixes: parser._prefixes,
       containsRelativeReferences
     }

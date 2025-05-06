@@ -25,7 +25,6 @@ export function useDebounced<Func extends SomeFunction>(func: Func, delay = 1000
       func(...args)
     }, delay)
     if (timer.current) clearTimeout(timer.current)
-    /** @ts-ignore */
     timer.current = newTimer
   }) as Func
 

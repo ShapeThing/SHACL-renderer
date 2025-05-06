@@ -26,7 +26,7 @@ function parseStep(ptr: Grapoi) {
 
   const alternativePtr = ptr.out([ns.sh.alternativePath])
 
-  /** @ts-ignore */
+  /** @ts-expect-error type is missing */
   if (alternativePtr.ptrs.length === 1 && alternativePtr.ptrs[0].isList()) {
     return {
       quantifier: 'one',
@@ -87,7 +87,7 @@ function parsePath(ptr: Grapoi) {
     return null
   }
 
-  /** @ts-ignore */
+  /** @ts-expect-error type is missing */
   if (!ptr.ptrs[0].isList()) {
     return [parseStep(ptr)]
   }
