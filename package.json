@@ -8,7 +8,9 @@
     "postinstall": "rm -rf ./node_modules/@types/rdfjs__data-model/node_modules",
     "inspect": "npx vite-bundle-visualizer -o stats.html",
     "build:storybook": "storybook build",
-    "test": "vitest"
+    "test": "vitest",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@comunica/actor-http-proxy": "^4.2.0",
@@ -65,13 +67,15 @@
     "swr": "^2.3.3"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^3.2.6",
     "@eslint/js": "^9.25.1",
     "@rdfjs/types": "^2.0.1",
     "@storybook/addon-essentials": "^8.6.12",
     "@storybook/addon-interactions": "^8.6.12",
-    "@storybook/addon-links": "^8.6.12",
+    "@storybook/addon-onboarding": "^8.6.12",
+    "@storybook/blocks": "^8.6.12",
+    "@storybook/react": "^8.6.12",
     "@storybook/react-vite": "^8.6.12",
+    "@storybook/test": "^8.6.12",
     "@swc/core": "^1.11.24",
     "@types/clownface": "^2.0.10",
     "@types/jsdom": "^21.1.7",
@@ -91,12 +95,12 @@
     "astro": "^5.7.10",
     "eslint": "^9.25.1",
     "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-storybook": "^0.12.0",
     "globals": "^16.0.0",
     "jsdom": "^26.1.0",
     "memfs": "^4.17.0",
     "sass": "^1.87.0",
     "storybook": "^8.6.12",
-    "storybook-addon-swc": "^1.2.0",
     "ts-to-zod": "^3.15.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.31.1",
@@ -107,5 +111,10 @@
     "vite-plugin-sass-glob-import": "^5.0.0",
     "vite-plugin-top-level-await": "^1.5.0",
     "vitest": "^3.1.2"
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended"
+    ]
   }
 }

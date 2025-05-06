@@ -2,6 +2,17 @@ import '@fontsource/roboto/latin.css'
 import type { Preview } from '@storybook/react'
 import '../lib/style.css'
 
+const preview: Preview = {
+  parameters: {
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/i
+      }
+    }
+  }
+}
+
 const registerServiceWorker = async () => {
   if ('serviceWorker' in navigator) {
     try {
@@ -24,16 +35,5 @@ const registerServiceWorker = async () => {
 document.fonts.ready.then(() => {
   registerServiceWorker()
 })
-
-const preview: Preview = {
-  parameters: {
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i
-      }
-    }
-  }
-}
 
 export default preview
