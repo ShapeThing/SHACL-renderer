@@ -1,0 +1,29 @@
+{
+  "cSpell.words": [
+    "editorjs",
+    "fontsource",
+    "grapoi",
+    "iconify",
+    "iconoir",
+    "mynaui",
+    "nodeify",
+    "preact",
+    "ptrs",
+    "rdfjs",
+    "rdfs",
+    "shacl",
+    "shapething",
+    "skos",
+    "stsr",
+    "tseslint"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "always",
+    "source.fixAll.eslint": "always"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "deno.enable": true,
+  "deno.enablePaths": ["./scripts"]
+}
