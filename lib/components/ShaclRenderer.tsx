@@ -6,7 +6,6 @@ import LanguageProvider from '../core/language-context'
 import { initContext, MainContext, MainContextInput } from '../core/main-context'
 import ValidationContextProvider from '../core/validation/validation-context'
 import { cleanUpDataset } from '../helpers/cleanUpDataset'
-import '../style.css' with { type: 'css' }
 import LanguageAwareTabs from './language/LanguageAwareTabs'
 import { MainContextProvider } from './MainContextProvider'
 import NodeShape from './NodeShape'
