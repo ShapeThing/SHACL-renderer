@@ -1,6 +1,6 @@
 import '@fontsource/roboto/latin.css'
 import type { Preview } from '@storybook/react'
-import '../lib/scss/style.scss'
+import '../lib/style.css'
 
 const registerServiceWorker = async () => {
   if ('serviceWorker' in navigator) {
