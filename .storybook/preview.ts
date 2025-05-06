@@ -1,6 +1,5 @@
 import '@fontsource/roboto/latin.css'
 import type { Preview } from '@storybook/react'
-import '../lib/style.css'
 
 const preview: Preview = {
   parameters: {
