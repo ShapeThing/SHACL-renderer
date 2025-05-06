@@ -1,6 +1,6 @@
 {
   "name": "@shapething/shacl-renderer",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "license": "GPL-3.0-only",
   "exports": {
     ".": "./lib/index.tsx",
@@ -8,5 +8,8 @@
     "./faker": "./lib/tools/faker/faker.ts",
     "./type": "./lib/tools/type/type.ts",
     "./resolveRdfInput": "./lib/core/resolveRdfInput.ts"
+  },
+  "publish": {
+    "exclude": [".github", "scripts", "public", "ontology", ".storybook"]
   }
 }
