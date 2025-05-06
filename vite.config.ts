@@ -15,6 +15,13 @@ export default defineConfig({
     },
     minify: true
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler'
+      }
+    }
+  },
   resolve: {
     alias: {
       'node:events': 'events'

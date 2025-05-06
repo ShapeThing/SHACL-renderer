@@ -10,6 +10,6 @@
     "./resolveRdfInput": "./lib/core/resolveRdfInput.ts"
   },
   "publish": {
-    "exclude": [".github", "scripts", "public", "ontology", ".storybook"]
+    "exclude": [".github", "scripts", "public", "ontology", ".storybook", "README.mdx"]
   }
 }

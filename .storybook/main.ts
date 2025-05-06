@@ -26,8 +26,6 @@ const config: StorybookConfig = {
     reactDocgen: false
   },
 
-  docs: {
-    autodocs: false
-  }
+  docs: {}
 }
 export default config
