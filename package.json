@@ -1,8 +1,6 @@
 {
   "name": "@shapething/shacl-renderer",
-  "version": "0.0.40",
   "type": "module",
-  "license": "GPL-3.0-only",
   "scripts": {
     "dev": "storybook dev -p 6006",
     "build:css": "sass lib/scss/style.scss > lib/style.css",
