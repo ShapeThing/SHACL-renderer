@@ -1,4 +1,4 @@
-import { Icon } from '@iconify-icon/react/dist/iconify.mjs'
+import { Icon } from '@iconify-icon/react'
 import factory from '@rdfjs/data-model'
 import { useContext } from 'react'
 import { mainContext } from '../../../core/main-context'

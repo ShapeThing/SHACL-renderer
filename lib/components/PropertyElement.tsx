@@ -1,5 +1,5 @@
 import { Localized } from '@fluent/react'
-import { Icon } from '@iconify-icon/react/dist/iconify.mjs'
+import { Icon } from '@iconify-icon/react'
 import { language } from '@rdfjs/score'
 import { Term } from '@rdfjs/types'
 import { Fragment, ReactNode, useContext } from 'react'
