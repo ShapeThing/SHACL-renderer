@@ -1,7 +1,7 @@
 import dataFactory from '@rdfjs/data-model'
 import type { Term } from '@rdfjs/types'
-import type { Grapoi } from 'grapoi'
 import { xsd } from '../core/namespaces'
+import Grapoi from '../Grapoi'
 
 export const setConstraint = (data: Grapoi) => (predicate: Term, value: string | number | Term) => {
   const valueTerm =

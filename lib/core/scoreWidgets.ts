@@ -1,5 +1,5 @@
 import type { NamedNode } from '@rdfjs/types'
-import type { Grapoi } from 'grapoi'
+import Grapoi from '../Grapoi'
 import { TouchableTerm } from '../helpers/touchableRdf'
 import type { WidgetItem } from '../widgets/widgets-context'
 import { stsr } from './namespaces'

@@ -95,6 +95,7 @@ test('editor.js data output with shape', async () => {
     shapes: new URL('./public/shapes/editorjs-output.ttl', baseUrl),
     context: { '@vocab': ed().value }
   })
+  /** @ts-expect-error bla */
   delete output.iri
   expect(output).toStrictEqual({
     'rdf:type': ed('OutputData').value,

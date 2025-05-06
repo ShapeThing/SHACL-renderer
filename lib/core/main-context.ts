@@ -340,6 +340,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     externalStorePointer: grapoi({ dataset: store ?? datasetFactory.dataset() }),
     shapesPointer,
     facetSearchDataPointer,
+    /* @ts-expect-error the typing is off */
     shapeSubject: finalShapeSubject,
     contentLanguages: contentLanguages ?? {},
     interfaceLanguages: interfaceLanguages ?? { en: { en: 'English' } },

@@ -1,5 +1,5 @@
 import type { Term } from '@rdfjs/types'
-import type { Grapoi } from 'grapoi'
+import Grapoi from '../Grapoi'
 
 export const sortPointersStable = (newItems: Grapoi, oldTerms: Term[]) => {
   const newTerms = newItems.terms

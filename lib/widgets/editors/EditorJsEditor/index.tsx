@@ -1,4 +1,4 @@
-import EditorJS from '@editorjs/editorjs'
+import EditorJS, { OutputData } from '@editorjs/editorjs'
 import Header from '@editorjs/header'
 import List from '@editorjs/list'
 import datasetFactory from '@rdfjs/dataset'
@@ -32,7 +32,9 @@ export default function EditorJsEditor({ data: dataPointer, dataset, setTerm, te
       if (!ref.current || ref.current.editor) return
 
       const data = datasetFactory.dataset(outAll(dataPointer.distinct().out()))
-      const savedValue = data.size ? await rdfToData({ data, ...transformationOptions }) : undefined
+      const savedValue = (data.size ? await rdfToData({ data, ...transformationOptions }) : undefined) as
+        | OutputData
+        | undefined
 
       ref.current.editor = new EditorJS({
         holder: id,

@@ -101,10 +101,12 @@ export function SortableTree({
   const flattenedItems = useMemo(() => {
     const flattenedTree = flattenTree(items)
     const collapsedItems = flattenedTree.reduce<string[]>(
+      /* @ts-expect-error the typing is off */
       (acc, { children, collapsed, id }) => (collapsed && children.length ? [...acc, id] : acc),
       []
     )
 
+    /* @ts-expect-error the typing is off */
     return removeChildrenOf(flattenedTree, activeId != null ? [activeId, ...collapsedItems] : collapsedItems)
   }, [activeId, items])
   const projected =
@@ -171,6 +173,7 @@ export function SortableTree({
             <SortableTreeItem
               key={id}
               id={id}
+              /* @ts-expect-error the typing is off */
               value={id}
               addBottomSpacing={addBottomSpacing}
               type={type}
