@@ -7,7 +7,7 @@
     "lint": "eslint lib/**/*.ts --report-unused-disable-directives --max-warnings 0 --fix",
     "postinstall": "patch-package && rm -rf ./node_modules/@types/rdfjs__data-model/node_modules",
     "inspect": "npx vite-bundle-visualizer -o stats.html",
-    "build-storybook": "storybook build",
+    "build:storybook": "storybook build",
     "test": "vitest"
   },
   "dependencies": {
