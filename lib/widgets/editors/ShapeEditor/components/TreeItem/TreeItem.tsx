@@ -1,4 +1,3 @@
-import classNames from 'classnames'
 import React, { forwardRef, HTMLAttributes, useContext } from 'react'
 
 import { Localized } from '@fluent/react'
@@ -9,7 +8,6 @@ import { mainContext } from '../../../../../core/main-context'
 import { sh } from '../../../../../core/namespaces'
 import { Handle } from '../../components/Item/Handle'
 import { Remove } from '../../components/Item/Remove'
-import styles from './TreeItem.module.css'
 
 export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, 'id'> {
   childCount?: number
@@ -73,14 +71,16 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 
     return (
       <li
-        className={`${classNames(
-          styles.Wrapper,
-          clone && styles.clone,
-          ghost && styles.ghost,
-          indicator && styles.indicator,
-          disableSelection && styles.disableSelection,
-          disableInteraction && styles.disableInteraction
-        )} type-${type} ${addBottomSpacing ? 'spacing-bottom' : ''} ${collapsed ? 'collapsed' : ''}`}
+        className={`${[
+          'Wrapper',
+          clone && 'clone',
+          ghost && 'ghost',
+          indicator && 'indicator',
+          disableSelection && 'disableSelection',
+          disableInteraction && 'disableInteraction'
+        ]
+          .filter(Boolean)
+          .join(' ')} type-${type} ${addBottomSpacing ? 'spacing-bottom' : ''} ${collapsed ? 'collapsed' : ''}`}
         ref={wrapperRef}
         style={
           {
@@ -89,14 +89,14 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
         }
         {...props}
       >
-        <div className={styles.TreeItem} ref={ref} style={style}>
+        <div className={'TreeItem'} ref={ref} style={style}>
           <Handle {...handleProps} />
           {onCollapse && (
             <button className="button small" onClick={onCollapse}>
               <Icon icon="mdi:caret-down-outline" style={collapsed ? { rotate: '-90deg' } : {}} />
             </button>
           )}
-          <span className={styles.Text}>
+          <span className={'Text'}>
             <span className="type-label">
               {type === 'group' ? (
                 <>
@@ -119,7 +119,7 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
           ) : null}
 
           {!clone && onRemove && <Remove onClick={onRemove} />}
-          {clone && childCount && childCount > 1 ? <span className={styles.Count}>{childCount}</span> : null}
+          {clone && childCount && childCount > 1 ? <span className={'Count'}>{childCount}</span> : null}
         </div>
       </li>
     )
