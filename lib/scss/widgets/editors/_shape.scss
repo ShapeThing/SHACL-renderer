@@ -26,7 +26,7 @@
 }
 
 .shape-editor {
-    .Wrapper {
+    .wrapper {
         list-style: none;
         box-sizing: border-box;
         padding-left: var(--spacing);
@@ -39,7 +39,7 @@
             padding-left: 10px;
             padding-top: 5px;
 
-            .TreeItem {
+            .tree-item {
                 --vertical-padding: 5px;
                 padding-right: 24px;
                 border-radius: 4px;
@@ -54,7 +54,7 @@
                 z-index: 1;
                 margin-bottom: -1px;
 
-                .TreeItem {
+                .tree-item {
                     position: relative;
                     padding: 0;
                     height: 8px;
@@ -86,14 +86,14 @@
                 opacity: 0.5;
             }
 
-            .TreeItem>* {
+            .tree-item>* {
                 box-shadow: none;
                 background-color: transparent;
             }
         }
     }
 
-    .TreeItem {
+    .tree-item {
         --vertical-padding: 10px;
         border-radius: var(--input-radius);
         position: relative;
@@ -105,7 +105,7 @@
         box-sizing: border-box;
     }
 
-    .Text {
+    .text {
         flex-grow: 1;
         padding-left: 0.5rem;
         white-space: nowrap;
@@ -114,7 +114,7 @@
         font-size: 1rem;
     }
 
-    .Count {
+    .count {
         position: absolute;
         top: -10px;
         right: -10px;
@@ -130,21 +130,21 @@
         color: #fff;
     }
 
-    .disableInteraction {
+    .disable-interaction {
         pointer-events: none;
     }
 
-    .disableSelection,
+    .disable-selection,
     .clone {
 
-        .Text,
-        .Count {
+        .text,
+        .count {
             user-select: none;
             -webkit-user-select: none;
         }
     }
 
-    .Collapse {
+    .collapse {
         svg {
             transition: transform 250ms ease;
         }

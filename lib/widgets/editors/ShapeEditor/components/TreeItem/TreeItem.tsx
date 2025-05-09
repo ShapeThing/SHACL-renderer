@@ -71,16 +71,19 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 
     return (
       <li
-        className={`${[
-          'Wrapper',
+        className={[
+          `type-${type}`,
+          'wrapper',
+          addBottomSpacing && 'spacing-bottom',
+          collapsed && 'collapsed',
           clone && 'clone',
           ghost && 'ghost',
           indicator && 'indicator',
-          disableSelection && 'disableSelection',
-          disableInteraction && 'disableInteraction'
+          disableSelection && 'disable-selection',
+          disableInteraction && 'disable-interaction'
         ]
           .filter(Boolean)
-          .join(' ')} type-${type} ${addBottomSpacing ? 'spacing-bottom' : ''} ${collapsed ? 'collapsed' : ''}`}
+          .join(' ')}
         ref={wrapperRef}
         style={
           {
@@ -89,14 +92,14 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
         }
         {...props}
       >
-        <div className={'TreeItem'} ref={ref} style={style}>
+        <div className="tree-item" ref={ref} style={style}>
           <Handle {...handleProps} />
           {onCollapse && (
             <button className="button small" onClick={onCollapse}>
               <Icon icon="mdi:caret-down-outline" style={collapsed ? { rotate: '-90deg' } : {}} />
             </button>
           )}
-          <span className={'Text'}>
+          <span className="text">
             <span className="type-label">
               {type === 'group' ? (
                 <>
@@ -119,7 +122,7 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
           ) : null}
 
           {!clone && onRemove && <Remove onClick={onRemove} />}
-          {clone && childCount && childCount > 1 ? <span className={'Count'}>{childCount}</span> : null}
+          {clone && childCount && childCount > 1 ? <span className="count">{childCount}</span> : null}
         </div>
       </li>
     )

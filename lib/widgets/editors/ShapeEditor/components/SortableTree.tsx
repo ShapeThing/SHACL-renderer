@@ -189,7 +189,11 @@ export function SortableTree({
           )
         })}
         {createPortal(
-          <DragOverlay dropAnimation={dropAnimationConfig} modifiers={indicator ? [adjustTranslate] : undefined}>
+          <DragOverlay
+            className="shape-editor"
+            dropAnimation={dropAnimationConfig}
+            modifiers={indicator ? [adjustTranslate] : undefined}
+          >
             {activeId && activeItem ? (
               <SortableTreeItem
                 id={activeId}
