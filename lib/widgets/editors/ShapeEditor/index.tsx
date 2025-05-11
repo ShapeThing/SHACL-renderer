@@ -1,62 +1,57 @@
 import { Localized } from '@fluent/react'
-import { language } from '@rdfjs/score'
-import { NamedNode } from '@rdfjs/types'
+import dataFactory from '@rdfjs/data-model'
+import { Quad_Subject } from '@rdfjs/types'
 import { useContext } from 'react'
 import AddNestedNodeButton from '../../../components/EditMode/AddNestedNodeButton'
+import SortableStore from '../../../components/SortableStore/SortableStore'
 import Icon from '../../../components/various/Icon'
-import { languageContext } from '../../../core/language-context'
 import { mainContext } from '../../../core/main-context'
-import { rdf, sh } from '../../../core/namespaces'
+import { rdf, sh, xsd } from '../../../core/namespaces'
 import Grapoi from '../../../Grapoi'
 import { WidgetProps } from '../../widgets-context'
-import { SortableTree } from './components/SortableTree'
-import { TreeItem } from './components/types'
 
-const getItemsByIris = (dataPointer: Grapoi, iris: NamedNode[], activeInterfaceLanguage: string) => {
-  return iris
-    .map(iri => dataPointer.node(iri))
-    .map(propertyOrGroup => {
-      const localName = propertyOrGroup.term.value.split(/\/|#/g).pop()
+const getItems = (dataPointer: Grapoi) => (parent?: Quad_Subject) => {
+  // Useful sets
+  const topLevelGroups = dataPointer
+    .node()
+    .hasOut(rdf('type'), sh('PropertyGroup'))
+    .filter(group => !group.hasOut(sh('group')).term)
+    .distinct()
 
-      const children = dataPointer
-        .node()
-        .hasOut(sh('group'), propertyOrGroup.term)
-        .map((iris: Grapoi) => getItemsByIris(dataPointer, iris.terms as NamedNode[], activeInterfaceLanguage))
-        .flat()
+  const usedGroups = dataPointer.out(sh('property')).out(sh('group')).distinct()
+  const unusedGroups = topLevelGroups.filter(group => !usedGroups.terms.some(usedGroup => usedGroup.equals(group.term)))
+  const usedTopLevelGroups = usedGroups.filter(usedGroup =>
+    topLevelGroups.terms.some(group => group.equals(usedGroup.term))
+  )
 
-      return {
-        label: propertyOrGroup.out(sh('name')).best(language([activeInterfaceLanguage, '', '*'])).value ?? localName,
-        id: propertyOrGroup.term.value,
-        term: propertyOrGroup.term,
-        type: propertyOrGroup.hasOut(sh('path')).term ? 'property' : 'group',
-        children
-      } as TreeItem
+  const selection = parent
+    ? [dataPointer.node().hasOut(sh('group'), parent)]
+    : [
+        // Properties without groups.
+        dataPointer
+          .out(sh('property'))
+          .filter(property => !property.hasOut(sh('group')).term)
+          .distinct(),
+        // Groups without groups.
+        usedTopLevelGroups
+      ]
+  return selection
+    .flatMap(pointer => pointer.map((innerPointer: Grapoi) => innerPointer))
+    .sort((a: Grapoi, b: Grapoi) => {
+      const aOrder = parseFloat(a.out(sh('order')).value ?? '0')
+      const bOrder = parseFloat(b.out(sh('order')).value ?? '0')
+      return aOrder - bOrder
     })
+}
+
+const setItems = (_dataPointer: Grapoi) => (items: Grapoi[]) => {
+  for (const [index, item] of items.entries()) {
+    item.deleteOut(sh('order')).addOut(sh('order'), dataFactory.literal((index + 1).toString(), xsd('integer')))
+  }
 }
 
 function ShapeEditorInner() {
   const { dataPointer, shapePointer } = useContext(mainContext)
-  const { activeInterfaceLanguage } = useContext(languageContext)
-
-  const groupsOfProperties = dataPointer.node().out(sh('property')).out(sh('group')).distinct().terms
-
-  // TODO make two visual groups to pick groups from.
-  // Groups without fields
-  // Groups used in other shapes
-
-  const firstLevelgroupIris = [
-    ...dataPointer
-      .out(sh('property'))
-      .out(sh('group'))
-      .filter(property => !property.hasOut(sh('group')).term)
-      .distinct().terms,
-    ...dataPointer
-      .node()
-      .hasOut(rdf('type'), sh('PropertyGroup'))
-      .distinct()
-      .terms.filter(term => !groupsOfProperties.some(property => property.equals(term)))
-  ] as NamedNode[]
-  const initialItems: TreeItem[] = getItemsByIris(dataPointer, firstLevelgroupIris, activeInterfaceLanguage)
 
   const propertyShapeIri = shapePointer.node().hasOut(sh('path'), sh('path')).in().term
   const groupShapeIri = shapePointer.node().hasOut(sh('targetClass'), sh('PropertyGroup')).term
@@ -64,14 +59,7 @@ function ShapeEditorInner() {
   return (
     <div className="shape-editor">
       <div className="tree">
-        {/* I do not like the fact that we serialize to JSON and then somehow back to the dataset. What is the right abstraction to sort Grapoi pointers? */}
-        <SortableTree
-          onChange={items => console.log(items)}
-          defaultItems={initialItems}
-          collapsible
-          indicator
-          removable
-        />
+        <SortableStore getItems={getItems(dataPointer)} setItems={setItems(dataPointer)} />
       </div>
 
       <footer>

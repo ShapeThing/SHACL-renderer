@@ -1,0 +1,409 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix stsr: <http://ontology.shapething.com/shacl-renderer#> .
+@prefix stf: <http://ontology.shapething.com/facet#> .
+@prefix dbc: <http://dbpedia.org/resource/Category:> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix faker: <https://fakerjs.dev/> .
+
+<#data>
+
+  sh:property [
+    sh:name "Voornaam"@nl, "Given name"@en ;
+    # sh:group <#name> ;
+    sh:path schema:givenName ;
+    faker:generator faker:person.firstName ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:datatype xsd:string ;
+  ];
+
+  sh:property [
+    sh:name "Middelnaam"@nl, "Middle name"@en ;
+    # sh:group <#name> ;
+    sh:path schema:additionalName	 ;
+    faker:generator faker:person.middleName ;
+    sh:maxCount 1;
+    sh:datatype xsd:string ;
+  ];
+
+  sh:property [
+    sh:name "Achternaam"@nl, "Family name"@en ;
+    # sh:group <#name> ;
+    sh:path schema:familyName ;
+    faker:generator faker:person.lastName ;
+    sh:minCount 1;
+    sh:maxCount 1;
+    sh:datatype xsd:string ;
+  ];
+
+  sh:property [
+    sh:name "Geslacht"@nl, "Gender"@en ;
+    # sh:group <#general> ;
+    sh:in ( schema:Male schema:Female ) ;
+    sh:maxCount 1;
+    sh:minCount 1;
+    sh:path schema:gender ;
+  ];
+.
+
+<>
+  a sh:NodeShape ;
+  sh:targetClass stsr:Shape ;
+  sh:name "Shape"@en, "Vorm"@nl ;
+  sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type sh:ignoredProperties ) ;
+
+  sh:property [
+    sh:path rdf:type ;
+    sh:hasValue stsr:Shape ;
+  ];
+
+  sh:property [
+    sh:path rdf:type ;
+    sh:hasValue sh:NodeShape ;
+  ];
+
+.
+
+<#node-shape>
+  a sh:NodeShape ;
+  sh:targetClass sh:NodeShape ;
+  sh:name "SHACL Shape"@en, "SHACL Vorm"@nl ;
+  dash:abstract true ;
+
+  sh:property [
+    sh:name "Properties"@en, "Eigenschappen"@nl ;
+    sh:minCount 1;
+    sh:order 9;
+    sh:path sh:property ;
+    # stsr:nestedOrder sh:order ;
+    sh:nodeKind sh:BlankNode ;
+    sh:description "Dit zijn de eigenschappen van het type. De velden in het formulier. Je kunt de volgorde aanpassen door te slepen."@nl, "These are the properties of the type. The fields in the form. You can change the order by dragging."@en ;
+    sh:node <#propertyShape>;
+  ];
+
+.
+
+<#property/name>
+  sh:name "Name"@en, "Naam"@nl ;
+  sh:minCount 1;
+  sh:order 1;
+  sh:uniqueLang true ;
+  # sh:group <#base> ;
+  sh:maxLength 30 ;
+  sh:description "De gebruiksvriendelijke naam"@nl, "A user friendly name"@en ;
+  sh:path sh:name ;
+  sh:datatype rdf:langString ;
+.
+
+<#property/order>
+  sh:name "Order"@en, "Gewicht"@nl ;
+  sh:maxCount 1;
+  sh:order 8;
+  sh:description "Het gewicht van de eigenschap, grotere waarden wegen meer en worden dus lager getoond."@nl, "The order of the property, bigger values weigh more and will be shown lower."@en ;
+  # sh:group <#propertyShapeGroup> ;
+  sh:datatype xsd:integer ;
+  sh:path sh:order ;
+.
+
+
+<#groupShape>
+  a sh:NodeShape ;
+  sh:targetClass sh:PropertyGroup ;
+  sh:name "Group"@en, "Groep"@nl ;
+	sh:nodeKind sh:IRI ;
+
+  sh:property <#property/name> ;
+
+  sh:property [
+    sh:path rdf:type ;
+    sh:hasValue sh:PropertyGroup ;
+  ];
+
+  sh:property [
+    sh:name "Order"@en, "Gewicht"@nl ;
+    sh:maxCount 1;
+    # sh:group <#base> ;  
+    sh:description "Het gewicht van de eigenschap, grotere waarden wegen meer en worden dus lager getoond."@nl, "The order of the property, bigger values weigh more and will be shown lower."@en ;
+    sh:datatype xsd:integer ;
+    sh:path sh:order ;
+  ] ;
+
+
+  sh:property [
+    sh:name "Group"@en, "Groep"@nl ;
+    sh:description "Dit toont de eigenschap in een groep samen met andere eigenschappen."@nl, "This shows the property in a group together with other properties."@en ;
+    # sh:group <#base> ;  
+    sh:maxCount 1;
+    sh:order 6;
+    sh:path sh:group ;
+    sh:class sh:PropertyGroup ;
+    sh:in [
+      sh:select """
+        prefix sh: <http://www.w3.org/ns/shacl#>
+
+        SELECT distinct ?value ?label
+        WHERE {
+          ?value a sh:PropertyGroup .
+          optional {
+            ?value sh:name ?name .
+          }
+          bind(coalesce(?name, strafter(str(?value), "#"), strafter(str(?value), "/")) as ?label)
+        }
+        """ ;
+    ] ;
+  ];
+
+.
+
+<#base>
+  sh:name "Base information"@en, "Basis informatie"@nl ;
+#  sh:description "In this form, you create a shape. This shape will be used to create data with a form and also to display it."@en, "In dit formulier maak je een vorm. Deze vorm wordt gebruikt om data te maken middels formulieren en ook om het weer te geven."@nl ;
+	a sh:PropertyGroup ;
+	sh:order 1 .
+
+<#properties>
+  sh:name "Properties"@en, "Eigenschappen"@nl ;
+	a sh:PropertyGroup ;
+	sh:order 2 .
+
+<#propertyShapeGroupWrapper>
+	a sh:PropertyGroup, stsr:CollapsiblePropertyGroup;
+  stsr:groupLabelPath ( sh:name ) ;
+	sh:order 1 .
+
+<#propertyShapeGroup>
+  # # sh:group <#propertyShapeGroupWrapper> ;
+  stsr:groupLabelPath ( sh:name ) ;
+  a sh:PropertyGroup, stsr:DrawerPropertyGroup ;
+.
+
+<#propertyShape>
+  sh:closed true ;
+  a sh:NodeShape, stsr:SubShape ;
+  sh:name "Property"@en, "Eigenschap"@nl ;
+
+  sh:ignoredProperties ( faker:generator sh:in sh:editor rdf:type sh:nodeKind rdf:nil ) ;
+
+  sh:property [
+    sh:name "Property name"@en, "Eigenschap naam"@nl ;
+    sh:minCount 1;
+    sh:order 1;
+		sh:uniqueLang true ;
+    # sh:group <#propertyShapeGroup> ;
+    sh:path sh:name ;
+    sh:description "De naam van deze eigenschap zoals deze getoond wordt in het formulier."@nl, "The name of this property as it will appear in the form."@en ;
+    sh:datatype rdf:langString ;
+  ];
+
+  # sh:property [
+  #   sh:name "Ignored properties"@en, "Genegeerde eigenschappen"@nl ;
+  #   sh:path sh:ignoredProperties ;
+  #   # sh:group <#misc> ;
+  # ];
+
+  sh:property [
+    sh:name "Order"@en, "Gewicht"@nl ;
+    sh:maxCount 1;
+    sh:order 8;
+    sh:description "Het gewicht van de eigenschap, grotere waarden wegen meer en worden dus lager getoond."@nl, "The order of the property, bigger values weigh more and will be shown lower."@en ;
+    # sh:group <#propertyShapeGroup> ;
+    sh:datatype xsd:integer ;
+    sh:path sh:order ;
+  ];
+
+  sh:property [
+    sh:name "List options"@en, "Lijst opties"@nl ;
+    sh:order 9;
+    # sh:group <#propertyShapeGroup> ;
+    sh:path ( sh:in [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+
+		sh:or (
+			[
+				sh:datatype xsd:string ;
+        dash:editor dash:TextFieldEditor ;
+        sh:nodeKind sh:Literal ;
+        sh:name "Text"@en, "Tekst"@nl ;
+			]
+			[
+        sh:nodeKind sh:IRI ;
+        sh:name "Reference"@en, "Referentie"@nl ;
+        dash:editor dash:URIEditor ;
+			]
+		) ;
+  ];
+
+
+  sh:property [
+    sh:name "List query"@en, "Lijst query"@nl ;
+    sh:order 9;
+    # sh:group <#propertyShapeGroup> ;
+    sh:path ( sh:in sh:select ) ;
+    dash:singleLine false ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1;
+  ];
+
+
+  sh:property [
+    sh:name "Required value"@en, "Verplichte waarde"@nl ;
+    sh:order 9;
+    sh:description "Een vaste waarde die altijd ingesteld moet zijn."@nl, "A fix value that always has to be set."@en ;
+    # sh:group <#propertyShapeGroup> ;
+    sh:path sh:hasValue ;
+  ];
+
+  sh:property [
+    sh:name "Sub shape"@en, "Sub vorm"@nl ;
+    sh:maxCount 1;
+    sh:description "Het sub formulier dat getoond moet worden."@nl, "The sub form that has to be shown."@en ;
+    sh:order 7;
+    # sh:group <#propertyShapeGroup> ;
+    sh:path sh:node ;
+    # stsr:hiddenWhen sh:datatype ;
+    sh:class stsr:SubShape ;
+
+    sh:in [
+      sh:select """
+        prefix sh: <http://www.w3.org/ns/shacl#>
+        prefix stsr: <http://ontology.shapething.com/shacl-renderer#>
+        
+        SELECT distinct ?value ?label
+        WHERE {
+          ?value a stsr:SubShape .
+          optional {
+            ?value sh:name ?name .
+          }
+          bind(coalesce(?name, strafter(str(?value), "#"), strafter(str(?value), "/")) as ?label)
+        }
+        """ ;
+    ] ;
+
+
+  ];
+
+  # sh:property [
+  #   sh:name "Closed"@en, "Gesloten"@nl ;
+  #   sh:maxCount 1;
+  #   sh:order 4;
+  #   # sh:group <#propertyShapeGroup> ;
+  #   sh:datatype xsd:boolean ;
+  #   sh:path sh:closed ;
+  # ];
+
+  sh:property [
+    sh:name "Description"@en, "Omschrijving"@nl ;
+    dash:singleLine false ;
+		sh:uniqueLang true ;
+    sh:description "De beschrijving van deze eigenschap, wordt getoond in het formulier."@nl, "The description of this property is shown in the form."@en ;
+    sh:order 10;
+    # sh:group <#propertyShapeGroup> ;
+    sh:path sh:description ;
+    sh:datatype rdf:langString ;
+  ];
+
+  sh:property [
+    sh:name "Path"@en, "Pad"@nl ;
+    sh:minCount 1;
+    sh:description "Het predicaat voor deze eigenschap."@nl, "The predicate for this property."@en ;
+    # sh:group <#propertyShapeGroup> ;
+    sh:maxCount 1;
+    sh:order 2;
+    dash:editor dash:URIEditor ;
+    sh:path sh:path ;
+    sh:nodeKind sh:IRI ;
+  ];
+  
+  sh:property [
+    sh:name "Minimum count"@en, "Minimaal aantal"@nl ;
+    # sh:group <#cardinality> ;
+    sh:maxCount 1;
+    sh:description "Gebruik tenminste 1 wanneer deze eigenschap verplicht is."@nl, "Use at least 1 when this property is required."@en ;
+    sh:order 1;
+    sh:path sh:minCount ;
+    sh:datatype xsd:integer ;
+  ];
+    
+  sh:property [
+    sh:name "Maximum count"@en, "Maximaal aantal"@nl ;
+    sh:maxCount 1;
+    sh:order 2;
+    # sh:group <#cardinality> ;
+    sh:description "Mag iemand meerdere waarden invullen?"@nl, "Is it allowed to have multiple values?"@en ;
+    sh:path sh:maxCount ;
+    sh:datatype xsd:integer ;
+  ];
+
+  sh:property [
+    sh:name "Group"@en, "Groep"@nl ;
+    sh:description "Dit toont de eigenschap in een groep samen met andere eigenschappen."@nl, "This shows the property in a group together with other properties."@en ;
+    # sh:group <#propertyShapeGroup> ;
+    sh:maxCount 1;
+    sh:order 6;
+    sh:path sh:group ;
+    sh:class sh:PropertyGroup ;
+    sh:in [
+      sh:select """
+        prefix sh: <http://www.w3.org/ns/shacl#>
+
+        SELECT distinct ?value ?label
+        WHERE {
+          ?value a sh:PropertyGroup .
+          optional {
+            ?value sh:name ?name .
+          }
+          bind(coalesce(?name, strafter(str(?value), "#"), strafter(str(?value), "/")) as ?label)
+        }
+        """ ;
+    ] ;
+  ];
+
+  sh:property [
+    sh:name "Data type"@en, "Data type"@nl ;
+    # sh:group <#propertyShapeGroup> ;
+    # stsr:hiddenWhen sh:node ;
+    sh:maxCount 1;
+    sh:description "Het datatype van deze eigenschap. Dit is handig voor de overzichtelijkheid en data kwaliteit."@nl, "The data type of this property. This is helpful for overviews and data quality."@en ;
+    sh:order 5;
+    sh:path sh:datatype ;
+    sh:in (
+      xsd:string xsd:float rdf:langString xsd:date
+    ) ;
+  ];
+.
+
+<#groupProperty> 
+    sh:name "Group"@en, "Groep"@nl ;
+    sh:description "Dit toont de eigenschap in een groep samen met andere eigenschappen."@nl, "This shows the property in a group together with other properties."@en ;
+    # sh:group <#propertyShapeGroup> ;
+    sh:maxCount 1;
+    sh:order 6;
+    sh:path sh:group ;
+    sh:class sh:PropertyGroup ;
+    sh:in [
+      sh:select """
+        prefix sh: <http://www.w3.org/ns/shacl#>
+
+        SELECT distinct ?value ?label
+        WHERE {
+          ?value a sh:PropertyGroup .
+          optional {
+            ?value sh:name ?name .
+          }
+          bind(coalesce(?name, strafter(str(?value), "#"), strafter(str(?value), "/")) as ?label)
+        }
+        """ ;
+    ] .
+
+xsd:string rdfs:label "Text"@en, "Tekst"@nl .
+xsd:integer rdfs:label "Integer"@en, "Nummer"@nl .
+xsd:decimal rdfs:label "Decimal"@en, "Decimaal"@nl .
+rdf:langString rdfs:label "Multilingual text"@en, "Meertalige tekst"@nl .
+
+stsr:Shape rdfs:subClassOf sh:NodeShape .
+stsr:SubShape rdfs:subClassOf sh:NodeShape .
