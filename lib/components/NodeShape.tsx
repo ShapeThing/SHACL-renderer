@@ -101,6 +101,16 @@ export default function NodeShape() {
   const groups = [...shapePointer.node().hasOut(rdf('type'), sh('PropertyGroup'))]
 
   const topLevelGroups = groups.filter(group => !group.hasOut(sh('group')).term)
+
+  const missingGroupDefinitions = properties
+    .out(sh('group'))
+    .distinct()
+    .terms.filter(term => !topLevelGroups.some(topLevelGroup => topLevelGroup.term.equals(term)))
+
+  if (missingGroupDefinitions.length) {
+    throw new Error(`Missing group definitions for: ${missingGroupDefinitions.map(term => term.value).join(', ')}`)
+  }
+
   const topLevelProperties = [...properties.filter(pointer => !pointer.out(sh('group')).term)]
   const usedPredicates = [...properties].flatMap((property: Grapoi) => {
     if (property.out(sh('path')).isList()) {
@@ -113,9 +123,11 @@ export default function NodeShape() {
   })
 
   const predicatesWithoutShapes = new Map(
-    [...dataPointer.out().quads()]
-      .filter(quad => !usedPredicates.includes(quad.predicate.value))
-      .map(quad => [quad.predicate.value, quad.predicate])
+    2 == 2
+      ? []
+      : [...dataPointer.out().quads()]
+          .filter(quad => !usedPredicates.includes(quad.predicate.value))
+          .map(quad => [quad.predicate.value, quad.predicate])
   )
 
   const propertiesWithoutShapes: Grapoi[] = [...predicatesWithoutShapes.values()].map(predicate => {

@@ -50,6 +50,10 @@ const setItems = (_dataPointer: Grapoi) => (items: Grapoi[]) => {
   }
 }
 
+const itemIsGroup = (_dataPointer: Grapoi) => (item: Grapoi) => {
+  return item.out(rdf('type')).terms.some(term => term.equals(sh('PropertyGroup')))
+}
+
 function ShapeEditorInner() {
   const { dataPointer, shapePointer } = useContext(mainContext)
 
@@ -59,7 +63,12 @@ function ShapeEditorInner() {
   return (
     <div className="shape-editor">
       <div className="tree">
-        <SortableStore getItems={getItems(dataPointer)} setItems={setItems(dataPointer)} />
+        <SortableStore
+          labelPredicates={[sh('name'), sh('path')]}
+          getItems={getItems(dataPointer)}
+          setItems={setItems(dataPointer)}
+          itemIsGroup={itemIsGroup(dataPointer)}
+        />
       </div>
 
       <footer>

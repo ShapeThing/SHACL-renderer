@@ -1,53 +1,53 @@
-import { DndContext } from '@dnd-kit/core'
-import { SortableContext } from '@dnd-kit/sortable'
-import { Quad_Subject } from '@rdfjs/types'
-import { useState } from 'react'
+import {
+  closestCorners,
+  DndContext,
+  KeyboardSensor,
+  MeasuringStrategy,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core'
+import { NamedNode, Quad_Subject } from '@rdfjs/types'
 import Grapoi from '../../Grapoi'
-import Item from './Item'
+import { sortableStoreContext } from './context'
+import List from './List'
+
+export type GrapoiWithId = Grapoi & { id: string }
 
 type Props = {
   getItems: (parent?: Quad_Subject) => Grapoi[]
   setItems: (items: Grapoi[]) => void
+  itemIsGroup: (item: Grapoi) => boolean
+  labelPredicates?: NamedNode[]
 }
 
-type GrapoiWithId = Grapoi & { id: string }
+const measuring = {
+  droppable: {
+    strategy: MeasuringStrategy.BeforeDragging
+  }
+}
 
-export default function SortableStore({ getItems: getItemsGiven, setItems: setItemsGiven }: Props) {
-  const getItems: () => GrapoiWithId[] = () =>
-    getItemsGiven().flatMap(pointer =>
+const getItems: (getItemsGiven: (parent?: Quad_Subject) => Grapoi[]) => () => GrapoiWithId[] =
+  getItemsGiven => (parent?: Quad_Subject) =>
+    getItemsGiven(parent).flatMap(pointer =>
       pointer.map((innerPointer: GrapoiWithId) => {
         innerPointer.id = innerPointer.value!
         return innerPointer
       })
     )
 
-  const [items, setItems] = useState(getItems())
+export default function SortableStore(props: Props) {
+  const mouseSensor = useSensor(MouseSensor)
+  const touchSensor = useSensor(TouchSensor)
+  const keyboardSensor = useSensor(KeyboardSensor)
+  const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor)
 
   return (
-    <DndContext
-      onDragEnd={event => {
-        const activePointer = items.find(item => item.value === event.active.id)
-        const overPointer = items.find(item => item.value === event.over?.id)
-
-        if (activePointer && overPointer && !activePointer.term.equals(overPointer.term)) {
-          const itemsWithoutActive = items.filter(item => item !== activePointer)
-          const overIndex = itemsWithoutActive.indexOf(overPointer)
-          const newPosition = event.delta.y <= 0 ? overIndex : overIndex + 1
-          itemsWithoutActive.splice(newPosition, 0, activePointer)
-
-          // The side effect, the parent is responsible to change the data.
-          setItemsGiven(itemsWithoutActive)
-
-          // Re-render
-          setItems(getItems())
-        }
-      }}
-    >
-      <SortableContext items={items}>
-        {items.map(item => (
-          <Item id={item.value} key={item.value} term={item.term} />
-        ))}
-      </SortableContext>
+    <DndContext collisionDetection={closestCorners} id="list" sensors={sensors} measuring={measuring}>
+      <sortableStoreContext.Provider value={{ ...props, getItems: getItems(props.getItems) }}>
+        <List />
+      </sortableStoreContext.Provider>
     </DndContext>
   )
 }
