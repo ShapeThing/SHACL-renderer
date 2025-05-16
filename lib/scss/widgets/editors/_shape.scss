@@ -13,7 +13,18 @@
     }
 
     .item {
+        overflow: hidden;
         padding-left: calc(var(--depth) * 20px);
+        max-height: 24px;
+        transition: max-height .3s ease-in-out;
+
+        &.hidden {
+            max-height: 0;
+        }
+
+        &.active {
+            background-color: var(--primary);
+        }
     }
 
     width: 100%;

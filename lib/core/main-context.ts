@@ -27,6 +27,10 @@ export type MainContextInput = {
   activeContentLanguage?: string
   fallback?: ReactNode
   enableActionPicker?: true
+  mld?: {
+    genesis: boolean
+    id: string
+  }
   enableSubjectEditor?: true
   useHierarchy?: boolean
   store?: Store
@@ -55,6 +59,10 @@ export type MainContext = {
   useHierarchy?: boolean
   enableActionPicker?: boolean
   enableSubjectEditor?: boolean
+  mld?: {
+    genesis: boolean
+    id: string
+  }
   facetSearchDataPointer: Grapoi
   jsonLdContext: JsonLdContextNormalized
   store?: Store
@@ -269,6 +277,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     fallback,
     languageMode,
     prefixes: givenPrefixes,
+    mld,
     interfaceLanguages,
     enableSubjectEditor,
     enableActionPicker,
@@ -334,6 +343,7 @@ export const initContext = async (originalInput: MainContextInput): Promise<Main
     useHierarchy,
     store: store,
     enableActionPicker,
+    mld,
     enableSubjectEditor,
     subjectEditLocalNameOnly,
     activeContentLanguage,

@@ -1,6 +1,11 @@
 import '@fontsource/roboto/latin.css'
+import { uuid } from '@m-ld/m-ld'
 import type { Preview } from '@storybook/react'
 import '../lib/scss/style.scss'
+
+if (!localStorage.mldId) {
+  localStorage.mldId = uuid()
+}
 
 const preview: Preview = {
   parameters: {

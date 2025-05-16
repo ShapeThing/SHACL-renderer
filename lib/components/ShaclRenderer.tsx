@@ -10,6 +10,7 @@ import { coreWidgets } from '../widgets/coreWidgets'
 import WidgetsContextProvider from '../widgets/widgets-context'
 import LanguageAwareTabs from './language/LanguageAwareTabs'
 import { MainContextProvider } from './MainContextProvider'
+import MldContextProvider from './MldContextProvider'
 import NodeShape from './NodeShape'
 import { prefixes } from './ShaclRenderer'
 import ActionPicker from './various/ActionPicker'
@@ -51,23 +52,25 @@ function ShaclRendererInner(props: ShaclRendererProps & { contextResource: any }
   return (
     <MainContextProvider context={context}>
       <WidgetsContextProvider {...coreWidgets}>
-        <LanguageProvider>
-          <ValidationContextProvider>
-            <ActionPicker setContext={setContextResource} />
-            <LanguageAwareTabs>
-              <NodeShape key="root" />
-              <div className="actions">
-                {props.children ? (
-                  props.children(submit)
-                ) : ['edit', 'inline-edit'].includes(context.mode) ? (
-                  <button onClick={submit} className="button primary big">
-                    <Localized id="save">Save</Localized>
-                  </button>
-                ) : null}
-              </div>
-            </LanguageAwareTabs>
-          </ValidationContextProvider>
-        </LanguageProvider>
+        <MldContextProvider id={context.mld?.id} genesis={context.mld?.genesis}>
+          <LanguageProvider>
+            <ValidationContextProvider>
+              <ActionPicker setContext={setContextResource} />
+              <LanguageAwareTabs>
+                <NodeShape key="root" />
+                <div className="actions">
+                  {props.children ? (
+                    props.children(submit)
+                  ) : ['edit', 'inline-edit'].includes(context.mode) ? (
+                    <button onClick={submit} className="button primary big">
+                      <Localized id="save">Save</Localized>
+                    </button>
+                  ) : null}
+                </div>
+              </LanguageAwareTabs>
+            </ValidationContextProvider>
+          </LanguageProvider>
+        </MldContextProvider>
       </WidgetsContextProvider>
     </MainContextProvider>
   )
